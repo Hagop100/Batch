@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
 //        val user = hashMapOf(
 //            "name" to "Steven",
 //        );
-
+//
 //        db.collection("users")
 //            .add(user)
 //            .addOnSuccessListener { docRef ->

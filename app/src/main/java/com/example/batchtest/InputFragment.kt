@@ -1,11 +1,15 @@
 package com.example.batchtest
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentInputBinding
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -17,6 +21,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [InputFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+private const val TAG = "InputFragment";
 class InputFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -39,6 +44,22 @@ class InputFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentInputBinding.inflate(inflater, container, false)
+//        Log.d(TAG, "${binding.submitBtn}");
+        binding.submitBtn.setOnClickListener {
+            val db = Firebase.firestore;
+
+            // create new user
+            val user = User(binding.name.text.toString())
+
+            db.collection("users")
+                .add(user)
+                .addOnSuccessListener { docRef ->
+                    findNavController().navigate(R.id.show_user_list_fragment);
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "error adding document", e);
+                }
+        }
         // Inflate the layout for this fragment
         return binding.root
     }

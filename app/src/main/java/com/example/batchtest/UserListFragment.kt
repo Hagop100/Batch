@@ -42,35 +42,7 @@ class UserListFragment : Fragment() {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
-//    private val userViewModel: UserViewModel by viewModels();
     private var job: Job? = null;
-
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                val users = arrayListOf<User>();
-//                val db = Firebase.firestore;
-//                db.collection("users")
-//                    .get()
-//                    .addOnSuccessListener { result ->
-//                        for (doc in result) {
-//                            val user:User? = doc.toObject(User::class.java);
-//                            if (user != null) {
-//                                users.add(user)
-//                            }
-//                            //Log.d(TAG, "$user")
-//                        }
-//                        binding.userRecyclerView.adapter = UserAdapter(users)
-////                Log.d(TAG, "$users")
-//                    }
-//                    .addOnFailureListener { e ->
-//                        Log.w(TAG, "error getting documents: ", e)
-//                    }
-//            }
-//        }
-//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,7 +51,6 @@ class UserListFragment : Fragment() {
         _binding = FragmentUserListBinding.inflate(inflater, container, false)
         binding.userRecyclerView.layoutManager = LinearLayoutManager(context)
         val users = arrayListOf<User>();
-        val adapter = UserAdapter(users)
         val db = Firebase.firestore;
         db.collection("users")
             .get()
