@@ -33,9 +33,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
-    }
-    dataBinding {
-        android.buildFeatures.dataBinding = true
+        dataBinding = true
     }
 }
 
@@ -52,4 +50,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'androidx.fragment:fragment-ktx:1.5.4'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
 }
