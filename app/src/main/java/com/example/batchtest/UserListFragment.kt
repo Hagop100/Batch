@@ -1,6 +1,7 @@
 package com.example.batchtest
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.batchtest.databinding.FragmentUserListBinding
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -24,6 +31,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [UserListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+private const val TAG = "NewUserLog";
 class UserListFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -34,20 +42,35 @@ class UserListFragment : Fragment() {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
-    private val userViewModel: UserViewModel by viewModels();
+//    private val userViewModel: UserViewModel by viewModels();
     private var job: Job? = null;
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                val crimes = userViewModel.loadUsers()
-                binding.userRecyclerView.adapter =
-                    UserAdapter(crimes)
-            }
-        }
-    }
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                val users = arrayListOf<User>();
+//                val db = Firebase.firestore;
+//                db.collection("users")
+//                    .get()
+//                    .addOnSuccessListener { result ->
+//                        for (doc in result) {
+//                            val user:User? = doc.toObject(User::class.java);
+//                            if (user != null) {
+//                                users.add(user)
+//                            }
+//                            //Log.d(TAG, "$user")
+//                        }
+//                        binding.userRecyclerView.adapter = UserAdapter(users)
+////                Log.d(TAG, "$users")
+//                    }
+//                    .addOnFailureListener { e ->
+//                        Log.w(TAG, "error getting documents: ", e)
+//                    }
+//            }
+//        }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,9 +78,23 @@ class UserListFragment : Fragment() {
     ): View? {
         _binding = FragmentUserListBinding.inflate(inflater, container, false)
         binding.userRecyclerView.layoutManager = LinearLayoutManager(context)
-        val users = userViewModel.users
+        val users = arrayListOf<User>();
         val adapter = UserAdapter(users)
-        binding.userRecyclerView.adapter = adapter
+        val db = Firebase.firestore;
+        db.collection("users")
+            .get()
+            .addOnSuccessListener { result ->
+                for (doc in result) {
+                    val user:User? = doc.toObject(User::class.java);
+                    if (user != null) {
+                        users.add(user)
+                    }
+                }
+                binding.userRecyclerView.adapter = UserAdapter(users)
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "error getting documents: ", e)
+            }
         return binding.root
     }
 
