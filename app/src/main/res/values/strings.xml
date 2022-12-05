@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">BatchTest</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="name">name</string>
+    <string name="name_hint">enter name</string>
+    <string name="submit_btn_text">submit</string>
 </resources>

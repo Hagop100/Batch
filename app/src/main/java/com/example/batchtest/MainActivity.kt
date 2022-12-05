@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
             "firstName" to "Steven",
             "lastName" to "Nguyen",
             "email" to "stevennguyen@gmail.com",
-            "username" to "stevennguyen"
+            "username" to "stevennguyens"
         );
 
         db.collection("users")
