@@ -15,34 +15,31 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val db = Firebase.firestore;
-
-        // create new user
-        val user = hashMapOf(
-            "firstName" to "Steven",
-            "lastName" to "Nguyen",
-            "email" to "stevennguyen@gmail.com",
-            "username" to "stevennguyens"
-        );
-
-        db.collection("users")
-            .add(user)
-            .addOnSuccessListener { docRef ->
-                Log.d(TAG, "document snapshot added with id: ${docRef.id}");
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "error adding document", e);
-            }
-
-        db.collection("users")
-            .get()
-            .addOnSuccessListener { result ->
-                for (doc in result) {
-                    Log.d(TAG, "${doc.id} => ${doc.data}")
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "error getting documents: ", e)
-            }
+//        val db = Firebase.firestore;
+//
+//        // create new user
+//        val user = hashMapOf(
+//            "name" to "Steven",
+//        );
+//
+//        db.collection("users")
+//            .add(user)
+//            .addOnSuccessListener { docRef ->
+//                Log.d(TAG, "document snapshot added with id: ${docRef.id}");
+//            }
+//            .addOnFailureListener { e ->
+//                Log.w(TAG, "error adding document", e);
+//            }
+//
+//        db.collection("users")
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (doc in result) {
+//                    Log.d(TAG, "${doc.id} => ${doc.data}")
+//                }
+//            }
+//            .addOnFailureListener { e ->
+//                Log.w(TAG, "error getting documents: ", e)
+//            }
     }
 }
