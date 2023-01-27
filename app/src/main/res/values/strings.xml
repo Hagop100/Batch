@@ -10,4 +10,8 @@
     <!--    Group Creation -->
     <string name="group_creation_title">Create a group</string>
     <string name="group_code_template">Group Code:</string>
+    <string name="match">Match</string>
+    <string name="my_groups">My Groups</string>
+    <string name="other_groups">Other Groups</string>
+    <string name="profile">Profile</string>
 </resources>

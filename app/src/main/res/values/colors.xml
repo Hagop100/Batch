@@ -9,8 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <!--    app overall background color-->
     <color name="app_background">#F1E8DD</color>
-
     <color name="background_text">#F6F0E9</color>
+    <color name="dark_brown">#312B28</color>
 
     <!--    horizontal line-->
     <color name="horizontal_line">#EBE2D8</color>

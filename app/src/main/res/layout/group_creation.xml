@@ -36,17 +36,17 @@
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="110dp" />
 
-        <com.google.android.material.imageview.ShapeableImageView
-            app:id="@+id/imageView"
-            app:layout_width="131dp"
-            app:layout_height="121dp"
-            app:scaleType="center"
-            app:shapeAppearanceOverlay="@style/circleImageView"
-            app2:layout_constraintEnd_toEndOf="parent"
-            app2:layout_constraintStart_toStartOf="parent"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteY="130dp"
-            tools:srcCompat="@tools:sample/avatars" />
+<!--        <com.google.android.material.imageview.ShapeableImageView-->
+<!--            app:id="@+id/imageView"-->
+<!--            app:layout_width="131dp"-->
+<!--            app:layout_height="121dp"-->
+<!--            app:scaleType="center"-->
+<!--            app:shapeAppearanceOverlay="@style/circleImageView"-->
+<!--            app2:layout_constraintEnd_toEndOf="parent"-->
+<!--            app2:layout_constraintStart_toStartOf="parent"-->
+<!--            tools:ignore="MissingConstraints"-->
+<!--            tools:layout_editor_absoluteY="130dp"-->
+<!--            tools:srcCompat="@tools:sample/avatars" />-->
 
         <EditText
             app:id="@+id/editTextTextMultiLine"

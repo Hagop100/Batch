@@ -18,4 +18,8 @@
         android:id="@+id/userListFragment"
         android:name="com.example.batchtest.UserListFragment"
         android:label="UserListFragment" />
+    <fragment
+        android:id="@+id/matchTabFragment"
+        android:name="com.example.batchtest.MatchTabFragment"
+        android:label="MatchTabFragment" />
 </navigation>
