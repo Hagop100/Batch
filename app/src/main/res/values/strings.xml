@@ -6,4 +6,8 @@
     <string name="submit_btn_text">submit!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--    Group Creation -->
+    <string name="group_creation_title">Create a group</string>
+    <string name="group_code_template">Group Code:</string>
 </resources>

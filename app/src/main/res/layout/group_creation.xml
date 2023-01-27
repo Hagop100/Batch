@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--    -->
+
+    <ScrollView xmlns:app="http://schemas.android.com/apk/res/android"
+        xmlns:app2="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        app:layout_height="wrap_content"
+        app:layout_width="match_parent"
+        app:fillViewport="true"
+        tools:ignore="NamespaceTypo">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_width="match_parent"
+        app:layout_height="wrap_content"
+        app:background="@color/app_background">
+
+        <TextView
+            app:id="@+id/group_creation_title"
+            app:layout_width="359dp"
+            app:layout_height="44dp"
+            app:fontFamily="@font/poppins_bold"
+            app:text="@string/group_creation_title"
+            app:textColor="#070707"
+            app:textSize="28sp"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="59dp" />
+
+        <View
+            app:layout_width="wrap_content"
+            app:layout_height="1dp"
+            app:background="@color/horizontal_line"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="110dp" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            app:id="@+id/imageView"
+            app:layout_width="131dp"
+            app:layout_height="121dp"
+            app:scaleType="center"
+            app:shapeAppearanceOverlay="@style/circleImageView"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="130dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <EditText
+            app:id="@+id/editTextTextMultiLine"
+            app:layout_width="327dp"
+            app:layout_height="143dp"
+            app:background="@drawable/round_corner"
+            app:ems="10"
+            app:gravity="start|top"
+            app:inputType="textMultiLine"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintHorizontal_bias="0.476"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="593dp" />
+
+        <TextView
+            app:id="@+id/textView5"
+            app:layout_width="331dp"
+            app:layout_height="38dp"
+            app:background="@drawable/round_corner"
+            app:fontFamily="@font/poppins_regular"
+            app:padding="10dp"
+            app:text="@string/group_code_template"
+            app:textColor="#B5B3B1"
+            app:textSize="12sp"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintHorizontal_bias="0.476"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="274dp" />
+
+        <TextView
+            app:id="@+id/textView6"
+            app:layout_width="331dp"
+            app:layout_height="37dp"
+            app:fontFamily="@font/poppins_regular"
+            app:padding="10dp"
+            app:text="Group Name:"
+            app:textColor="#B5B3B1"
+            app:textSize="12sp"
+            app:textStyle="bold"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintHorizontal_bias="0.476"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="328dp" />
+
+        <EditText
+            app:id="@+id/editTextTextPersonName"
+            app:layout_width="328dp"
+            app:layout_height="38dp"
+            app:ems="10"
+            app:fontFamily="@font/poppins_regular"
+            app:inputType="textPersonName"
+            app:padding="10dp"
+            app:text="Name"
+            app:textSize="12sp"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintHorizontal_bias="0.476"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="372dp" />
+
+        <TextView
+            app:id="@+id/textView7"
+            app:layout_width="328dp"
+            app:layout_height="36dp"
+            app:fontFamily="@font/poppins_regular"
+            app:padding="10dp"
+            app:text="Tags:"
+            app:textColor="#B5B3B1"
+            app:textSize="12sp"
+            app:textStyle="bold"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintHorizontal_bias="0.476"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="436dp" />
+
+        <EditText
+            app:id="@+id/editTextTextPersonName2"
+            app:layout_width="328dp"
+            app:layout_height="38dp"
+            app:ems="10"
+            app:fontFamily="@font/poppins_regular"
+            app:inputType="textPersonName"
+            app:padding="10dp"
+            app:text="Name"
+            app:textSize="12sp"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintHorizontal_bias="0.476"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="479dp" />
+
+        <TextView
+            app:id="@+id/textView2"
+            app:layout_width="324dp"
+            app:layout_height="35dp"
+            app:fontFamily="@font/poppins_regular"
+            app:padding="10dp"
+            app:text="About us:"
+            app:textColor="#B5B3B1"
+            app:textSize="12sp"
+            app:textStyle="bold"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintHorizontal_bias="0.476"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="549dp" />
+
+        <Button
+            app:id="@+id/button"
+            app:layout_width="323dp"
+            app:layout_height="45dp"
+            app:text="Create"
+            app2:layout_constraintEnd_toEndOf="parent"
+            app2:layout_constraintHorizontal_bias="0.476"
+            app2:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="756dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+

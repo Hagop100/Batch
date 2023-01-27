@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    title for every page-->
+    <style name="page_title">
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textColor">#070707</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <!--    imageview for group picture-->
+    <style name="circleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+</resources>

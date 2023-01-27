@@ -7,4 +7,11 @@
     <color name="teal_700">#600808</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!--    app overall background color-->
+    <color name="app_background">#F1E8DD</color>
+
+    <color name="background_text">#F6F0E9</color>
+
+    <!--    horizontal line-->
+    <color name="horizontal_line">#EBE2D8</color>
 </resources>
