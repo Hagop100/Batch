@@ -12,7 +12,7 @@ class UserHolder(
         binding.nameListTitle.text = user.name
     }
 }
-// steven n
+
 class UserAdapter(
     private val users: List<User>
 ) : RecyclerView.Adapter<UserHolder>() {
