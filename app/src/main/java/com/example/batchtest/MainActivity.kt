@@ -8,7 +8,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 //Hagop has made a change!sdf
-
+//Eman made this
 private const val TAG = "NewUserLog";
 class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding;
