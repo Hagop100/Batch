@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/inputFragment">
+    app:startDestination="@id/matchTabFragment">
 
     <fragment
         android:id="@+id/inputFragment"
@@ -21,5 +21,6 @@
     <fragment
         android:id="@+id/matchTabFragment"
         android:name="com.example.batchtest.MatchTabFragment"
-        android:label="MatchTabFragment" />
+        android:label="fragment_match_tab"
+        tools:layout="@layout/fragment_match_tab"/>
 </navigation>
