@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-//jksdhfsdfdsfsdfdskasdhjfkdsjkfjkdssdfsdfsdsfasdfdsfdsfaf
+
 
 //        val db = Firebase.firestore;
 //
@@ -45,4 +45,6 @@ class MainActivity : AppCompatActivity() {
 //                Log.w(TAG, "error getting documents: ", e)
 //            }
     }
+
+
 }
