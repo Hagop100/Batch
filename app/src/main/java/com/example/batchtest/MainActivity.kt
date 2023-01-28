@@ -3,7 +3,12 @@ package com.example.batchtest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.batchtest.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -16,6 +21,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+//        val navController: NavController = this.findNavController(R.id.nav_fragment_container)
+//        val navView: BottomNavigationView = findViewById(R.id.nav_bar)
+//        navView.setupWithNavController(navController)
 //jksdhfsdfdsfsdfdskasdhjfkdsjkfjkdssdfsdfsdsfasdfdsfdsfaf
 
 //        val db = Firebase.firestore;

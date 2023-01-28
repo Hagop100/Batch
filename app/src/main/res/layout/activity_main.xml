@@ -10,7 +10,7 @@
             xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/fragment_container"
+            android:id="@+id/nav_fragment_container"
 
             android:name="androidx.navigation.fragment.NavHostFragment"
             app:defaultNavHost="true"

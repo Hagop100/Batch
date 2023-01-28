@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/matchTabFragment"
+        android:id="@id/matchTabFragment"
         android:icon="@drawable/my_groups_icon"
         android:title="@string/match"/>
     <item
+        android:id="@id/inputFragment"
         android:icon="@drawable/my_groups_icon"
         android:title="@string/my_groups"/>
     <item
+        android:id="@id/inputFragment"
         android:icon="@drawable/other_groups_icon"
         android:title="@string/other_groups"/>
     <item
+        android:id="@id/inputFragment"
         android:icon="@drawable/profile_icon"
         android:title="@string/profile"/>
 </menu>
