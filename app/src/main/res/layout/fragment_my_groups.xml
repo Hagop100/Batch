@@ -11,27 +11,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceHeadline5"
-        android:text="@string/name"/>
+        android:text="@string/my_groups"
+        android:layout_marginTop="50dp"
+        android:theme="@style/page_title"/>
+    <View
+        android:id="@+id/horizontal_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/horizontal_line"
+        />
 
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/name_hint"
-        android:importantForAutofill="no"
-        android:inputType="text"/>
+<!--    <Button-->
+<!--        android:id="@+id/submitBtn"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="@string/submit_btn_text"/>-->
 
-    <Button
-        android:id="@+id/submitBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/submit_btn_text"/>
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Testing1" />
 
     <Button
         android:id="@+id/button2"

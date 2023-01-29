@@ -1,15 +1,12 @@
 package com.example.batchtest
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.example.batchtest.databinding.ActivityGroupCreationBinding
+import java.util.*
 
-class GroupCreation : AppCompatActivity() {
-    private lateinit var binding: ActivityGroupCreationBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_group_creation)
-        binding = ActivityGroupCreationBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-    }
-}
+data class GroupCreation (
+    val groupCode: UUID,
+    val groupName: String,
+    val tags: String,
+    val groupDescription: String
+
+)
+

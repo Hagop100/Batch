@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.batchtest.databinding.FragmentInputBinding
+import com.example.batchtest.databinding.FragmentMyGroupsBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -27,7 +27,7 @@ class InputFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var _binding: FragmentInputBinding? = null;
+    private var _binding: FragmentMyGroupsBinding? = null;
     private val binding
         get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view visible?"
@@ -44,25 +44,27 @@ class InputFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentInputBinding.inflate(inflater, container, false)
+        _binding = FragmentMyGroupsBinding.inflate(inflater, container, false)
 //        Log.d(TAG, "${binding.submitBtn}");
-        binding.submitBtn.setOnClickListener {
-            val db = Firebase.firestore;
+//        binding.submitBtn.setOnClickListener {
+//            val db = Firebase.firestore;
+//
+//            // create new user
+//            val user = User(binding.name.text.toString())
+//
+//            db.collection("users")
+//                .add(user)
+//                .addOnSuccessListener { docRef ->
+//                    findNavController().navigate(R.id.show_user_list_fragment);
+//                }
+//                .addOnFailureListener { e ->
+//                    Log.w(TAG, "error adding document", e);
+//                }
+//        }
 
-            // create new user
-            val user = User(binding.name.text.toString())
-
-            db.collection("users")
-                .add(user)
-                .addOnSuccessListener { docRef ->
-                    findNavController().navigate(R.id.show_user_list_fragment);
-                }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "error adding document", e);
-                }
-        }
+//        test for Group creation intent
         binding.button2.setOnClickListener{
-            val intent = Intent(this.context, GroupCreation::class.java)
+            val intent = Intent(this.context, GroupCreationFragment::class.java)
             startActivity(intent)
 
         }

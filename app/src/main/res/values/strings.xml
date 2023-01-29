@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">BatchTest</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="name">name</string>
+
+    <!-- My Groups-->
     <string name="name_hint">enter name</string>
     <string name="submit_btn_text">submit!</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -10,10 +11,14 @@
     <!--    Group Creation -->
     <string name="group_creation_title">Create a group</string>
     <string name="group_code_template">Group Code:</string>
+
+    <!--    bottom nav -->
     <string name="match">Match</string>
     <string name="my_groups">My Groups</string>
     <string name="other_groups">Other Groups</string>
     <string name="profile">Profile</string>
+
+<!--    user login-->
     <string name="user_login_title">Batch</string>
     <string name="user_login_login_text">Login</string>
     <string name="no_account_text">Don\'t have an account?</string>
