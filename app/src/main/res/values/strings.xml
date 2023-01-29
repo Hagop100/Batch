@@ -14,4 +14,16 @@
     <string name="my_groups">My Groups</string>
     <string name="other_groups">Other Groups</string>
     <string name="profile">Profile</string>
+    <string name="user_login_title">Batch</string>
+    <string name="user_login_login_text">Login</string>
+    <string name="no_account_text">Don\'t have an account?</string>
+    <string name="no_acc_sign_up_text"><u>Sign Up</u></string>
+    <string name="username_text">Username</string>
+    <string name="username_text_hint">email/username</string>
+    <string name="password_text">Password</string>
+    <string name="password_hint">************</string>
+    <string name="forgot_username_button_text"><u>Forgot Username?</u></string>
+    <string name="forgot_password_text"><u>Forgot Password?</u></string>
+    <string name="remember_me_rb_text">Remember Me</string>
+    <string name="login_button_text">Login</string>
 </resources>
