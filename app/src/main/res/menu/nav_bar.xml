@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@id/matchTabFragment"
-        android:icon="@drawable/my_groups_icon"
+        android:icon="@drawable/batch_icon"
         android:title="@string/match"/>
     <item
         android:id="@id/inputFragment"
