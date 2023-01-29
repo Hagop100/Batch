@@ -44,6 +44,7 @@ class GroupCreationFragment : Fragment() {
         binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
         return binding.root
 //        return inflater.inflate(R.layout.fragment_group_creation, container, false)
+
     }
 
     companion object {

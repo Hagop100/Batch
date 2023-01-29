@@ -6,10 +6,10 @@
     app:startDestination="@id/matchTabFragment">
 
     <fragment
-        android:id="@+id/inputFragment"
-        android:name="com.example.batchtest.InputFragment"
+        android:id="@+id/myGroupsTab"
+        android:name="com.example.batchtest.MyGroupsFragment"
         android:label="fragment_input"
-        tools:layout="@layout/fragment_input" >
+        tools:layout="@layout/fragment_my_groups" >
         <action
             android:id="@+id/show_user_list_fragment"
             app:destination="@id/userListFragment" />

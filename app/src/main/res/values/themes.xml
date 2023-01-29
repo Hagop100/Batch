@@ -28,6 +28,7 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+<!--    page margin-->
     <style name="page_margin" parent="" >
         <item name="android:layout_marginLeft">30dp</item>
         <item name="android:layout_marginRight">30dp</item>

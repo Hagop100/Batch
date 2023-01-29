@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         val navController: NavController = navHostFragment.navController
         val navView: BottomNavigationView = findViewById(R.id.nav_bar)
         navView.setupWithNavController(navController)
-//jksdhfsdfdsfsdfdskasdhjfkdsjkfjkdssdfsdfsdsfasdfdsfdsfaf
+
 
 //        val db = Firebase.firestore;
 //

@@ -5,15 +5,15 @@
         android:icon="@drawable/batch_icon"
         android:title="@string/match"/>
     <item
-        android:id="@id/inputFragment"
+        android:id="@id/myGroupsTab"
         android:icon="@drawable/my_groups_icon"
         android:title="@string/my_groups"/>
     <item
-        android:id="@id/inputFragment"
+        android:id="@id/myGroupsTab"
         android:icon="@drawable/other_groups_icon"
         android:title="@string/other_groups"/>
     <item
-        android:id="@id/inputFragment"
+        android:id="@id/myGroupsTab"
         android:icon="@drawable/profile_icon"
         android:title="@string/profile"/>
 </menu>
