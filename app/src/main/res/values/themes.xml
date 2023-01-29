@@ -17,7 +17,7 @@
     <!--    title for every page-->
     <style name="page_title" parent="" >
         <item name="android:fontFamily">@font/poppins_bold</item>
-        <item name="android:textColor">#070707</item>
+        <item name="android:textColor">#333333</item>
         <item name="android:textSize">28sp</item>
     </style>
 
