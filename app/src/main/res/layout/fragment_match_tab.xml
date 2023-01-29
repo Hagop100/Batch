@@ -45,7 +45,7 @@
                 android:id="@+id/biscuit_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 android:text="12"
                 android:textColor="@color/black"
                 card_view:layout_constraintStart_toStartOf="@id/biscuit_icon"
@@ -55,8 +55,8 @@
 
             <ImageView
                 android:id="@+id/biscuit_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:contentDescription="@string/biscuit_icon"
                 android:src="@drawable/biscuits_icon"
                 card_view:layout_constraintStart_toEndOf="@id/biscuit_value"
