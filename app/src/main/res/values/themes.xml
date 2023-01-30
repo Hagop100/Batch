@@ -12,6 +12,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:fontFamily">@font/karla</item>
+        <item name="android:textColor">#070707</item>
     </style>
 
     <!--    title for every page-->
@@ -23,7 +25,7 @@
 
 <!--   regular font for page text-->
     <style name="page_text" parent="" >
-        <item name="android:fontFamily">@font/poppins_regular</item>
+        <item name="android:fontFamily">@font/karla</item>
         <item name="android:textColor">#070707</item>
         <item name="android:textSize">15sp</item>
     </style>

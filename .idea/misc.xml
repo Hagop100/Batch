@@ -16,11 +16,12 @@
         <entry key="app/src/main/res/drawable/profile_icon.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/round_corner.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/rounded_tag.xml" value="0.11" />
+        <entry key="app/src/main/res/font/karla.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/layout/activity_group_creation.xml" value="0.1578125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_group_creation.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_input.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_match_tab.xml" value="0.17586669921875" />
+        <entry key="app/src/main/res/layout/fragment_match_tab.xml" value="0.23839662447257384" />
         <entry key="app/src/main/res/layout/fragment_my_groups.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_user_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_user_list2.xml" value="0.1105072463768116" />
