@@ -110,27 +110,33 @@
                             <include
                                 layout="@layout/interest_tag"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
                             <include
                                 layout="@layout/interest_tag"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
                             <include
                                 layout="@layout/interest_tag"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
                             <include
                                 layout="@layout/interest_tag"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
                             <include
                                 layout="@layout/interest_tag"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
                             <include
                                 layout="@layout/interest_tag"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"/>
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
                         </com.google.android.flexbox.FlexboxLayout>
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
