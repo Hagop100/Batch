@@ -5,20 +5,10 @@
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
-    <fragment
-        android:id="@+id/myGroupsTab"
-        android:name="com.example.batchtest.MyGroupsFragment"
-        android:label="fragment_input"
-        tools:layout="@layout/fragment_my_groups" >
-        <action
-            android:id="@+id/show_user_list_fragment"
-            app:destination="@id/userListFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/userListFragment"
-        android:name="com.example.batchtest.UserListFragment"
-        android:label="UserListFragment"
-        tools:layout="@layout/fragment_user_list"/>
+    <!--    <fragment-->
+<!--        android:id="@+id/userListFragment"-->
+<!--        android:name="com.example.batchtest.UserListFragment"-->
+<!--        android:label="UserListFragment" />-->
     <fragment
         android:id="@+id/matchTabFragment"
         android:name="com.example.batchtest.MatchTabFragment"
@@ -33,4 +23,19 @@
             android:id="@+id/action_loginFragment_to_matchTabFragment"
             app:destination="@id/matchTabFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/groupCreationFragment"
+        android:name="com.example.batchtest.GroupCreationFragment"
+        android:label="GroupCreationFragment"
+        tools:layout="@layout/fragment_group_creation"/>
+    <fragment
+        android:id="@+id/myGroupFragment"
+        android:name="com.example.batchtest.MyGroupFragment"
+        android:label="fragment_my_group"
+        tools:layout="@layout/fragment_my_group" >
+        <action
+            android:id="@+id/to_groupCreationFragment"
+            app:destination="@id/groupCreationFragment" />
+    </fragment>
+
 </navigation>

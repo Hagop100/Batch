@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyGroupsFragment"
+    tools:context=".MyGroupFragment"
     android:orientation="vertical"
+    android:id="@+id/myGroupsTab"
     android:layout_margin="16dp">
+
 
     <TextView
         android:layout_width="match_parent"
@@ -21,17 +23,18 @@
         android:background="@color/horizontal_line"
         />
 
-<!--    <Button-->
-<!--        android:id="@+id/submitBtn"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="@string/submit_btn_text"/>-->
+    <!--    <Button-->
+    <!--        android:id="@+id/submitBtn"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text="@string/submit_btn_text"/>-->
 
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_to_group_creation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Test group creation" />
+        android:text="Test group creation"
+        />
 
 </LinearLayout>
