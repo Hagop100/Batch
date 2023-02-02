@@ -24,8 +24,9 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:background="@color/dark_brown"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="visible"
             app:labelVisibilityMode="unlabeled"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:menu="@menu/nav_bar">
 
         </com.google.android.material.bottomnavigation.BottomNavigationView>
