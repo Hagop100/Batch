@@ -17,10 +17,20 @@
     <fragment
         android:id="@+id/userListFragment"
         android:name="com.example.batchtest.UserListFragment"
-        android:label="UserListFragment" />
+        android:label="UserListFragment"
+        tools:layout="@layout/fragment_user_list"/>
     <fragment
         android:id="@+id/matchTabFragment"
         android:name="com.example.batchtest.MatchTabFragment"
         android:label="fragment_match_tab"
         tools:layout="@layout/fragment_match_tab"/>
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.batchtest.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_matchTabFragment"
+            app:destination="@id/matchTabFragment" />
+    </fragment>
 </navigation>
