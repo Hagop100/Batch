@@ -7,4 +7,11 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <!-- chip style-->
+    <style name="ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+    <item name="chipBackgroundColor">@color/cardview_dark_background</item>
+    <!--    <item name="android:textAppearance">@style/ChipTextAppearance</item>-->
+    <!--    <item name="android:textColor">@color/secondary_dark_blue</item>-->
+    </style>
+
 </resources>

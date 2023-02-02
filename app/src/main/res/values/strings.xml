@@ -18,7 +18,7 @@
     <string name="other_groups">Other Groups</string>
     <string name="profile">Profile</string>
 
-<!--    user login-->
+    <!--    user login-->
     <string name="user_login_title">Batch</string>
     <string name="user_login_login_text">Login</string>
     <string name="no_account_text">Don\'t have an account?</string>

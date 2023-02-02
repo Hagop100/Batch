@@ -27,12 +27,13 @@
     <style name="page_text" parent="" >
         <item name="android:fontFamily">@font/karla</item>
         <item name="android:textColor">#070707</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
 <!--    page margin-->
     <style name="page_margin" parent="" >
-        <item name="android:layout_marginLeft">30dp</item>
-        <item name="android:layout_marginRight">30dp</item>
+        <item name="android:layout_marginLeft">25dp</item>
+        <item name="android:layout_marginRight">25dp</item>
     </style>
+
 </resources>

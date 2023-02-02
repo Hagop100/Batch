@@ -3,13 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:id="@+id/groupCreationFragment"
+>
     <LinearLayout
+
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:theme="@style/page_margin"
-        android:background="@color/app_background">
+        android:background="@color/app_background"
+        tools:layout_conversion_absoluteHeight="762dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_conversion_absoluteWidth="411dp">
 
 
         <TextView
@@ -32,11 +38,12 @@
 
         <ImageView
             android:id="@+id/group_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="182dp"
+            android:layout_height="165dp"
             android:layout_gravity="center"
-            tools:srcCompat="@tools:sample/avatars"
-            android:layout_marginTop="30dp"/>
+            android:scaleType="centerCrop"
+            android:layout_marginTop="30dp"
+            android:src="@drawable/one_direction_photo" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,10 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:background="@drawable/round_corner"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:text="Group Code:"
-                android:textColor="#B5B3B1"
-                android:textStyle="bold"
 
                 />
 
@@ -64,8 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:text="Group name:"
-                android:textColor="#B5B3B1"
-                android:textStyle="bold"
+                android:padding="10dp"
 
                 />
 
@@ -77,7 +81,11 @@
                 android:ems="10"
                 android:hint="Name"
                 android:inputType="textPersonName"
-                android:minHeight="48dp" />
+                android:minHeight="48dp"
+                android:padding="10dp"
+                android:textStyle="bold"
+
+                />
 
             <TextView
                 android:id="@+id/group_tags"
@@ -85,42 +93,53 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:text="Tags:"
-                android:textColor="#B5B3B1"
-                android:textStyle="bold" />
+                android:padding="10dp"
+
+               />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="0dp"
             android:orientation="horizontal"
-            android:theme="@style/page_text"
-            android:layout_margin="0dp">
+            android:theme="@style/page_text">
 
-            <Button
-                android:id="@+id/btn_add_tag"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="+"
-                android:layout_marginRight="0dp"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:textColor="#58322B"
-                android:textSize="25dp"
-                />
 
-            <EditText
-                android:id="@+id/edit_group_tags"
-                android:layout_width="wrap_content"
+<!--            <Button-->
+<!--                android:id="@+id/btn_add_tag"-->
+<!--                style="@style/Widget.AppCompat.Button.Borderless"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginRight="0dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="+"-->
+<!--                android:textColor="#58322B"-->
+<!--                android:textSize="25dp" />-->
+
+            <!--            <EditText-->
+            <!--                android:id="@+id/edit_group_tags"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:ems="6"-->
+            <!--                android:inputType="textPersonName"-->
+            <!--                android:minHeight="48dp"-->
+            <!--                android:hint="enter tag"-->
+            <!--                android:gravity="center"-->
+            <!--                android:background="@drawable/round_corner"-->
+            <!--                android:layout_margin="0dp"/>-->
+
+            <com.google.android.material.chip.ChipGroup
+
+                android:id="@+id/tags"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ems="6"
-                android:inputType="textPersonName"
-                android:minHeight="48dp"
-                android:hint="add tag"
-                android:gravity="center"
-                android:background="@drawable/round_corner"
-                android:layout_margin="0dp"
-                />
+                >
+
+            </com.google.android.material.chip.ChipGroup>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -135,33 +154,36 @@
                 android:layout_height="wrap_content"
                 android:text="About us:"
                 android:layout_marginTop="30dp"
-                android:textColor="#B5B3B1"
-                android:textStyle="bold"/>
+                android:padding="10dp"
+
+                />
 
             <EditText
                 android:id="@+id/edit_group_about_us"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="219dp"
+
+                android:background="@drawable/round_corner"
                 android:ems="10"
-                android:padding="5dp"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:minHeight="48dp"
-                android:background="@drawable/round_corner"
-                android:layout_marginTop="10dp"/>
+                android:padding="10dp" />
 
             <Button
                 android:id="@+id/btn_create_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Create"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"/>
         </LinearLayout>
 
     </LinearLayout>
-
 </ScrollView>
 
 
+<!--for chip group sample-->
+<!--    https://mobikul.com/android-chips-dynamicaly-add-remove-tags-chips-view/-->
 
 

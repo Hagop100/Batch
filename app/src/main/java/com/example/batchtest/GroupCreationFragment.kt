@@ -5,7 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
+import org.w3c.dom.Text
 import java.security.acl.Group
 import java.util.*
 
@@ -24,6 +31,11 @@ class GroupCreationFragment : Fragment() {
     private lateinit var binding: FragmentGroupCreationBinding
     private lateinit var groupCreation: GroupCreation
 
+    private val _binding
+        get() = checkNotNull(binding) {
+            "Cannot access binding because it is null. Is the view visible?"
+        };
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -31,21 +43,33 @@ class GroupCreationFragment : Fragment() {
         groupCreation = GroupCreation(
             groupCode = UUID.randomUUID(),
             groupName = "",
-            tags = "",
+//            tags = "",
             groupDescription = ""
         )
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+//        TODO: this code does not seem to work here!!!FIXME
+        //This grabs the nav_bar and sets it visible upon this fragment's onCreateView
+        val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
+        navBar?.visibility = View.INVISIBLE
+
         // Inflate the layout for this fragment
         binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
-        return binding.root
-//        return inflater.inflate(R.layout.fragment_group_creation, container, false)
 
+
+        return binding.root
     }
+
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//
+//    }
 
     companion object {
         /**
