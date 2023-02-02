@@ -5,51 +5,31 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.batchtest.databinding.ActivityMainBinding
 import com.example.batchtest.databinding.FragmentMatchTabBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
- * A simple [Fragment] subclass.
- * Use the [MatchTabFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * Match Tab Fragment
+ * displays potential groups the user can match with
  */
 class MatchTabFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
+    // checks if the view is visible
     private var _binding: FragmentMatchTabBinding? = null;
     private val binding
         get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view visible?"
         };
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    // inflate and bind the match tab fragment
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentMatchTabBinding.inflate(inflater, container, false)
 
-        //This grabs the nav_bar and sets it visible upon this fragment's onCreateView
+        // find the nav bar and set it visible upon this fragment's onCreateView
         val navBar: BottomNavigationView? = getActivity()?.findViewById(R.id.nav_bar)
         navBar?.visibility = View.VISIBLE
 
         return binding.root
     }
-
-
 }

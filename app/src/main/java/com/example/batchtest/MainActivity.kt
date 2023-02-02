@@ -14,18 +14,22 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
-//Hagop has made a change!sdf
-//Eman made this
+
 private const val TAG = "NewUserLog"
 class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // bind and inflate the main activity layout
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        // find the nav host fragment from main activity layout
         val navHostFragment = supportFragmentManager.findFragmentById(binding.navigationFragmentContainer.id) as NavHostFragment
+        // create nav controller instance on nav host fragment to navigate between fragments
         val navController: NavController = navHostFragment.navController
+        // find bottom navigation bar from main activity layout
         val navView: BottomNavigationView = findViewById(binding.navBar.id)
+        // connect bottom navigation bar with nav controller to navigate
         navView.setupWithNavController(navController)
 
 

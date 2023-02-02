@@ -1,12 +1,20 @@
 package com.example.batchtest
 
-import java.util.*
-
+// User data class
+// @param firstName - first name of user
+// @param lastName - last name of user
+// @param email - email of user
+// @param password - password of user
 data class User(
-    val first_name: String,
-    val last_name: String,
+    val firstName: String,
+    val lastName: String,
     val email: String,
     // password ???
-)
+) {
+    // returns full name of user
+    fun getName(): String {
+        return "$firstName $lastName"
+    }
+}
 
 
