@@ -27,7 +27,11 @@
         android:id="@+id/groupCreationFragment"
         android:name="com.example.batchtest.GroupCreationFragment"
         android:label="GroupCreationFragment"
-        tools:layout="@layout/fragment_group_creation"/>
+        tools:layout="@layout/fragment_group_creation">
+        <action
+            android:id="@+id/to_myGroupFragment"
+            app:destination="@id/myGroupFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myGroupFragment"
         android:name="com.example.batchtest.MyGroupFragment"

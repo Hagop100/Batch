@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:id="@+id/groupCreationFragment"-->
-<!--    android:fillViewport="true">-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/groupCreationFragment"
+>
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,11 +38,12 @@
 
         <ImageView
             android:id="@+id/group_profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="182dp"
+            android:layout_height="165dp"
             android:layout_gravity="center"
-            tools:srcCompat="@tools:sample/avatars"
-            android:layout_marginTop="30dp"/>
+            android:scaleType="centerCrop"
+            android:layout_marginTop="30dp"
+            android:src="@drawable/one_direction_photo" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -83,6 +83,8 @@
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:padding="10dp"
+                android:textStyle="bold"
+
                 />
 
             <TextView
@@ -159,24 +161,26 @@
             <EditText
                 android:id="@+id/edit_group_about_us"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="219dp"
+
+                android:background="@drawable/round_corner"
                 android:ems="10"
-                android:padding="5dp"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:minHeight="48dp"
-                android:background="@drawable/round_corner"
-                android:layout_marginTop="10dp"/>
+                android:padding="10dp" />
 
             <Button
                 android:id="@+id/btn_create_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Create"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"/>
         </LinearLayout>
 
     </LinearLayout>
+</ScrollView>
 
 
 <!--for chip group sample-->
