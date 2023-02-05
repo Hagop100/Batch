@@ -22,7 +22,7 @@
         <entry key="app/src/main/res/layout/fragment_group_creation.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_input.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/fragment_match_tab.xml" value="0.1656158447265625" />
+        <entry key="app/src/main/res/layout/fragment_match_tab.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_my_group.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_my_groups.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_user_list.xml" value="0.1" />
@@ -30,6 +30,7 @@
         <entry key="app/src/main/res/layout/group_creation.xml" value="0.1" />
         <entry key="app/src/main/res/layout/interest_tag.xml" value="0.15677083333333333" />
         <entry key="app/src/main/res/layout/list_item_user.xml" value="0.1105072463768116" />
+        <entry key="app/src/main/res/layout/match_group_card.xml" value="0.1" />
         <entry key="app/src/main/res/layout/nav_bar.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/menu/nav_bar.xml" value="0.1" />
       </map>
