@@ -39,7 +39,7 @@ class CardStackAdapter (
         // holder class for each group card
         class CardStackHolder(view: View) : RecyclerView.ViewHolder(view) {
             // get the views
-            val name: TextView = view.findViewById(R.id.card_name)
+            val name: TextView = view.findViewById(R.id.group_name)
         }
 
     }

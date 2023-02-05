@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.batchtest.databinding.FragmentMatchTabBinding
 import com.example.batchtest.databinding.FragmentUserListBinding
@@ -13,7 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.yuyakaido.android.cardstackview.CardStackLayoutManager
+import com.yuyakaido.android.cardstackview.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,10 +31,43 @@ class MatchTabFragment : Fragment() {
     ): View? {
         // bind fragment
         val binding = FragmentMatchTabBinding.inflate(inflater, container, false)
+
         // get card stack view
         val cardStackView = binding.cardStackView
 //      // set layout manager to card stack view to arrange recycler view
-        cardStackView.layoutManager = CardStackLayoutManager(context)
+        val manager = CardStackLayoutManager(context)
+        manager.setSwipeableMethod(SwipeableMethod.Automatic)
+
+        // accept button accepts group when clicked
+        val acceptBtn = binding.acceptBtn
+        acceptBtn.setOnClickListener{
+            // card swipes right for accept
+            val setting = SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Right)
+                .setDuration(Duration.Normal.duration)
+                .setInterpolator(AccelerateInterpolator())
+                .build()
+            manager.setSwipeAnimationSetting(setting)
+            cardStackView.swipe()
+        }
+
+        // reject button rejects group when clicked
+        val rejectBtn = binding.rejectBtn
+        rejectBtn.setOnClickListener{
+            // card swipes left for accept
+            val setting = SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Left)
+                .setDuration(Duration.Normal.duration)
+                .setInterpolator(AccelerateInterpolator())
+                .build()
+            manager.setSwipeAnimationSetting(setting)
+            cardStackView.swipe()
+        }
+//        manager.setSwipeableMethod(SwipeableMethod.None)
+//        manager.setCanScrollVertical(false)
+//        manager.setCanScrollHorizontal(false)
+        manager.setStackFrom(StackFrom.None)
+        cardStackView.layoutManager = manager
         // store groups fetched from database
         val groups = arrayListOf<MutableMap<String, Any>>()
         val g1: Group = Group("One Direction", arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), arrayListOf("singing", "dancing"))
