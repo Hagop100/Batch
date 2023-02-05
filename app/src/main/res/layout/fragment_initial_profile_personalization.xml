@@ -98,7 +98,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_birthDatePrompt"
             android:layout_marginTop="10dp"
-            style="@android:style/Widget.Spinner.DropDown"
             />
         <TextView
             android:id="@+id/tv_genderPrompt"
@@ -110,20 +109,42 @@
             app:layout_constraintTop_toBottomOf="@+id/btn_birthdayPicker"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/et_gender"
+            app:layout_constraintBottom_toTopOf="@+id/gender_radioGroup"
             />
 
-        <EditText
-            android:id="@+id/et_gender"
-            android:layout_width="331dp"
+        <RadioGroup
+            android:id="@+id/gender_radioGroup"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Display Name"
-            android:layout_marginTop="10dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_genderPrompt"
-            app:layout_constraintBottom_toTopOf="@id/tv_personalBioPrompt"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/tv_genderPrompt"
+            app:layout_constraintStart_toStartOf="@id/tv_genderPrompt"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/male_radioButton"
+                android:text="Male"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                />
+            <RadioButton
+                android:id="@+id/female_radioButton"
+                android:text="Female"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"/>
+            <RadioButton
+                android:id="@+id/nonBinary_radioButton"
+                android:text="NonBinary"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                />
+            <RadioButton
+                android:id="@+id/na_radioButton"
+                android:text="Do not specify"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                />
+
+        </RadioGroup>
 
         <TextView
             android:id="@+id/tv_personalBioPrompt"
@@ -134,18 +155,27 @@
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/et_gender"
+            app:layout_constraintTop_toBottomOf="@id/gender_radioGroup"
             />
         <EditText
             android:id="@+id/et_personalBio"
-            android:layout_width="331dp"
-            android:layout_height="wrap_content"
+            android:layout_width="330dp"
+            android:layout_height="220dp"
             android:layout_marginTop="10dp"
-            android:hint="Personal Bio"
+            android:background="@drawable/round_corner"
             android:lineSpacingMultiplier="@integer/material_motion_duration_long_1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_personalBioPrompt"
+            />
+        <Button
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/et_personalBio"
+            app:layout_constraintStart_toStartOf="@id/et_personalBio"
+            android:layout_marginTop="10dp"
+            android:paddingTop="5dp"
+            android:text="Update"
             />
 
 
