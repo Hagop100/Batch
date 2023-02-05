@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +9,7 @@
     <LinearLayout
 
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/page_margin"
         android:background="@color/app_background"
@@ -18,15 +19,40 @@
         tools:layout_conversion_absoluteWidth="411dp">
 
 
-        <TextView
-            android:id="@+id/group_creation_title"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/group_creation_title"
-            android:layout_marginTop="40dp"
-            android:theme="@style/page_title"
-            />
+            android:layout_marginTop="20dp">
 
+            <TextView
+                android:id="@+id/group_creation_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:text="@string/group_creation_title"
+                android:theme="@style/page_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <Button
+                android:id="@+id/exit_group_creatn"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:background="@null"
+                android:text="x"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.05"
+                app:layout_constraintStart_toEndOf="@+id/group_creation_title"
+                app:layout_constraintTop_toTopOf="@+id/group_creation_title"
+                app:layout_constraintVertical_bias="0.0"
+                tools:ignore="RtlHardcoded" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/horizontal_bar"
