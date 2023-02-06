@@ -22,12 +22,14 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:background="@drawable/undo"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="8dp"
+                android:contentDescription="@string/undo_button"/>
             <ImageButton
                 android:id="@+id/match_more_btn"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:background="@drawable/more_horiz"/>
+                android:background="@drawable/more_horiz"
+                android:contentDescription="@string/match_group_card_more_button"/>
         </LinearLayout>
         <androidx.cardview.widget.CardView
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -44,14 +46,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:paddingHorizontal="15dp"
+                    android:paddingHorizontal="20dp"
                     android:paddingVertical="10dp">
                     <TextView
                         android:id="@+id/group_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:paddingEnd="5dp"
                         android:theme="@style/page_title"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -60,6 +61,7 @@
                         layout="@layout/interest_tag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="7dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toEndOf="@id/group_name"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -68,7 +70,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="5dp"
-                        android:text="12"
                         android:textColor="@color/black"
                         app:layout_constraintStart_toStartOf="@id/biscuit_icon"
                         app:layout_constraintEnd_toStartOf="@id/biscuit_icon"
@@ -92,14 +93,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/one_direction_photo"
-                    android:contentDescription="group photo"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingHorizontal="15dp"
-                    android:paddingVertical="10dp"
-                    android:text="Hello"
-                    android:textSize="12sp"/>
+                    android:contentDescription="matching group card photo"/>
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -114,41 +108,12 @@
                         android:orientation="vertical">
                         <com.google.android.flexbox.FlexboxLayout
                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/interest_tags"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="15dp"
                             app:flexWrap="wrap"
                             app:justifyContent="center">
-                            <include
-                                layout="@layout/interest_tag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="2dp"/>
-                            <include
-                                layout="@layout/interest_tag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="2dp"/>
-                            <include
-                                layout="@layout/interest_tag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="2dp"/>
-                            <include
-                                layout="@layout/interest_tag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="2dp"/>
-                            <include
-                                layout="@layout/interest_tag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="2dp"/>
-                            <include
-                                layout="@layout/interest_tag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="2dp"/>
                         </com.google.android.flexbox.FlexboxLayout>
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
@@ -166,14 +131,13 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:text="About us"
+                                    android:text="@string/about_us"
                                     android:textSize="20sp"
                                     android:textStyle="bold"/>
                                 <TextView
                                     android:id="@+id/about_us_description"
                                     android:layout_width="wrap_content"
                                     android:layout_height="match_parent"
-                                    android:text="Description"
                                     android:paddingTop="20dp"
                                     android:paddingBottom="400dp"/>
                             </LinearLayout>

@@ -10,7 +10,6 @@
     android:background="@color/app_background"
     >
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
@@ -20,7 +19,6 @@
         android:layout_marginRight="10dp"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="@+id/textView2"
-
         >
 
         <TextView

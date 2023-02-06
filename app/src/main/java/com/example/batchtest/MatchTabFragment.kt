@@ -7,15 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.batchtest.databinding.FragmentMatchTabBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 private const val TAG = "GroupsFetchLog"
 /**
@@ -71,25 +67,16 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         // manager will define the layout for the card stack view
         cardStackView.layoutManager = manager
 
-//        // store groups fetched from database
-        val groups = arrayListOf<MutableMap<String, Any>>()
-
-////         test groups without fetching from db
-//        val g1: Group = Group("One Direction", arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), arrayListOf("singing", "dancing"), "test_description")
-//        val g1Map: MutableMap<String, Any> = mutableMapOf("name" to "One Direction", "users" to arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), "interestTags" to arrayListOf("singing", "dancing"), "aboutUsDescription" to "description", "biscuits" to 0, "createdDate" to Date())
-//        groups.add(g1Map)
-//        groups.add(g1Map)
-//        // set adapter using groups to display information to recycler view
-//        cardStackView.adapter = CardStackAdapter(groups, this)
-
-      // fetch groups from database using firebase's firestore
+        // fetch groups from database using firebase's firestore
+        val groups = arrayListOf<Group>()
         val db = Firebase.firestore
+
         db.collection("groups")
             .get()
             .addOnSuccessListener { result ->
                 for (doc in result) {
                     // get group's data in form of map
-                    val group: MutableMap<String, Any> = doc.data
+                    val group: Group = doc.toObject(Group::class.java)
                     // add group to groups
                     groups.add(group)
                 }
