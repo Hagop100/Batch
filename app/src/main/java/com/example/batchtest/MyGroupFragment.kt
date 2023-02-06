@@ -39,6 +39,7 @@ class MyGroupFragment : Fragment() {
 //            //This grabs the nav_bar and sets it visible upon this fragment's onCreateView
 //            val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
 //            navBar?.visibility = View.INVISIBLE
+
         }
     }
 
@@ -51,12 +52,18 @@ class MyGroupFragment : Fragment() {
 
 //      this button navigates from My Group view to Create a group view fragment
         binding.btnToGroupCreation.setOnClickListener{
+
+//            hides the bottom nav when navigate to the group creation page
+            val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
+            navBar?.visibility = View.GONE
             findNavController().navigate(R.id.to_groupCreationFragment)
         }
+
 
         return binding.root
 
     }
+
 
 
 

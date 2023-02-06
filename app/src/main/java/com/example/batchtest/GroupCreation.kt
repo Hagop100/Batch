@@ -5,7 +5,7 @@ import java.util.*
 data class GroupCreation (
     val groupCode: UUID,
     val groupName: String,
-//    val tags: String, List of string
+    val tags: List<String>,
     val groupDescription: String
 
 )

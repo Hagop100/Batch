@@ -6,52 +6,82 @@
     android:layout_height="match_parent"
     android:id="@+id/groupCreationFragment"
 >
+
     <LinearLayout
 
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/page_margin"
         android:background="@color/app_background"
-        tools:layout_conversion_absoluteHeight="762dp"
-        tools:layout_editor_absoluteY="0dp"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_conversion_absoluteWidth="411dp">
+        android:theme="@style/page_text"
+
+      >
+
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:id="@+id/linearLayout2"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/group_creation_title"-->
+<!--                android:layout_width="565dp"-->
+<!--                android:layout_height="54dp"-->
+<!--                android:text="@string/group_creation_title"-->
+<!--                android:theme="@style/page_title"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/exit_group_creatn"-->
+<!--                app:layout_constraintStart_toStartOf="parent" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/exit_group_creatn"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:backgroundTint="@color/app_background"-->
+<!--                android:text="x"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="25sp"-->
+<!--                android:textStyle="bold"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toEndOf="@+id/group_creation_title"-->
+<!--                app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp">
 
             <TextView
                 android:id="@+id/group_creation_title"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
                 android:text="@string/group_creation_title"
                 android:theme="@style/page_title"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintEnd_toStartOf="@+id/exit_group_creatn"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
             <Button
                 android:id="@+id/exit_group_creatn"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:text="x"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="58dp"
+                android:layout_height="46dp"
+                app:icon="@drawable/close_icon"
+                app:iconTint="#312B28"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.05"
-                app:layout_constraintStart_toEndOf="@+id/group_creation_title"
-                app:layout_constraintTop_toTopOf="@+id/group_creation_title"
-                app:layout_constraintVertical_bias="0.0"
-                tools:ignore="RtlHardcoded" />
-
+                app:layout_constraintHorizontal_bias="0.996"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
@@ -71,12 +101,13 @@
             android:layout_marginTop="30dp"
             android:src="@drawable/one_direction_photo" />
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="0dp"
             android:orientation="vertical"
-            android:theme="@style/page_text">
+            android:theme="@style/page_margin"
+            >
 
             <TextView
                 android:id="@+id/group_code"
@@ -86,6 +117,7 @@
                 android:background="@drawable/round_corner"
                 android:padding="10dp"
                 android:text="Group Code:"
+
 
                 />
 
@@ -112,25 +144,70 @@
                 android:textStyle="bold"
 
                 />
+        </LinearLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:id="@+id/group_tags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="Tags:"
+                android:layout_width="360dp"
+                android:layout_height="41dp"
+                android:layout_marginStart="25dp"
                 android:padding="10dp"
+                android:text="Tags:"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteY="0dp" />
 
-               />
+            <EditText
+                android:id="@+id/editText_add_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:ems="10"
+                android:hint="add tag"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                app:layout_constraintStart_toEndOf="@+id/add_tag"
+                app:layout_constraintTop_toBottomOf="@+id/group_tags" />
 
-        </LinearLayout>
+            <Button
+                android:id="@+id/add_tag"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:backgroundTint="#4E4035"
+                android:backgroundTintMode="add"
+                app:icon="@drawable/add_icon"
+                app:iconTint="#312B28"
+                app:layout_constraintStart_toStartOf="@+id/group_tags"
+                app:layout_constraintTop_toBottomOf="@+id/group_tags" />
+
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tag_group_chip"
+                android:layout_width="357dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/group_tags"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/add_tag"
+                app:layout_constraintTop_toBottomOf="@+id/add_tag">
+
+            </com.google.android.material.chip.ChipGroup>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="0dp"
             android:orientation="horizontal"
-            android:theme="@style/page_text">
+            android:theme="@style/page_margin">
 
 
 <!--            <Button-->
@@ -171,9 +248,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/page_text"
-            android:layout_margin="0dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:theme="@style/page_margin">
             <TextView
                 android:id="@+id/group_about_us"
                 android:layout_width="match_parent"
@@ -204,8 +280,9 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"/>
         </LinearLayout>
-
     </LinearLayout>
+
+
 </ScrollView>
 
 
