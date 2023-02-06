@@ -43,7 +43,7 @@ class GroupCreationFragment : Fragment() {
         groupCreation = GroupCreation(
             groupCode = UUID.randomUUID(),
             groupName = "",
-//            tags = "",
+            tags = listOf(),
             groupDescription = ""
         )
 
@@ -61,11 +61,52 @@ class GroupCreationFragment : Fragment() {
 
 //        user clicks the X button to navigate back to my groups tab
         binding.exitGroupCreatn.setOnClickListener{
+
+//          shows the bottom navigation when navigating back to my groups tab
+            val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
+            navBar?.visibility = View.VISIBLE
             findNavController().navigate(R.id.to_myGroupFragment)
         }
 
+//        creation of the group
+        binding.btnCreateGroup.setOnClickListener{
+            Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+        }
+
+//        add a list of tags to profile
+        binding.addTag.setOnClickListener{
+            if (!binding.editTextAddTag.toString().isEmpty()){
+                addChip(binding.editTextAddTag.text.toString())
+            }
+        }
+
+
         return binding.root
     }
+
+/*
+ Function: add individual tag to group profile
+ */
+    private fun addChip(text: String){
+        val chip = Chip(this.context)
+        chip.text = text
+
+
+//    display the close button to remove tag from the list
+        chip.isCloseIconVisible = true
+        chip.setChipBackgroundColorResource(R.color.purple_500)
+        chip.setTextAppearance(R.style.page_text)
+
+//        chip.setChipIconResource(R.drawable.close_icon)
+
+        chip.setOnCloseIconClickListener{
+            binding.tagGroupChip.removeView(chip)
+
+        }
+
+        binding.tagGroupChip.addView(chip)
+    }
+
 
 //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 //        super.onViewCreated(view, savedInstanceState)
@@ -79,3 +120,4 @@ override fun onDestroyView() {
 }
 
 }
+
