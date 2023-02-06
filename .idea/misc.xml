@@ -13,10 +13,12 @@
         <entry key="app/src/main/res/drawable/diversity_3-48px.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/group-48px.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.167" />
+        <entry key="app/src/main/res/drawable/more_horiz-48px.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/other_groups_icon.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/profile_icon.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/round_corner.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/rounded_tag.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/undo.xml" value="0.1" />
         <entry key="app/src/main/res/font/karla.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/layout/activity_group_creation.xml" value="0.1578125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />

@@ -10,24 +10,12 @@
     tools:context=".MatchTabFragment"
     android:background="@color/off_white">
 
-    <TextView
-        android:id="@+id/undo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="undo"
-        android:textSize="60sp"/>
-
-    <LinearLayout
+    <!--card stack view to display cards -->
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:id="@+id/card_stack_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/undo">
-        <!--card stack view to display cards -->
-        <com.yuyakaido.android.cardstackview.CardStackView
-            android:id="@+id/card_stack_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/off_white"/>
-    </LinearLayout>
+        android:background="@color/off_white"/>
 
     <View
         android:id="@+id/nav_bar_filler"

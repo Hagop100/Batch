@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.batchtest.databinding.FragmentMatchTabBinding
-import com.example.batchtest.databinding.FragmentUserListBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -34,9 +33,13 @@ class MatchTabFragment : Fragment() {
 
         // get card stack view
         val cardStackView = binding.cardStackView
-//      // set layout manager to card stack view to arrange recycler view
+        // set layout manager to card stack view to arrange recycler view
         val manager = CardStackLayoutManager(context)
-        manager.setSwipeableMethod(SwipeableMethod.Automatic)
+        // prevent users from swiping cards
+        manager.setCanScrollHorizontal(false)
+        manager.setCanScrollVertical(false)
+        // show one card on stack
+        manager.setStackFrom(StackFrom.None)
 
         // accept button accepts group when clicked
         val acceptBtn = binding.acceptBtn
@@ -63,19 +66,21 @@ class MatchTabFragment : Fragment() {
             manager.setSwipeAnimationSetting(setting)
             cardStackView.swipe()
         }
-//        manager.setSwipeableMethod(SwipeableMethod.None)
-//        manager.setCanScrollVertical(false)
-//        manager.setCanScrollHorizontal(false)
-        manager.setStackFrom(StackFrom.None)
+
+        // manager will define the layout for the card stack view
         cardStackView.layoutManager = manager
+
         // store groups fetched from database
         val groups = arrayListOf<MutableMap<String, Any>>()
-        val g1: Group = Group("One Direction", arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), arrayListOf("singing", "dancing"))
-        val g1Map: MutableMap<String, Any> = mutableMapOf("name" to "One Direction", "users" to arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), "interestTags" to arrayListOf("singing", "dancing"), "questions" to arrayListOf(Question("q1", "answer")), "biscuits" to 0, "createdDate" to Date())
+//         test groups without fetching from db
+        val g1: Group = Group("One Direction", arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), arrayListOf("singing", "dancing"), "test_description")
+        val g1Map: MutableMap<String, Any> = mutableMapOf("name" to "One Direction", "users" to arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), "interestTags" to arrayListOf("singing", "dancing"), "aboutUsDescription" to "description", "biscuits" to 0, "createdDate" to Date())
         groups.add(g1Map)
         groups.add(g1Map)
         // set adapter using groups to display information to recycler view
         cardStackView.adapter = CardStackAdapter(groups)
+
+//
 //        val db = Firebase.firestore;
 //        db.collection("groups")
 //            .get()

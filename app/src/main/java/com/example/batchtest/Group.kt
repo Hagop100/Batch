@@ -7,7 +7,7 @@ data class Group(
     val name: String? = null,
     val users: ArrayList<User>? = null,
     val interestTags: ArrayList<String>? = null,
-    val questions: ArrayList<Question>? = null,
+    val aboutUsDescription: String? = null,
     val biscuits: Int = 0,
     @ServerTimestamp
     var createdDate: Date? = Date(),

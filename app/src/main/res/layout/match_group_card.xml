@@ -1,164 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
     android:background="@color/off_white">
-    <androidx.cardview.widget.CardView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginVertical="20dp"
-        android:layout_marginHorizontal="10dp"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="13dp"
-        app:cardBackgroundColor="@color/off_white">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="end">
+            <ImageButton
+                android:id="@+id/undo_btn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/undo"
+                android:layout_marginEnd="8dp"/>
+            <ImageButton
+                android:id="@+id/match_more_btn"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/more_horiz"/>
+        </LinearLayout>
+        <androidx.cardview.widget.CardView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="13dp"
+            app:cardBackgroundColor="@color/off_white">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingHorizontal="15dp"
-                android:paddingVertical="10dp">
-                <TextView
-                    android:id="@+id/group_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="One Direction"
-                    android:paddingEnd="5dp"
-                    android:theme="@style/page_title"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <include
-                    layout="@layout/interest_tag"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/group_name"
-                    app:layout_constraintTop_toTopOf="parent" />
-                <TextView
-                    android:id="@+id/biscuit_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:text="12"
-                    android:textColor="@color/black"
-                    app:layout_constraintStart_toStartOf="@id/biscuit_icon"
-                    app:layout_constraintEnd_toStartOf="@id/biscuit_icon"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="10dp">
+                    <TextView
+                        android:id="@+id/group_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingEnd="5dp"
+                        android:theme="@style/page_title"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                    <include
+                        layout="@layout/interest_tag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/group_name"
+                        app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/biscuit_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:text="12"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="@id/biscuit_icon"
+                        app:layout_constraintEnd_toStartOf="@id/biscuit_icon"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+                    <ImageView
+                        android:id="@+id/biscuit_icon"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:contentDescription="@string/biscuit_icon"
+                        android:src="@drawable/biscuits_icon"
+                        app:layout_constraintStart_toEndOf="@id/biscuit_value"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
                 <ImageView
-                    android:id="@+id/biscuit_icon"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:contentDescription="@string/biscuit_icon"
-                    android:src="@drawable/biscuits_icon"
-                    app:layout_constraintStart_toEndOf="@id/biscuit_value"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/one_direction_photo"
+                    android:contentDescription="group photo"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="15dp"
+                    android:paddingVertical="10dp"
+                    android:text="Hello"
+                    android:textSize="12sp"/>
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/one_direction_photo"
-                android:contentDescription="group photo"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="15dp"
-                android:paddingVertical="10dp"
-                android:text="Hello"
-                android:textSize="12sp"/>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:cardBackgroundColor="@color/off_white"
-                app:cardCornerRadius="4dp"
-                app:cardElevation="15dp">
-                <LinearLayout
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <com.google.android.flexbox.FlexboxLayout
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:layout_gravity="center"
+                    app:cardBackgroundColor="@color/off_white"
+                    app:cardCornerRadius="4dp"
+                    app:cardElevation="15dp">
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="15dp"
-                        app:flexWrap="wrap"
-                        app:justifyContent="center">
-                        <include
-                            layout="@layout/interest_tag"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"/>
-                        <include
-                            layout="@layout/interest_tag"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"/>
-                        <include
-                            layout="@layout/interest_tag"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"/>
-                        <include
-                            layout="@layout/interest_tag"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"/>
-                        <include
-                            layout="@layout/interest_tag"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"/>
-                        <include
-                            layout="@layout/interest_tag"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="2dp"/>
-                    </com.google.android.flexbox.FlexboxLayout>
-                    <androidx.cardview.widget.CardView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        app:cardBackgroundColor="@color/off_white"
-                        app:cardCornerRadius="4dp"
-                        app:cardElevation="15dp">
-                        <LinearLayout
+                        android:orientation="vertical">
+                        <com.google.android.flexbox.FlexboxLayout
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:paddingHorizontal="15dp"
-                            android:paddingVertical="20dp">
-                            <TextView
+                            android:padding="15dp"
+                            app:flexWrap="wrap"
+                            app:justifyContent="center">
+                            <include
+                                layout="@layout/interest_tag"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:text="About us"
-                                android:textSize="20sp"
-                                android:textStyle="bold"/>
-                            <TextView
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
+                            <include
+                                layout="@layout/interest_tag"
                                 android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:text="Description"
-                                android:paddingTop="20dp"
-                                android:paddingBottom="400dp"/>
-                        </LinearLayout>
-                    </androidx.cardview.widget.CardView>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
+                            <include
+                                layout="@layout/interest_tag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
+                            <include
+                                layout="@layout/interest_tag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
+                            <include
+                                layout="@layout/interest_tag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
+                            <include
+                                layout="@layout/interest_tag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="2dp"/>
+                        </com.google.android.flexbox.FlexboxLayout>
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            app:cardBackgroundColor="@color/off_white"
+                            app:cardCornerRadius="4dp"
+                            app:cardElevation="15dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:paddingHorizontal="15dp"
+                                android:paddingVertical="20dp">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:text="About us"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold"/>
+                                <TextView
+                                    android:id="@+id/about_us_description"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:text="Description"
+                                    android:paddingTop="20dp"
+                                    android:paddingBottom="400dp"/>
+                            </LinearLayout>
+                        </androidx.cardview.widget.CardView>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
 </ScrollView>
