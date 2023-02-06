@@ -17,7 +17,7 @@ import com.yuyakaido.android.cardstackview.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-private const val TAG = "GroupsFetchLog";
+private const val TAG = "GroupsFetchLog"
 /**
  * Match Tab Fragment
  * displays potential groups the user can match with
@@ -82,16 +82,18 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
 //        // set adapter using groups to display information to recycler view
 //        cardStackView.adapter = CardStackAdapter(groups, this)
 
-//      // fetch groups from database
-        val db = Firebase.firestore;
+      // fetch groups from database using firebase's firestore
+        val db = Firebase.firestore
         db.collection("groups")
             .get()
             .addOnSuccessListener { result ->
                 for (doc in result) {
-                    val group: MutableMap<String, Any> = doc.data;
+                    // get group's data in form of map
+                    val group: MutableMap<String, Any> = doc.data
+                    // add group to groups
                     groups.add(group)
-//                    Log.v(TAG, "documents: ${doc.data["users"]}")
                 }
+                // attach adapter and send groups and listener
                 cardStackView.adapter = CardStackAdapter(groups, this)
             }
             .addOnFailureListener { e ->
@@ -105,6 +107,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         return binding.root
     }
 
+    // rewind to previous card when undo button is clicked
     override fun onUndoBtnClick() {
         binding.cardStackView.rewind()
     }

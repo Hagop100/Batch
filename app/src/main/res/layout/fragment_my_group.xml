@@ -39,7 +39,7 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="59dp"
             android:layout_height="43dp"
-            app:icon="@drawable/add_icon"
+            app:icon="@drawable/accept_btn"
             app:iconTint="#312B28"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

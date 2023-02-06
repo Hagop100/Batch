@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.databinding.MatchGroupCardBinding
 import org.w3c.dom.Text
 
-private const val TAG = "CardStackAdapter";
+private const val TAG = "CardStackAdapter"
 
 // CardStackAdapter.kt
 // returns a recycler view of cards for each group
@@ -54,6 +54,7 @@ class CardStackAdapter (
             val description: TextView = binding.aboutUsDescription
         }
 
+    // match tab fragment listens to when undo or more button is clicked
     interface CardStackAdapterListener {
         fun onUndoBtnClick()
         fun onMoreBtnClick()
