@@ -17,7 +17,8 @@ private const val TAG = "CardStackAdapter";
 // returns a recycler view of cards for each group
 // @params groups   list of potential groups to be matched
 class CardStackAdapter (
-    private val groups: ArrayList<MutableMap<String, Any>>
+    private val groups: ArrayList<MutableMap<String, Any>>,
+    private val listener: CardStackAdapterListener
     ) : RecyclerView.Adapter<CardStackAdapter.CardStackHolder>() {
         // inflate parent fragment with card item layout when ViewHolder is created
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardStackHolder {
@@ -27,6 +28,10 @@ class CardStackAdapter (
             val binding = MatchGroupCardBinding.inflate(inflater, parent, false)
 
             // undo on click listener
+            binding.undoBtn.setOnClickListener {
+                listener.onUndoBtnClick()
+            }
+
             // pass into a holder to bind
             return CardStackHolder(binding)
         }
@@ -36,10 +41,6 @@ class CardStackAdapter (
             holder.name.text = "${group["name"]}"
             holder.biscuits.text = "${group["biscuits"]}"
             holder.description.text = "${group["aboutUsDescription"]}"
-
-            holder.undoBtn.setOnClickListener {
-
-            }
         }
         // returns number of groups
         override fun getItemCount(): Int {
@@ -51,7 +52,10 @@ class CardStackAdapter (
             val name: TextView = binding.groupName
             val biscuits: TextView = binding.biscuitValue
             val description: TextView = binding.aboutUsDescription
-            val undoBtn: ImageButton = binding.undoBtn
         }
 
+    interface CardStackAdapterListener {
+        fun onUndoBtnClick()
+        fun onMoreBtnClick()
+    }
     }

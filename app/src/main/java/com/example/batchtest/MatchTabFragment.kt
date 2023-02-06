@@ -22,14 +22,15 @@ private const val TAG = "GroupsFetchLog";
  * Match Tab Fragment
  * displays potential groups the user can match with
  */
-class MatchTabFragment : Fragment() {
+class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
+    private lateinit var binding: FragmentMatchTabBinding
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // bind fragment
-        val binding = FragmentMatchTabBinding.inflate(inflater, container, false)
+        binding = FragmentMatchTabBinding.inflate(inflater, container, false)
 
         // get card stack view
         val cardStackView = binding.cardStackView
@@ -70,35 +71,47 @@ class MatchTabFragment : Fragment() {
         // manager will define the layout for the card stack view
         cardStackView.layoutManager = manager
 
-        // store groups fetched from database
+//        // store groups fetched from database
         val groups = arrayListOf<MutableMap<String, Any>>()
-//         test groups without fetching from db
-        val g1: Group = Group("One Direction", arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), arrayListOf("singing", "dancing"), "test_description")
-        val g1Map: MutableMap<String, Any> = mutableMapOf("name" to "One Direction", "users" to arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), "interestTags" to arrayListOf("singing", "dancing"), "aboutUsDescription" to "description", "biscuits" to 0, "createdDate" to Date())
-        groups.add(g1Map)
-        groups.add(g1Map)
-        // set adapter using groups to display information to recycler view
-        cardStackView.adapter = CardStackAdapter(groups)
 
-//
-//        val db = Firebase.firestore;
-//        db.collection("groups")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                for (doc in result) {
-//                    val group: MutableMap<String, Any> = doc.data;
-//                    groups.add(group)
-////                    Log.v(TAG, "documents: ${doc.data["users"]}")
-//                }
-//                cardStackView.adapter = CardStackAdapter(groups)
-//            }
-//            .addOnFailureListener { e ->
-//                Log.v(TAG, "error getting documents: ", e)
-//            }
+////         test groups without fetching from db
+//        val g1: Group = Group("One Direction", arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), arrayListOf("singing", "dancing"), "test_description")
+//        val g1Map: MutableMap<String, Any> = mutableMapOf("name" to "One Direction", "users" to arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), "interestTags" to arrayListOf("singing", "dancing"), "aboutUsDescription" to "description", "biscuits" to 0, "createdDate" to Date())
+//        groups.add(g1Map)
+//        groups.add(g1Map)
+//        // set adapter using groups to display information to recycler view
+//        cardStackView.adapter = CardStackAdapter(groups, this)
+
+//      // fetch groups from database
+        val db = Firebase.firestore;
+        db.collection("groups")
+            .get()
+            .addOnSuccessListener { result ->
+                for (doc in result) {
+                    val group: MutableMap<String, Any> = doc.data;
+                    groups.add(group)
+//                    Log.v(TAG, "documents: ${doc.data["users"]}")
+                }
+                cardStackView.adapter = CardStackAdapter(groups, this)
+            }
+            .addOnFailureListener { e ->
+                Log.v(TAG, "error getting documents: ", e)
+            }
+
         // find the nav bar and set it visible upon this fragment's onCreateView
         val navBar: BottomNavigationView? = getActivity()?.findViewById(R.id.nav_bar)
         navBar?.visibility = View.VISIBLE
 
         return binding.root
     }
+
+    override fun onUndoBtnClick() {
+        binding.cardStackView.rewind()
+    }
+
+    override fun onMoreBtnClick() {
+        //
+    }
+
+
 }
