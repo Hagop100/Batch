@@ -61,10 +61,6 @@ class GroupCreationFragment : Fragment() {
 
 //        user clicks the X button to navigate back to my groups tab
         binding.exitGroupCreatn.setOnClickListener{
-
-//          shows the bottom navigation when navigating back to my groups tab
-            val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
-            navBar?.visibility = View.VISIBLE
             findNavController().navigate(R.id.to_myGroupFragment)
         }
 

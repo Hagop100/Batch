@@ -87,10 +87,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 Log.v(TAG, "error getting documents: ", e)
             }
 
-        // find the nav bar and set it visible upon this fragment's onCreateView
-        val navBar: BottomNavigationView? = getActivity()?.findViewById(R.id.nav_bar)
-        navBar?.visibility = View.VISIBLE
-
         return binding.root
     }
 
