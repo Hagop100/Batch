@@ -109,13 +109,17 @@
                 android:layout_width="225dp"
                 android:layout_height="199dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/one_direction_photo"
                 app:civ_border_color="#FF000000"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteY="30dp" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0"
+                tools:ignore="MissingConstraints" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/change_profile_btn"
@@ -170,10 +174,9 @@
                 android:id="@+id/group_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:text="Group name:"
-
                 android:padding="10dp"
+
+                android:text="Group name:"
 
                 />
 
