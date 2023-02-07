@@ -12,4 +12,7 @@ data class Group(
     @ServerTimestamp
     var createdDate: Date? = Date(),
 ) {
+
 }
+
+

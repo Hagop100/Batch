@@ -11,6 +11,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.example.batchtest.databinding.FragmentMyGroupBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import java.util.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -53,11 +56,15 @@ class MyGroupFragment : Fragment() {
 //      this button navigates from My Group view to Create a group view fragment
         binding.btnToGroupCreation.setOnClickListener{
 
+
 //            hides the bottom nav when navigate to the group creation page
             val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
             navBar?.visibility = View.GONE
+
             findNavController().navigate(R.id.to_groupCreationFragment)
         }
+
+
 
 
         return binding.root

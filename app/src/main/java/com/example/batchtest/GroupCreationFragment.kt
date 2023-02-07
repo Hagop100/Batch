@@ -1,25 +1,23 @@
 package com.example.batchtest
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
+import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
-import com.example.batchtest.databinding.FragmentLoginBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
-import org.w3c.dom.Text
-import java.security.acl.Group
-import java.util.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
+import java.util.*
+import kotlin.collections.ArrayList
+
+private const val TAG = "GroupsCreation"
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -34,18 +32,21 @@ class GroupCreationFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var _binding: FragmentGroupCreationBinding? = null
     private val binding get() = _binding!!
-    private lateinit var groupCreation: GroupCreation
+    private lateinit var group: GroupCreation
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 //        initialize the values of  GroupCreation class
-        groupCreation = GroupCreation(
-            groupCode = UUID.randomUUID(),
-            groupName = "",
-            tags = listOf(),
-            groupDescription = ""
-        )
+//        groupCreation = GroupCreation(
+//            groupCode = UUID.randomUUID(),
+//            groupName = "",
+//            tags = listOf(),
+//            groupDescription = ""
+//        )
+
 
     }
 
@@ -59,22 +60,38 @@ class GroupCreationFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
 
+
 //        user clicks the X button to navigate back to my groups tab
         binding.exitGroupCreatn.setOnClickListener{
             findNavController().navigate(R.id.to_myGroupFragment)
         }
 
+
 //        creation of the group
         binding.btnCreateGroup.setOnClickListener{
-            Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+
+            val db = Firebase.firestore
+            val groupName = binding.editGroupName.text.toString()
+            val aboutUs = binding.groupAboutUs.text.toString()
+//            val users = group.users
+//            val tags = group.interestTags
+//            val bs = group.biscuits
+            val groupcreation = GroupCreation(groupName, aboutUs )
+
+            db.collection("NewGroup").add(groupcreation)
+                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully written!") }
+                .addOnFailureListener{}
+
         }
 
 //        add a list of tags to profile
         binding.addTag.setOnClickListener{
-            if (!binding.editTextAddTag.toString().isEmpty()){
+            if (binding.editTextAddTag.toString().isNotEmpty()){
                 addChip(binding.editTextAddTag.text.toString())
             }
         }
+
 
 
         return binding.root
@@ -97,11 +114,15 @@ class GroupCreationFragment : Fragment() {
 
         chip.setOnCloseIconClickListener{
             binding.tagGroupChip.removeView(chip)
+//            group.interestTags?.remove(chip.text)
 
         }
 
         binding.tagGroupChip.addView(chip)
+//        group.interestTags?.add(chip.text.toString())
+
     }
+
 
 
 //    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -116,4 +137,5 @@ override fun onDestroyView() {
 }
 
 }
+
 
