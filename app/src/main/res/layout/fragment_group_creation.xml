@@ -92,34 +92,75 @@
             />
 
 
-        <ImageView
-            android:id="@+id/group_profile"
-            android:layout_width="182dp"
-            android:layout_height="165dp"
-            android:layout_gravity="center"
-            android:scaleType="centerCrop"
-            android:layout_marginTop="30dp"
-            android:src="@drawable/one_direction_photo" />
+<!--        <ImageView-->
+<!--            android:id="@+id/group_profile"-->
+<!--            android:layout_width="182dp"-->
+<!--            android:layout_height="165dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:layout_marginTop="30dp"-->
+<!--            android:src="@drawable/one_direction_photo" />-->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/group_profile"
+                android:layout_width="225dp"
+                android:layout_height="199dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/one_direction_photo"
+                app:civ_border_color="#FF000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteY="30dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/change_profile_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                app:backgroundTint="@color/purple_500"
+                app:srcCompat="@drawable/change_profile"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="257dp"
+                tools:layout_editor_absoluteY="172dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <!--        <Button-->
+<!--            android:id="@+id/btn_change_profile"-->
+<!--            style="@android:style/Widget.DeviceDefault.Button.Borderless"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="41dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:text="Change Profile"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="15sp"-->
+<!--            app:iconTint="@color/creme"-->
+<!--            app:rippleColor="@color/purple_500" />-->
 
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:theme="@style/page_margin"
-            >
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:theme="@style/page_margin"
+                    >
 
-            <TextView
-                android:id="@+id/group_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:background="@drawable/round_corner"
-                android:padding="10dp"
-                android:text="Group Code:"
+        <!--            <TextView-->
+<!--                android:id="@+id/group_code"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="30dp"-->
+<!--                android:background="@drawable/round_corner"-->
+<!--                android:padding="10dp"-->
+<!--                android:text="Group Code:"-->
 
 
-                />
+<!--                />-->
 
             <TextView
                 android:id="@+id/group_name"
@@ -127,6 +168,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:text="Group name:"
+
                 android:padding="10dp"
 
                 />
@@ -135,9 +177,9 @@
                 android:id="@+id/edit_group_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@null"
                 android:ems="10"
                 android:hint="Name"
+                android:background="@drawable/round_corner"
                 android:inputType="textPersonName"
                 android:minHeight="48dp"
                 android:padding="10dp"
@@ -169,6 +211,7 @@
                 android:layout_height="40dp"
                 android:ems="10"
                 android:hint="add tag"
+                android:background="@drawable/round_corner"
                 android:inputType="textPersonName"
                 android:padding="10dp"
                 app:layout_constraintStart_toEndOf="@+id/add_tag"
@@ -280,6 +323,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"/>
         </LinearLayout>
+
     </LinearLayout>
 
 

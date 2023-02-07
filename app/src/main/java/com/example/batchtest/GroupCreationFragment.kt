@@ -67,10 +67,13 @@ class GroupCreationFragment : Fragment() {
         }
 
 
-//        creation of the group
+        /**
+         * Function: user creates a group and save data to database
+         */
         binding.btnCreateGroup.setOnClickListener{
 //            Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
 
+//            TODO: need to get the shit together and figure out how to use arraylist in kotlin
             val db = Firebase.firestore
             val groupName = binding.editGroupName.text.toString()
             val aboutUs = binding.groupAboutUs.text.toString()
@@ -85,7 +88,9 @@ class GroupCreationFragment : Fragment() {
 
         }
 
-//        add a list of tags to profile
+        /**
+         * user hits the add button to add tag to the list
+         */
         binding.addTag.setOnClickListener{
             if (binding.editTextAddTag.toString().isNotEmpty()){
                 addChip(binding.editTextAddTag.text.toString())
@@ -93,11 +98,10 @@ class GroupCreationFragment : Fragment() {
         }
 
 
-
         return binding.root
-    }
+    } // end of onCreateView
 
-/*
+/**
  Function: add individual tag to group profile
  */
     private fun addChip(text: String){
@@ -112,12 +116,13 @@ class GroupCreationFragment : Fragment() {
 
 //        chip.setChipIconResource(R.drawable.close_icon)
 
+//    TODO: remove chip from the interest tag as user removes it from view
         chip.setOnCloseIconClickListener{
             binding.tagGroupChip.removeView(chip)
 //            group.interestTags?.remove(chip.text)
 
         }
-
+//  TODO: add chip to the arraylist of interest tags
         binding.tagGroupChip.addView(chip)
 //        group.interestTags?.add(chip.text.toString())
 
