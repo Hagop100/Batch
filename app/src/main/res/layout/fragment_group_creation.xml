@@ -123,10 +123,14 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 app:backgroundTint="@color/purple_500"
+                app:layout_constraintBottom_toBottomOf="@+id/group_profile"
+                app:layout_constraintEnd_toEndOf="@+id/group_profile"
+                app:layout_constraintHorizontal_bias="0.905"
+                app:layout_constraintStart_toStartOf="@+id/group_profile"
+                app:layout_constraintTop_toTopOf="@+id/group_profile"
+                app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/change_profile"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteX="257dp"
-                tools:layout_editor_absoluteY="172dp" />
+                tools:ignore="MissingConstraints" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
