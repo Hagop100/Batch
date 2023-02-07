@@ -134,7 +134,8 @@
                 app:layout_constraintTop_toTopOf="@+id/group_profile"
                 app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/change_profile"
-                tools:ignore="MissingConstraints" />
+                tools:ignore="MissingConstraints"
+                android:contentDescription="TODO" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
