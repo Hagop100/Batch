@@ -23,6 +23,9 @@ class InitialProfilePersonalizationFragment : Fragment() {
 
     private lateinit var displayName: String
     private lateinit var birthday: Date
+    private lateinit var personalBio: String
+    private lateinit var gender: String
+    // private lateinit var personalPhoto: Not sure if image is local or needs to be saved in the database
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +45,8 @@ class InitialProfilePersonalizationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //On click, will bring up a DatePicker Dialog so the user can
+        //set their birthdate
         binding.btnBirthdayPicker.setOnClickListener{
             birthdayPicker()
         }
