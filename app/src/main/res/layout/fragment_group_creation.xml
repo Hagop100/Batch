@@ -17,22 +17,12 @@
 
       >
 
-
 <!--        <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--            android:id="@+id/linearLayout2"-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="wrap_content"-->
 <!--            android:layout_marginTop="20dp">-->
 
-<!--            <TextView-->
-<!--                android:id="@+id/group_creation_title"-->
-<!--                android:layout_width="565dp"-->
-<!--                android:layout_height="54dp"-->
-<!--                android:text="@string/group_creation_title"-->
-<!--                android:theme="@style/page_title"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toStartOf="@id/exit_group_creatn"-->
-<!--                app:layout_constraintStart_toStartOf="parent" />-->
 
 <!--            <Button-->
 <!--                android:id="@+id/exit_group_creatn"-->
@@ -240,6 +230,7 @@
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/tag_group_chip"
+
                 android:layout_width="357dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="16dp"
@@ -253,48 +244,48 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="0dp"
-            android:orientation="horizontal"
-            android:theme="@style/page_margin">
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="0dp"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:theme="@style/page_margin">-->
 
 
-<!--            <Button-->
-<!--                android:id="@+id/btn_add_tag"-->
-<!--                style="@style/Widget.AppCompat.Button.Borderless"-->
-<!--                android:layout_width="50dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginRight="0dp"-->
-<!--                android:layout_weight="1"-->
-<!--                android:text="+"-->
-<!--                android:textColor="#58322B"-->
-<!--                android:textSize="25dp" />-->
+<!--&lt;!&ndash;            <Button&ndash;&gt;-->
+<!--&lt;!&ndash;                android:id="@+id/btn_add_tag"&ndash;&gt;-->
+<!--&lt;!&ndash;                style="@style/Widget.AppCompat.Button.Borderless"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="50dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginRight="0dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_weight="1"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:text="+"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textColor="#58322B"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textSize="25dp" />&ndash;&gt;-->
 
-            <!--            <EditText-->
-            <!--                android:id="@+id/edit_group_tags"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:ems="6"-->
-            <!--                android:inputType="textPersonName"-->
-            <!--                android:minHeight="48dp"-->
-            <!--                android:hint="enter tag"-->
-            <!--                android:gravity="center"-->
-            <!--                android:background="@drawable/round_corner"-->
-            <!--                android:layout_margin="0dp"/>-->
+<!--            &lt;!&ndash;            <EditText&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:id="@+id/edit_group_tags"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_width="wrap_content"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:ems="6"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:inputType="textPersonName"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:minHeight="48dp"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:hint="enter tag"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:gravity="center"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:background="@drawable/round_corner"&ndash;&gt;-->
+<!--            &lt;!&ndash;                android:layout_margin="0dp"/>&ndash;&gt;-->
 
-            <com.google.android.material.chip.ChipGroup
+<!--&lt;!&ndash;            <com.google.android.material.chip.ChipGroup&ndash;&gt;-->
 
-                android:id="@+id/tags"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+<!--&lt;!&ndash;                android:id="@+id/tags"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="match_parent"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                >&ndash;&gt;-->
 
-            </com.google.android.material.chip.ChipGroup>
+<!--&lt;!&ndash;            </com.google.android.material.chip.ChipGroup>&ndash;&gt;-->
 
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
