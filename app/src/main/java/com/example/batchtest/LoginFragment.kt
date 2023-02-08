@@ -14,8 +14,10 @@ import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentLoginBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import java.util.concurrent.Executor
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,21 +47,35 @@ class LoginFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
 
-        /*
-        Pressing login button should check firebase and log in if the user is found to be in the database
-         */
+        val user = auth.currentUser
+        if (user != null) {
+            Log.i("print", "user is signed in")
+            Log.i("print", user.email.toString())
+        } else {
+            Log.i("print", "user is signed out")
+        }
+
         binding.fragmentLoginLoginBtn.setOnClickListener {
             email = binding.fragmentLoginUsernameEt.text.toString()
             password = binding.fragmentLoginPasswordEt.text.toString()
-            findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
             /* The sign In function seems to work but is having trouble connecting to firebase
             For now, the login button continues to the next fragment without logging in.
              */
-            //signIn(email, password)
+            signIn(email, password)
+        }
+        binding.fragmentLoginSignOutBtn.setOnClickListener {
+            auth.signOut()
+            val user = auth.currentUser
+            if (user != null) {
+                Log.i("print", "user is signed in")
+                Log.i("print", user.email.toString())
+            } else {
+                Log.i("print", "user is signed out")
+            }
         }
 
         //This grabs the nav_bar and sets it visible upon this fragment's onCreateView
-        val navBar: BottomNavigationView? = getActivity()?.findViewById(R.id.nav_bar)
+        val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
         navBar?.visibility = View.INVISIBLE
 
         return binding.root
@@ -74,15 +90,21 @@ class LoginFragment : Fragment() {
     This is the sign in function but is not working correctly yet
      */
     private fun signIn(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener() {
-            if(it.isSuccessful) {
-                Log.i("print", "succeeded")
-                findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
-            }
-            else {
-                Log.i("print", "failed")
-                Toast.makeText(activity, "Authentication failed.", Toast.LENGTH_SHORT).show()
-            }
+        activity?.let {
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(it) { task ->
+                    if (task.isSuccessful) {
+                        // Sign in success, update UI with the signed-in user's information
+                        Log.i("print", "signInWithEmail:success")
+                        findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
+                        val user = auth.currentUser
+                    } else {
+                        // If sign in fails, display a message to the user.
+                        Log.i("print", "signInWithEmail:failure", task.exception)
+                        Toast.makeText(activity, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show()
+                    }
+                }
         }
     }
 
