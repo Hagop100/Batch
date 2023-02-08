@@ -6,9 +6,9 @@ package com.example.batchtest
 // @param email - email of user
 // @param password - password of user
 data class User(
-    val firstName: String,
-    val lastName: String,
-    val email: String,
+    val firstName: String? = null,
+    val lastName: String? = null,
+    val email: String? = null,
     // password ???
 ) {
     // returns full name of user

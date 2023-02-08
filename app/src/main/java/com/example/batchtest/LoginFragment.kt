@@ -74,10 +74,6 @@ class LoginFragment : Fragment() {
             }
         }
 
-        //This grabs the nav_bar and sets it visible upon this fragment's onCreateView
-        val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
-        navBar?.visibility = View.INVISIBLE
-
         return binding.root
     }
 
