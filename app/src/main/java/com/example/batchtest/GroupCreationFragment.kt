@@ -1,29 +1,26 @@
 package com.example.batchtest
 
-import android.app.Activity.RESULT_OK
+
+import android.app.Activity
+import android.app.appsearch.AppSearchResult.RESULT_OK
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
-import androidx.core.view.get
-import androidx.core.view.isEmpty
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.google.android.material.chip.Chip
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-
+import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 private const val TAG = "GroupsCreation"
 // TODO: Rename parameter arguments, choose names that match
@@ -41,14 +38,14 @@ class GroupCreationFragment : Fragment() {
     private var _binding: FragmentGroupCreationBinding? = null
     private val binding get() = _binding!!
     private lateinit var group: Group
-    lateinit var imageView: ImageView
+    lateinit var grouppic: CircleImageView
     private var imageUri: Uri? = null
     private val pickImage = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//      initialize the values of  Group class
+//      initialize the values of Group class
         group = Group(
             name = "",
             users = ArrayList<User>(),
@@ -56,6 +53,7 @@ class GroupCreationFragment : Fragment() {
             aboutUsDescription = "",
             biscuits = 0
         )
+
     }
 
     override fun onCreateView(
@@ -63,26 +61,22 @@ class GroupCreationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-
         // Inflate the layout for this fragment
         _binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
 
         /**
-         * user clicks the X button to navigate back to my groups tab
+         * user clicks the close button to navigate back to my groups tab
           */
-
         binding.exitGroupCreatn.setOnClickListener{
             findNavController().navigate(R.id.to_myGroupFragment)
         }
 
         /**
-         * add group profile picture
+         * user picks an image from the image gallery in their phone
          */
-
         binding.changeProfileBtn.setOnClickListener{
             //view gallery
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-
             startActivityForResult(gallery, pickImage)
 
         }
@@ -92,9 +86,7 @@ class GroupCreationFragment : Fragment() {
          */
         binding.btnCreateGroup.setOnClickListener{
 
-//        TODO: retrieve data from database
             val db = Firebase.firestore
-
             val groupName = binding.editGroupName.text.toString()
             val aboutUs = binding.editGroupAboutUs.text.toString()
             val users = group.users
@@ -102,11 +94,12 @@ class GroupCreationFragment : Fragment() {
             val biscuit = group.biscuits
             val groupcreation = Group(groupName, users, tags, aboutUs,biscuit)
 
-//            Validating text fields if empty or not
+            //Validating text fields if empty or not
             if (groupName.isEmpty()){
                 binding.editGroupName.error = "Missing Group's Name"
             }
 
+            //add information of the group to firebase
             else{
                 db.collection("NewGroup").add(groupcreation)
                     .addOnSuccessListener { Log.d(TAG, "Group successfully created") }
@@ -138,19 +131,19 @@ class GroupCreationFragment : Fragment() {
      */
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(resultCode, resultCode, data)
+        super.onActivityResult(requestCode, resultCode, data)
+        grouppic = binding.groupProfile
 
-        if(resultCode == RESULT_OK && resultCode == pickImage){
+        if(resultCode == Activity.RESULT_OK && requestCode == pickImage){
             imageUri = data?.data
-            binding.groupProfile.setImageURI(imageUri)
+            grouppic.setImageURI(imageUri)
         }
 
     }
 
-
     /**
- Function: add individual tag to group profile
- */
+    Function: add individual tag to group profile
+    */
     private fun addChip(text: String){
         val tags = group.interestTags
         val chip = Chip(this.context)
@@ -162,32 +155,26 @@ class GroupCreationFragment : Fragment() {
         chip.setChipBackgroundColorResource(R.color.purple_500)
         chip.setTextAppearance(R.style.page_text)
 
-//        chip.setChipIconResource(R.drawable.close_icon)
 
 //    remove chip from the interest tag as user removes it from view
         chip.setOnCloseIconClickListener{
             binding.tagGroupChip.removeView(chip)
             tags?.remove(chip.text as String)
         }
+
 //   add chip to the arraylist of interest tags
         binding.tagGroupChip.addView(chip)
         tags?.add(chip.text.toString())
-
-
     }
 
 
-
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//    }
-
-//    free view from memory
-override fun onDestroyView() {
-    super.onDestroyView()
-    _binding = null
-}
+    /**
+     * Free view from memory
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
 }
 
