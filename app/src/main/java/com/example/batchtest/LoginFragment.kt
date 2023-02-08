@@ -32,6 +32,7 @@ private const val ARG_PARAM2 = "param2"
 class LoginFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth //authentication variable
+    //binding variables
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
@@ -40,37 +41,51 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth = Firebase.auth
+        auth = Firebase.auth //Firebase.auth initialization
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         _binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
 
+        /*
+        A debugging tool to check if the user is signed in or not upon running the application
+        If a user is not explicitly signed out, then it is the case that the user could be
+        logged in or out depending on the startup of the application
+         */
         val user = auth.currentUser
         if (user != null) {
-            Log.i("print", "user is signed in")
-            Log.i("print", user.email.toString())
+            Log.i(TAG, "user is signed in")
+            Log.i(TAG, user.email.toString())
         } else {
-            Log.i("print", "user is signed out")
+            Log.i(TAG, "user is signed out")
         }
 
+        /*
+        The login button will attempt to sign in the user via firebase
+        It will read the username edit text and password edit text
+        Then pass it into the signIn function
+         */
         binding.fragmentLoginLoginBtn.setOnClickListener {
             email = binding.fragmentLoginUsernameEt.text.toString()
             password = binding.fragmentLoginPasswordEt.text.toString()
-            /* The sign In function seems to work but is having trouble connecting to firebase
-            For now, the login button continues to the next fragment without logging in.
-             */
             signIn(email, password)
         }
+
+        /*
+        This button remains for debugging purposes and will be removed upon release of the final build
+        The user is signed out upon clicking the sign out button
+        If the user is signed in, then it will display that in the logcat(although this should never occurr)
+        If the user is logged out, then it will display that in the logcat
+         */
         binding.fragmentLoginSignOutBtn.setOnClickListener {
             auth.signOut()
             val user = auth.currentUser
             if (user != null) {
-                Log.i("print", "user is signed in")
-                Log.i("print", user.email.toString())
+                Log.i(TAG, "user is signed in")
+                Log.i(TAG, user.email.toString())
             } else {
-                Log.i("print", "user is signed out")
+                Log.i(TAG, "user is signed out")
             }
         }
 
@@ -83,26 +98,33 @@ class LoginFragment : Fragment() {
     }
 
     /*
-    This is the sign in function but is not working correctly yet
+    Function allows you to sign in with proper email and password authentication via Firebase
      */
     private fun signIn(email: String, password: String) {
-        activity?.let {
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(it) { task ->
-                    if (task.isSuccessful) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.i("print", "signInWithEmail:success")
-                        findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
-                        val user = auth.currentUser
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.i("print", "signInWithEmail:failure", task.exception)
-                        Toast.makeText(activity, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show()
-                    }
-                }
+        if(email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(activity, "Please Enter Email and Password.", Toast.LENGTH_SHORT).show()
         }
+        else {
+            activity?.let {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(it) { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(activity, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+        }
+
     }
 
+    //A simple logcat tag for this fragment
+    //Used for debugging purposes
+    companion object {
+        private const val TAG = "LoginFragment"
+    }
 
 }
