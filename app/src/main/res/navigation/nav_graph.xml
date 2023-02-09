@@ -10,11 +10,7 @@
 <!--        android:id="@+id/userListFragment"-->
 <!--        android:name="com.example.batchtest.UserListFragment"-->
 <!--        android:label="UserListFragment" />-->
-    <fragment
-        android:id="@+id/matchTabFragment"
-        android:name="com.example.batchtest.MatchTabFragment"
-        android:label="fragment_match_tab"
-        tools:layout="@layout/fragment_match_tab"/>
+    <!-- login fragment -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.batchtest.LoginFragment"
@@ -24,6 +20,13 @@
             android:id="@+id/action_loginFragment_to_matchTabFragment"
             app:destination="@id/matchTabFragment" />
     </fragment>
+    <!-- match tab fragment -->
+    <fragment
+        android:id="@+id/matchTabFragment"
+        android:name="com.example.batchtest.MatchTabFragment"
+        android:label="fragment_match_tab"
+        tools:layout="@layout/fragment_match_tab"/>
+    <!-- group creation fragment -->
     <fragment
         android:id="@+id/groupCreationFragment"
         android:name="com.example.batchtest.GroupCreationFragment"
@@ -33,6 +36,7 @@
             android:id="@+id/to_myGroupFragment"
             app:destination="@id/myGroupFragment" />
     </fragment>
+    <!-- my group fragment -->
     <fragment
         android:id="@+id/myGroupFragment"
         android:name="com.example.batchtest.MyGroupFragment"
@@ -42,5 +46,10 @@
             android:id="@+id/to_groupCreationFragment"
             app:destination="@id/groupCreationFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/initialProfilePersonalizationFragment"
+        android:name="com.example.batchtest.InitialProfilePersonalizationFragment"
+        android:label="fragment_initial_profile_personalization"
+        tools:layout="@layout/fragment_initial_profile_personalization" />
 
 </navigation>

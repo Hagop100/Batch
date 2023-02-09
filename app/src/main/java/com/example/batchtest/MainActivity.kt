@@ -11,6 +11,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.batchtest.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -29,6 +31,14 @@ class MainActivity : AppCompatActivity() {
         val navController: NavController = navHostFragment.navController
         // find bottom navigation bar from main activity layout
         val navView: BottomNavigationView = findViewById(binding.navBar.id)
+        // change visibility of bottom nav bar depending on which fragment is displayed
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if((destination.id == R.id.loginFragment) || (destination.id == R.id.groupCreationFragment)) {
+                binding.navBar.visibility = View.GONE
+            } else {
+                binding.navBar.visibility = View.VISIBLE
+            }
+        }
         // connect bottom navigation bar with nav controller to navigate
         navView.setupWithNavController(navController)
 

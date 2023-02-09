@@ -40,23 +40,23 @@ class UserListFragment : Fragment() {
         binding.userRecyclerView.layoutManager = LinearLayoutManager(context)
         // array list of users from firebase
         val users = arrayListOf<User>();
-        //  initialize firebase database
-        val db = Firebase.firestore;
-        // get all users and send to user adapter
-        db.collection("users")
-            .get()
-            .addOnSuccessListener { result ->
-                for (doc in result) {
-                    val user:User? = doc.toObject(User::class.java);
-                    if (user != null) {
-                        users.add(user)
-                    }
-                }
-                binding.userRecyclerView.adapter = UserAdapter(users)
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "error getting documents: ", e)
-            }
+//        //  initialize firebase database
+//        val db = Firebase.firestore;
+//        // get all users and send to user adapter
+//        db.collection("users")
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (doc in result) {
+//                    val user:User? = doc.toObject(User::class.java);
+//                    if (user != null) {
+//                        users.add(user)
+//                    }
+//                }
+//                binding.userRecyclerView.adapter = UserAdapter(users)
+//            }
+//            .addOnFailureListener { e ->
+//                Log.w(TAG, "error getting documents: ", e)
+//            }
         return binding.root
     }
 

@@ -1,21 +1,36 @@
 package com.example.batchtest
 
+
+import android.app.Activity
+import android.app.appsearch.AppSearchResult.RESULT_OK
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.MediaStore
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
-import org.w3c.dom.Text
-import java.security.acl.Group
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
+import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
+import kotlin.collections.HashMap
 
+
+private const val TAG = "print"
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -28,66 +43,182 @@ private const val ARG_PARAM2 = "param2"
  */
 class GroupCreationFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private lateinit var binding: FragmentGroupCreationBinding
-    private lateinit var groupCreation: GroupCreation
-
-    private val _binding
-        get() = checkNotNull(binding) {
-            "Cannot access binding because it is null. Is the view visible?"
-        };
+    private var _binding: FragmentGroupCreationBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var group: Group
+    lateinit var grouppic: CircleImageView
+    private var imageUri: Uri? = null
+    private val pickImage = 100
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        initialize the values of  GroupCreation class
-        groupCreation = GroupCreation(
-            groupCode = UUID.randomUUID(),
-            groupName = "",
-//            tags = "",
-            groupDescription = ""
+//      initialize the values of Group class
+        group = Group(
+            name = "",
+            users = ArrayList<User>(),
+            interestTags = ArrayList(),
+            aboutUsDescription = "",
+            biscuits = 0
         )
-    }
 
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
-//        TODO: this code does not seem to work here!!!FIXME
-        //This grabs the nav_bar and sets it visible upon this fragment's onCreateView
-        val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
-        navBar?.visibility = View.INVISIBLE
-
         // Inflate the layout for this fragment
-        binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
 
+        /**
+         * user clicks the close button to navigate back to my groups tab
+          */
+        binding.exitGroupCreatn.setOnClickListener{
+            findNavController().navigate(R.id.to_myGroupFragment)
+        }
+
+        /**
+         * user picks an image from the image gallery in their phone
+         */
+        binding.changeProfileBtn.setOnClickListener{
+            //view gallery
+            val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+            startActivityForResult(gallery, pickImage)
+
+        }
+
+        /**
+         * user creates a group and save data to database
+         */
+        binding.btnCreateGroup.setOnClickListener{
+
+            val db = Firebase.firestore
+            val groupName = binding.editGroupName.text.toString()
+            val aboutUs = binding.editGroupAboutUs.text.toString()
+            val users = group.users
+            val tags = group.interestTags
+            val biscuit = group.biscuits
+            val groupInfo = Group(groupName, users, tags, aboutUs,biscuit)
+
+
+            //Validating entry if empty or not
+            if (groupName.isEmpty()){
+                binding.editGroupName.error = "Missing Group's Name"
+            }
+
+            //if entry not empty, validate existing group name
+            else {
+
+                //find existing group name in database that matches with the name entry
+                db.collection("NewGroup").whereEqualTo("name", groupName).get()
+                    .addOnSuccessListener { documents ->
+
+                        //if entry is not found(not match with) in database, create a new group
+                        if (documents.isEmpty){
+                            Log.i(TAG,"AM I HEERE")
+                            db.collection("NewGroup").document(groupName).set(groupInfo)
+                            Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+                        }
+
+                        //if entry matches the name in the database, alert user to reenter a new group name
+                        else{
+                            for (doc in documents) {
+//                            Log.i(TAG, "${doc.id} => ${doc.data}")
+//                            Log.i(TAG, doc.data.getValue("name") as String)
+                                if (doc.data.getValue("name") == groupName) {
+                                    binding.editGroupName.error = "Group name is already taken"
+                                }
+
+                            }
+                        }
+
+                    }
+                    .addOnFailureListener { e ->
+                        Log.i(TAG, "Error writing document", e)
+                    }
+
+
+                }
+
+            }
+
+
+        /**
+         * user hits the add button to add tag to the list
+         * Validating text fields if empty or not
+         */
+        binding.addTag.setOnClickListener{
+            if (binding.editTextAddTag.text.isNotEmpty()){
+                addChip(binding.editTextAddTag.text.toString())
+            }
+            else if (binding.editTextAddTag.text.isEmpty()){
+                binding.editTextAddTag.error = "Invalid Entry"
+            }
+        }
 
         return binding.root
+    } // end of onCreateView
+
+
+    /**
+     * set profile image
+     */
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        grouppic = binding.groupProfile
+
+        if(resultCode == Activity.RESULT_OK && requestCode == pickImage){
+            imageUri = data?.data
+            grouppic.setImageURI(imageUri)
+        }
+
     }
 
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//
-//    }
+    /**
+    Function: add individual tag to group profile
+    */
+    private fun addChip(text: String){
+        val tags = group.interestTags
+        val chip = Chip(this.context)
+        chip.text = text
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment GroupCreationFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            GroupCreationFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+
+//    display the close button to remove tag from the list
+        chip.isCloseIconVisible = true
+        chip.setChipBackgroundColorResource(R.color.purple_500)
+        chip.setTextAppearance(R.style.page_text)
+
+
+//    remove chip from the interest tag as user removes it from view
+        chip.setOnCloseIconClickListener{
+            binding.tagGroupChip.removeView(chip)
+            tags?.remove(chip.text as String)
+        }
+
+//   add chip to the arraylist of interest tags
+        binding.tagGroupChip.addView(chip)
+        tags?.add(chip.text.toString())
     }
+
+
+    /**
+     * Free view from memory
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }
+
+
+
+
+
+
+
+
