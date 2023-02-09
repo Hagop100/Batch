@@ -15,14 +15,22 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.chip.Chip
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
+import kotlin.collections.HashMap
 
 
-private const val TAG = "GroupsCreation"
+private const val TAG = "print"
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -41,6 +49,7 @@ class GroupCreationFragment : Fragment() {
     lateinit var grouppic: CircleImageView
     private var imageUri: Uri? = null
     private val pickImage = 100
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,22 +101,50 @@ class GroupCreationFragment : Fragment() {
             val users = group.users
             val tags = group.interestTags
             val biscuit = group.biscuits
-            val groupcreation = Group(groupName, users, tags, aboutUs,biscuit)
+            val groupInfo = Group(groupName, users, tags, aboutUs,biscuit)
 
-            //Validating text fields if empty or not
+
+            //Validating entry if empty or not
             if (groupName.isEmpty()){
                 binding.editGroupName.error = "Missing Group's Name"
             }
 
-            //add information of the group to firebase
-            else{
-                db.collection("NewGroup").add(groupcreation)
-                    .addOnSuccessListener { Log.d(TAG, "Group successfully created") }
-                    .addOnFailureListener{}
-                Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+            //if entry not empty, validate existing group name
+            else {
+
+                //find existing group name in database that matches with the name entry
+                db.collection("NewGroup").whereEqualTo("name", groupName).get()
+                    .addOnSuccessListener { documents ->
+
+                        //if entry is not found(not match with) in database, create a new group
+                        if (documents.isEmpty){
+                            Log.i(TAG,"AM I HEERE")
+                            db.collection("NewGroup").document(groupName).set(groupInfo)
+                            Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+                        }
+
+                        //if entry matches the name in the database, alert user to reenter a new group name
+                        else{
+                            for (doc in documents) {
+//                            Log.i(TAG, "${doc.id} => ${doc.data}")
+//                            Log.i(TAG, doc.data.getValue("name") as String)
+                                if (doc.data.getValue("name") == groupName) {
+                                    binding.editGroupName.error = "Group name is already taken"
+                                }
+
+                            }
+                        }
+
+                    }
+                    .addOnFailureListener { e ->
+                        Log.i(TAG, "Error writing document", e)
+                    }
+
+
+                }
+
             }
 
-        }
 
         /**
          * user hits the add button to add tag to the list
@@ -177,6 +214,11 @@ class GroupCreationFragment : Fragment() {
     }
 
 }
+
+
+
+
+
 
 
 

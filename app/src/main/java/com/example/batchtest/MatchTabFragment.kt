@@ -1,5 +1,6 @@
 package com.example.batchtest
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import com.example.batchtest.databinding.DialogLayoutBinding
 import com.example.batchtest.databinding.FragmentMatchTabBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
@@ -71,21 +74,33 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         val groups = arrayListOf<Group>()
         val db = Firebase.firestore
 
-        db.collection("groups")
-            .get()
-            .addOnSuccessListener { result ->
-                for (doc in result) {
-                    // get group's data in form of map
-                    val group: Group = doc.toObject(Group::class.java)
-                    // add group to groups
-                    groups.add(group)
-                }
-                // attach adapter and send groups and listener
-                cardStackView.adapter = CardStackAdapter(groups, this)
-            }
-            .addOnFailureListener { e ->
-                Log.v(TAG, "error getting documents: ", e)
-            }
+        // test groups without fetching for speed
+        val g1 = Group("One Direction", arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), arrayListOf("singing", "dancing", "partying", "soccer"), "one direction test description")
+        val g2 = Group("The Beatles", arrayListOf(User("John", "Lennon", "johnlennon@gmail.com")), arrayListOf("cooking", "karaoke", "gaming", "movies"), "the beatles test description")
+        val g3 = Group("Fleetwood Mac", arrayListOf(User("Stevie", "Nicks", "stevienicks@gmail.com")), arrayListOf("studying", "swimming", "sleeping", "music"), "the beatles test description")
+        groups.add(g1)
+        groups.add(g2)
+        groups.add(g3)
+        cardStackView.adapter = CardStackAdapter(groups, this)
+        /*
+        * fetch all groups and send to adapter which
+        * will display the groups in a recycler view
+         */
+//        db.collection("groups")
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (doc in result) {
+//                    // get group's data in form of map
+//                    val group: Group = doc.toObject(Group::class.java)
+//                    // add group to groups
+//                    groups.add(group)
+//                }
+//                // attach adapter and send groups and listener
+//                cardStackView.adapter = CardStackAdapter(groups, this)
+//            }
+//            .addOnFailureListener { e ->
+//                Log.v(TAG, "error getting documents: ", e)
+//            }
 
         return binding.root
     }
@@ -95,8 +110,11 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         binding.cardStackView.rewind()
     }
 
-    override fun onMoreBtnClick() {
-        //
+    override fun onMoreBtnClick(context: Context) {
+        val dialog = BottomSheetDialog(context)
+        val view=layoutInflater.inflate(R.layout.dialog_layout,null)
+        dialog.setContentView(view)
+        dialog.show()
     }
 
 

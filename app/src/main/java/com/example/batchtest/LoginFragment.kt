@@ -102,7 +102,11 @@ class LoginFragment : Fragment() {
                 myPrefs.edit().clear().apply()
             }
             //signIn function using firebase API
-            signIn(email, password)
+            //This is the real code
+            //signIn(email, password)
+
+            //This is for testing for now
+            findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
         }
 
 
