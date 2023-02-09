@@ -1,5 +1,6 @@
 package com.example.batchtest
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -35,6 +36,9 @@ class CardStackAdapter(
                 listener.onUndoBtnClick()
             }
 
+            binding.matchMoreBtn.setOnClickListener {
+                listener.onMoreBtnClick(parent.context)
+            }
             // pass into a holder to bind
             return CardStackHolder(binding)
         }
@@ -86,6 +90,6 @@ class CardStackAdapter(
     // match tab fragment listens to when undo or more button is clicked
     interface CardStackAdapterListener {
         fun onUndoBtnClick()
-        fun onMoreBtnClick()
+        fun onMoreBtnClick(context: Context)
     }
 }

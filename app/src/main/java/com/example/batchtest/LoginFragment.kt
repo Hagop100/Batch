@@ -69,7 +69,8 @@ class LoginFragment : Fragment() {
         binding.fragmentLoginLoginBtn.setOnClickListener {
             email = binding.fragmentLoginUsernameEt.text.toString()
             password = binding.fragmentLoginPasswordEt.text.toString()
-            signIn(email, password)
+            findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
+//            signIn(email, password)
         }
 
         /*
