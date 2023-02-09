@@ -42,19 +42,19 @@
             app:layout_constraintTop_toBottomOf="@id/tv_greeting"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/tv_image_prompt"
+            app:layout_constraintBottom_toTopOf="@id/btn_image_prompt"
             android:src="@drawable/profile_icon"
             android:scaleType="fitCenter"
             />
-        <TextView
-            android:id="@+id/tv_image_prompt"
+        <Button
+            android:id="@+id/btn_image_prompt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/purple_700"
             app:layout_constraintTop_toBottomOf="@+id/iv_userPhoto"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="Upload Image"
+            tools:text="Select Image"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             />
@@ -66,7 +66,7 @@
             android:textColor="@color/purple_500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_image_prompt"
+            app:layout_constraintTop_toBottomOf="@id/btn_image_prompt"
             />
         <EditText
             android:id="@+id/et_displayName"
