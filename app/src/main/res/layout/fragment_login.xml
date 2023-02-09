@@ -153,17 +153,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_login_password_et" />
 
-    <RadioButton
+    <CheckBox
         android:id="@+id/fragment_login_remember_me_btn"
-        style="@style/Widget.AppCompat.CompoundButton.RadioButton"
+        style="@style/Theme.BatchTest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:buttonTint="@color/black"
-        android:fontFamily="@font/poppins_regular"
         android:text="@string/remember_me_rb_text"
-        android:textColor="@color/purple_500"
-        android:textSize="12sp"
+        android:textColor="@color/dark_brown"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_login_password_et" />
 
@@ -172,7 +169,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:backgroundTint="@color/purple_700"

@@ -1,5 +1,7 @@
 package com.example.batchtest
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.RadioButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
@@ -18,30 +21,29 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import java.util.concurrent.Executor
+import kotlin.properties.Delegates
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [LoginFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class LoginFragment : Fragment() {
 
-    private lateinit var auth: FirebaseAuth //authentication variable
+    //authentication variable
+    private lateinit var auth: FirebaseAuth
+
     //binding variables
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
 
+    //SharedPreferences
+    private lateinit var myPrefs: SharedPreferences
+
+    //email/password
     private lateinit var email: String //email
     private lateinit var password: String //password
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth //Firebase.auth initialization
+        myPrefs = requireActivity().getSharedPreferences("Login", Context.MODE_PRIVATE) //sharedPreferences initialization
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,15 +64,47 @@ class LoginFragment : Fragment() {
         }
 
         /*
+        This code block handles automatically loading the email/password without having to type it out again
+        if you already selected the rememberMe checkBox.
+        If the rememberMe checkBox was checked when logging in at an earlier time,
+        then it is the case that we have some preferences saved (email/password).
+        If we do have preferences saved, then we want to automatically input them into our
+        EditText views. We will then check the rememberMe checkBox again.
+         */
+        if(myPrefs.getString(emailKey, null) != null && myPrefs.getString(passwordKey, null) != null) {
+            binding.fragmentLoginUsernameEt.setText(myPrefs.getString(emailKey, null))
+            binding.fragmentLoginPasswordEt.setText(myPrefs.getString(passwordKey, null))
+            binding.fragmentLoginRememberMeBtn.isChecked = true
+        }
+
+        /*
         The login button will attempt to sign in the user via firebase
         It will read the username edit text and password edit text
         Then pass it into the signIn function
          */
         binding.fragmentLoginLoginBtn.setOnClickListener {
+            //We store the email and password upon clicking the login button
             email = binding.fragmentLoginUsernameEt.text.toString()
             password = binding.fragmentLoginPasswordEt.text.toString()
+            /*
+            If we have the rememberMe checkBox checked when we press the login button,
+            then store the email and password into our sharedPreferences object.
+            If we have the rememberMe checkBox unchecked when we press the login button,
+            then clear the sharePreferences object from any data we had stored in there.
+             */
+            if(binding.fragmentLoginRememberMeBtn.isChecked) {
+                val editor: SharedPreferences.Editor = myPrefs.edit()
+                editor.putString(emailKey, email)
+                editor.putString(passwordKey, password)
+                editor.apply()
+            }
+            else {
+                myPrefs.edit().clear().apply()
+            }
+            //signIn function using firebase API
             signIn(email, password)
         }
+
 
         /*
         This button remains for debugging purposes and will be removed upon release of the final build
@@ -121,10 +155,10 @@ class LoginFragment : Fragment() {
 
     }
 
-    //A simple logcat tag for this fragment
-    //Used for debugging purposes
     companion object {
-        private const val TAG = "LoginFragment"
+        private const val TAG = "LoginFragment" //for logcat debugging
+        private const val emailKey: String = "email" //key for emails in SharedPreferences
+        private const val passwordKey: String = "password" //key for passwords in SharedPreferences
     }
 
 }
