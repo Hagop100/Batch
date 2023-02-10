@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".MyGroupFragment"
     android:orientation="vertical"
     android:id="@+id/myGroupsTab"
@@ -15,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_marginRight="10dp"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintTop_toTopOf="@+id/textView2"
@@ -53,18 +58,12 @@
         android:background="@color/horizontal_line"
         />
 
-    <!--    <Button-->
-    <!--        android:id="@+id/submitBtn"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:text="@string/submit_btn_text"/>-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/recycleView"
+        android:padding="10dp"/>
 
-
-<!--    <Button-->
-<!--        android:id="@+id/btn_to_group_creation"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Test group creation"-->
-<!--        />-->
 
 </LinearLayout>
+</ScrollView>
