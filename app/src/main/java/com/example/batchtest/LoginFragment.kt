@@ -48,7 +48,7 @@ class LoginFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentLoginBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         /*
         A debugging tool to check if the user is signed in or not upon running the application
@@ -103,12 +103,16 @@ class LoginFragment : Fragment() {
             }
             //signIn function using firebase API
             //This is the real code
-            //signIn(email, password)
+            signIn(email, password)
 
             //This is for testing for now
-            findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
+            //findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
         }
 
+        /*
+        This is the forgot Password button where it prompts you to enter an email with a dialog fragment
+        Upon entering your email, you should receive an email about resetting your password
+         */
         binding.fragmentLoginForgotPasswordBtn.setOnClickListener {
             val dialog = ForgotPasswordDialogFragment()
             dialog.show(childFragmentManager, "forgotPasswordDialog")
