@@ -13,6 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.google.android.gms.tasks.OnCompleteListener
@@ -27,7 +30,7 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
-import kotlin.collections.HashMap
+
 
 
 private const val TAG = "print"
@@ -49,7 +52,8 @@ class GroupCreationFragment : Fragment() {
     lateinit var grouppic: CircleImageView
     private var imageUri: Uri? = null
     private val pickImage = 100
-    private lateinit var database: DatabaseReference
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +67,7 @@ class GroupCreationFragment : Fragment() {
             biscuits = 0
         )
 
+
     }
 
     override fun onCreateView(
@@ -72,6 +77,8 @@ class GroupCreationFragment : Fragment() {
 
         // Inflate the layout for this fragment
         _binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
+
+
 
         /**
          * user clicks the close button to navigate back to my groups tab
@@ -118,9 +125,10 @@ class GroupCreationFragment : Fragment() {
 
                         //if entry is not found(not match with) in database, create a new group
                         if (documents.isEmpty){
-                            Log.i(TAG,"AM I HEERE")
+//                            Log.i(TAG,"AM I HEERE")
                             db.collection("NewGroup").document(groupName).set(groupInfo)
                             Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+                            findNavController().navigate(R.id.to_myGroupFragment)
                         }
 
                         //if entry matches the name in the database, alert user to reenter a new group name
