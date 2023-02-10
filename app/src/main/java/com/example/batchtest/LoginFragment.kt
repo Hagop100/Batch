@@ -103,10 +103,15 @@ class LoginFragment : Fragment() {
             }
             //signIn function using firebase API
             //This is the real code
-            //signIn(email, password)
+            signIn(email, password)
 
             //This is for testing for now
-            findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
+            //findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
+        }
+
+        binding.fragmentLoginForgotPasswordBtn.setOnClickListener {
+            val dialog = ForgotPasswordDialogFragment()
+            dialog.show(childFragmentManager, "forgotPasswordDialog")
         }
 
 

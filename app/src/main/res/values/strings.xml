@@ -35,4 +35,8 @@
     <string name="about_us">About us</string>
     <string name="undo_button">undo button</string>
     <string name="match_group_card_more_button">match group card more button</string>
+    <string name="forgot_password_title_text">Forgot Password?</string>
+    <string name="enter_email_text">Enter Email</string>
+    <string name="cancel_button_text">Cancel</string>
+    <string name="submit_btn_text2">Submit</string>
 </resources>
