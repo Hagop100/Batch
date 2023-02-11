@@ -3,11 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-<<<<<<< HEAD
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/activity_login.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_login.xml" value="0.25" />
-=======
->>>>>>> 0201750365091de84c218e5a1c80016481b14084
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/BatchTest/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/BatchTest/app/src/main/res/layout/fragment_input.xml" value="0.3314814814814815" />
         <entry key="app/src/main/res/drawable-anydpi/close_icon.xml" value="0.1" />
@@ -30,6 +27,7 @@
         <entry key="app/src/main/res/font/karla.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/layout/activity_group_creation.xml" value="0.1578125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/dialog_button.xml" value="0.14990942028985507" />
         <entry key="app/src/main/res/layout/dialog_layout.xml" value="0.22055385423743207" />
         <entry key="app/src/main/res/layout/fragment_group_creation.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_input.xml" value="0.1" />
