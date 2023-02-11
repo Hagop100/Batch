@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.fragment.findNavController
+import com.example.batchtest.databinding.FragmentRegistrationBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -15,17 +18,48 @@ class RegistrationFragment : Fragment() {
     //authentication variable
     private lateinit var auth: FirebaseAuth
 
+    //binding variables
+    private var _binding: FragmentRegistrationBinding? = null
+    private val binding get() = _binding!!
+
+    //email and password
+    private lateinit var email: String //email variable
+    private lateinit var password: String //password variable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth //Firebase.auth initialization
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_registration, container, false)
+        _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
+
+        // Binds the registration button to a command
+        binding.fragmentRegistrationBtn.setOnClickListener{
+
+            // Grabs user input for email and password and assigns it to the variables
+            email = binding.fragmentRegistrationEmailEt.text.toString()
+            password = binding.fragmentRegistrationPasswordEt.text.toString()
+
+            // Backend function to complete registration
+            registration(email, password)
+
+        }
+
+        return binding.root
+    }
+
+    private fun registration(email: String, password: String){
+        if(email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(activity, "Please Enter Email and Password.", Toast.LENGTH_SHORT).show()
+        }
+
+        else{
+            activity?.let{
+                findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment)
+            }
+        }
     }
 
 }
