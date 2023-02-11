@@ -58,6 +58,10 @@
         android:id="@+id/registrationFragment"
         android:name="com.example.batchtest.RegistrationFragment"
         android:label="fragment_registration"
-        tools:layout="@layout/fragment_registration" />
+        tools:layout="@layout/fragment_registration" >
+        <action
+            android:id="@+id/action_registrationFragment_to_initialProfilePersonalizationFragment"
+            app:destination="@id/initialProfilePersonalizationFragment" />
+    </fragment>
 
 </navigation>
