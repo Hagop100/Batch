@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = findViewById(binding.navBar.id)
         // change visibility of bottom nav bar depending on which fragment is displayed
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if((destination.id == R.id.loginFragment) || (destination.id == R.id.groupCreationFragment)) {
+            if((destination.id == R.id.loginFragment) || (destination.id == R.id.groupCreationFragment) || (destination.id == R.id.registrationFragment)){
                 binding.navBar.visibility = View.GONE
             } else {
                 binding.navBar.visibility = View.VISIBLE
