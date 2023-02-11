@@ -1,13 +1,17 @@
 package com.example.batchtest
 
-import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.batchtest.databinding.InterestTagBinding
 import com.example.batchtest.databinding.MatchGroupCardBinding
 import com.google.android.flexbox.FlexboxLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 private const val TAG = "CardStackAdapter"
@@ -37,7 +41,39 @@ class CardStackAdapter(
             }
 
             binding.matchMoreBtn.setOnClickListener {
-                listener.onMoreBtnClick(parent.context)
+                // create a bottom sheet dialog
+                val dialog = BottomSheetDialog(parent.context)
+                // inflate the view with the dialog linear layout
+                val view:LinearLayout = LayoutInflater.from(parent.context).inflate(R.layout.dialog_layout, binding.root, false) as LinearLayout
+
+                // create block dialog button to add into the dialog layout dynamically
+                // using the dialog button layout
+                // inflate a text view to hold the block dialog
+                val blockDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, null, false) as TextView
+                blockDialogBtn.text = "Block Group"
+                // perform action on click
+                blockDialogBtn.setOnClickListener {
+                    // add block group logic
+                    dialog.dismiss()
+                }
+                // add the block dialog button to the bottom dialog view
+                view.addView(blockDialogBtn)
+
+                // inflate a text view to hold the block dialog
+                val reportDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, null, false) as TextView
+                reportDialogBtn.text = "Report Group"
+                // perform action on click
+                reportDialogBtn.setOnClickListener {
+                    // add block group logic
+                    dialog.dismiss()
+                }
+                // add the report dialog button to the bottom dialog view
+                view.addView(reportDialogBtn)
+
+                // set the view of the dialog using the inflated layout
+                dialog.setContentView(view)
+                // show the dialog
+                dialog.show()
             }
             // pass into a holder to bind
             return CardStackHolder(binding)
@@ -55,6 +91,10 @@ class CardStackAdapter(
             // set group description
             holder.description.text = group.aboutUsDescription
 
+            // get time since group was created
+            val timeSinceJoined: Long = Date().time - group.createdDate!!.time
+            Log.v(TAG, timeSinceJoined.toString())
+//            if (timeSinceJoined < (Date().time )
             // inflate the interest tag container
             val inflater: LayoutInflater = LayoutInflater.from(holder.interestTags.context)
             var interestTag: TextView
@@ -80,16 +120,21 @@ class CardStackAdapter(
         }
         // holder class for each group card
         class CardStackHolder(val binding: MatchGroupCardBinding) : RecyclerView.ViewHolder(binding.root) {
-            // get the views
+            // get the views of card
+            // name of group
             val name: TextView = binding.groupName
+            // amount of biscuits
             val biscuits: TextView = binding.biscuitValue
+            // description of group
             val description: TextView = binding.aboutUsDescription
+            // interest tags of groups
             val interestTags: FlexboxLayout = binding.interestTags
+            // just joined tag
+            val justJoined: InterestTagBinding = binding.justJoinedTag
         }
 
     // match tab fragment listens to when undo or more button is clicked
     interface CardStackAdapterListener {
         fun onUndoBtnClick()
-        fun onMoreBtnClick(context: Context)
     }
 }
