@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_loginFragment_to_matchTabFragment"
             app:destination="@id/matchTabFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
     </fragment>
     <!-- match tab fragment -->
     <fragment
@@ -51,5 +54,10 @@
         android:name="com.example.batchtest.InitialProfilePersonalizationFragment"
         android:label="fragment_initial_profile_personalization"
         tools:layout="@layout/fragment_initial_profile_personalization" />
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.example.batchtest.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" />
 
 </navigation>

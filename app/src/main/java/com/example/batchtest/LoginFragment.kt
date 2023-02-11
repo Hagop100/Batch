@@ -63,6 +63,11 @@ class LoginFragment : Fragment() {
             Log.i(TAG, "user is signed out")
         }
 
+        //Sign Up navigates to registration fragment
+        binding.fragmentLoginSignUpBtn.setOnClickListener {
+            findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
+        }
+
         /*
         This code block handles automatically loading the email/password without having to type it out again
         if you already selected the rememberMe checkBox.
