@@ -94,6 +94,14 @@
                 android:contentDescription="TODO" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+<!--        <ImageView-->
+<!--            android:id="@+id/group_profile"-->
+<!--            android:layout_width="182dp"-->
+<!--            android:layout_height="165dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="30dp"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:src="@drawable/one_direction_photo" />-->
 
 
         <LinearLayout

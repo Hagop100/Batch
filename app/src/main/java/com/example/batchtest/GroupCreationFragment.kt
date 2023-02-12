@@ -2,7 +2,7 @@ package com.example.batchtest
 
 
 import android.app.Activity
-import android.app.appsearch.AppSearchResult.RESULT_OK
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -13,31 +13,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.chip.Chip
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
 import java.util.*
 
 
-
 private const val TAG = "print"
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -54,7 +39,9 @@ class GroupCreationFragment : Fragment() {
     private val pickImage = 100
 
 
-
+    /**
+     * initialize the values of Group class when the app is starting up
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -91,7 +78,7 @@ class GroupCreationFragment : Fragment() {
          * user picks an image from the image gallery in their phone
          */
         binding.changeProfileBtn.setOnClickListener{
-            //view gallery
+            //view gallery by accessing the internal contents from mobile media
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             startActivityForResult(gallery, pickImage)
 
@@ -144,6 +131,7 @@ class GroupCreationFragment : Fragment() {
                         }
 
                     }
+                        //database could not find the match with the entry
                     .addOnFailureListener { e ->
                         Log.i(TAG, "Error writing document", e)
                     }
@@ -174,11 +162,11 @@ class GroupCreationFragment : Fragment() {
     /**
      * set profile image
      */
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         grouppic = binding.groupProfile
 
+        //setting that was selected from the gallery
         if(resultCode == Activity.RESULT_OK && requestCode == pickImage){
             imageUri = data?.data
             grouppic.setImageURI(imageUri)

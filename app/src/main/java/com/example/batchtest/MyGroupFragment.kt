@@ -5,29 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.LinearLayout
-import androidx.core.view.get
 import androidx.fragment.app.*
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.example.batchtest.databinding.FragmentMyGroupBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.ktx.Firebase
+
 import java.util.*
 
-
-// TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -44,7 +34,7 @@ class MyGroupFragment : Fragment() {
     private lateinit var groupInfo: Group
     private var _binding: FragmentMyGroupBinding? = null
 
-//    for list of my groups
+//  Card view variables that will be use to display in my group tab
     private lateinit var recyclerView: RecyclerView
     private lateinit var myGroupList: ArrayList<Group>
     private lateinit var myAdapter: MyGroupAdapter
@@ -63,8 +53,9 @@ class MyGroupFragment : Fragment() {
 
     }
 
-
-
+    /**
+     * inflates the view of my group fragment
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,9 +67,7 @@ class MyGroupFragment : Fragment() {
         recyclerView = binding.recycleView
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.setHasFixedSize(true)
-
         myGroupList = arrayListOf()
-
         myAdapter = MyGroupAdapter(myGroupList)
         recyclerView.adapter = myAdapter
 
@@ -97,8 +86,6 @@ class MyGroupFragment : Fragment() {
             findNavController().navigate(R.id.to_groupCreationFragment)
         }
 
-
-
         return binding.root
 
     }
@@ -115,6 +102,7 @@ class MyGroupFragment : Fragment() {
                     return
                 }
 
+                //loop thru all the groups and add to my group list from the database document
                 for (doc : DocumentChange in value ?.documentChanges!!){
                     if (doc.type == DocumentChange.Type.ADDED){
                         myGroupList.add(doc.document.toObject(Group::class.java))
@@ -128,7 +116,9 @@ class MyGroupFragment : Fragment() {
     }
 
 
-//    free view from memory
+    /**
+     * free view from memory
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
