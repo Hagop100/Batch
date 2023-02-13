@@ -1,6 +1,6 @@
 package com.example.batchtest
 
-Addimport android.icu.number.NumberFormatter.DecimalSeparatorDisplay
+// Addimport android.icu.number.NumberFormatter.DecimalSeparatorDisplay
 
 // User data class
 // @param firstName - first name of user

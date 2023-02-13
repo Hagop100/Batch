@@ -164,7 +164,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
                         Toast.makeText(context,"Failed to Update Profile", Toast.LENGTH_SHORT).show()
                     }
                 //Will navigate to the next fragment, Currently not in use
-                findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_groupCreationFragment)
+                // findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_groupCreationFragment)
             }
         }
     }

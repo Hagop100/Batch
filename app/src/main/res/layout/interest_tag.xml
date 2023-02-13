@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- textview layout for interest tag -->
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
@@ -7,6 +8,5 @@
     android:fontFamily="@font/karla"
     android:paddingHorizontal="10dp"
     android:paddingVertical="5dp"
-    android:text="Just joined"
     android:textColor="@color/black"
     android:textSize="11sp"/>
