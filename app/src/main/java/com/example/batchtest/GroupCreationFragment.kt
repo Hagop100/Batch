@@ -100,49 +100,58 @@ class GroupCreationFragment : Fragment() {
             val groupInfo = Group(groupName, users, tags, aboutUs,biscuit)
 
 
-                //Validating group name if empty or not
-                if (groupName.isEmpty()){
+                //Validating group name and tag if empty or not
+                if (groupName.isEmpty() && binding.editTextAddTag.text.isEmpty()){
+                    binding.editGroupName.error = "Missing Group's Name"
+                    binding.editTextAddTag.error = "Missing Tag"
+                }
+
+                //validate if tag is not empty but group name is empty
+                else if (binding.editTextAddTag.text.isNotEmpty() && groupName.isEmpty()) {
                     binding.editGroupName.error = "Missing Group's Name"
                 }
                 //if entry not empty, validate existing group name
                 else {
 
-                    //find existing group name in database that matches with the name entry
-                    db.collection("NewGroup").whereEqualTo("name", groupName).get()
-                        .addOnSuccessListener { documents ->
+                        //find existing group name in database that matches with the name entry
+                        db.collection("NewGroup").whereEqualTo("name", groupName).get()
+                            .addOnSuccessListener { documents ->
 
-                            //if entry is not found(not match with) in database, create a new group
-                            if (documents.isEmpty){
-//                            Log.i(TAG,"AM I HEERE")
-                                db.collection("NewGroup").document(groupName).set(groupInfo)
-                                Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
-                                findNavController().navigate(R.id.to_myGroupFragment)
+                                //if entry is not found(not match with) in database, create a new group
+                                if (documents.isEmpty){
 
-                            }
-
-                            //if entry matches the name in the database, alert user to reenter a new group name
-                            else{
-                                for (doc in documents) {
-//                            Log.i(TAG, "${doc.id} => ${doc.data}")
-//                            Log.i(TAG, doc.data.getValue("name") as String)
-                                    if (doc.data.getValue("name") == groupName) {
-                                        binding.editGroupName.error = "Group name is already taken"
-
+                                    //if valid group name is entered, check whether the tag is empty
+                                    if (binding.editTextAddTag.text.isEmpty()) {
+                                        binding.editTextAddTag.error = "Missing Tag"
+                                    }
+                                    else{
+                                        db.collection("NewGroup").document(groupName).set(groupInfo)
+                                        Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+                                        findNavController().navigate(R.id.to_myGroupFragment)
                                     }
 
+
                                 }
+
+                                //if entry matches the name in the database, alert user to reenter a new group name
+                                else{
+                                    for (doc in documents) {
+//                            Log.i(TAG, "${doc.id} => ${doc.data}")
+//                            Log.i(TAG, doc.data.getValue("name") as String)
+                                        if (doc.data.getValue("name") == groupName) {
+                                            binding.editGroupName.error = "Group name is already taken"
+
+                                        }
+
+                                    }
+                                }
+
                             }
-
-                        }
-                        //database could not find the match with the entry
-                        .addOnFailureListener { e ->
-                            Log.i(TAG, "Error writing document", e)
-                        }
-
-
-                }
-
-
+                            //database could not find the match with the entry
+                            .addOnFailureListener { e ->
+                                Log.i(TAG, "Error writing document", e)
+                            }
+                    }
 
 
         }// end of button group creation
@@ -157,7 +166,7 @@ class GroupCreationFragment : Fragment() {
             }
             //validate tags if empty or not
             else if (binding.editTextAddTag.text.isEmpty()) {
-                binding.editTextAddTag.error = "Invalid Entry"
+                binding.editTextAddTag.error = "Missing Tag"
             }
 
         }
