@@ -49,6 +49,12 @@
             android:id="@+id/to_groupCreationFragment"
             app:destination="@id/groupCreationFragment" />
     </fragment>
+    <!-- pending tab fragment -->
+    <fragment
+        android:id="@+id/otherGroupTabFragment"
+        android:name="com.example.batchtest.OtherGroupTabFragment"
+        android:label="fragment_match_tab"
+        tools:layout="@layout/fragment_match_tab"/>
     <fragment
         android:id="@+id/initialProfilePersonalizationFragment"
         android:name="com.example.batchtest.InitialProfilePersonalizationFragment"
