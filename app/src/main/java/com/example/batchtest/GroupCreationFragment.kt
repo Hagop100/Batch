@@ -39,6 +39,7 @@ class GroupCreationFragment : Fragment() {
     private val pickImage = 100
 
 
+
     /**
      * initialize the values of Group class when the app is starting up
      */
@@ -87,6 +88,7 @@ class GroupCreationFragment : Fragment() {
         /**
          * user creates a group and save data to database
          */
+
         binding.btnCreateGroup.setOnClickListener{
 
             val db = Firebase.firestore
@@ -98,64 +100,67 @@ class GroupCreationFragment : Fragment() {
             val groupInfo = Group(groupName, users, tags, aboutUs,biscuit)
 
 
-            //Validating group name if empty or not
-            if (groupName.isEmpty()){
-                binding.editGroupName.error = "Missing Group's Name"
-            }
+                //Validating group name if empty or not
+                if (groupName.isEmpty()){
+                    binding.editGroupName.error = "Missing Group's Name"
+                }
+                //if entry not empty, validate existing group name
+                else {
 
-            //validate tags if empty or not
-            else if (binding.editTextAddTag.text.isEmpty()){
-                binding.editTextAddTag.error = "Invalid Entry"
-            }
+                    //find existing group name in database that matches with the name entry
+                    db.collection("NewGroup").whereEqualTo("name", groupName).get()
+                        .addOnSuccessListener { documents ->
 
-            //if entry not empty, validate existing group name
-            else {
-
-                //find existing group name in database that matches with the name entry
-                db.collection("NewGroup").whereEqualTo("name", groupName).get()
-                    .addOnSuccessListener { documents ->
-
-                        //if entry is not found(not match with) in database, create a new group
-                        if (documents.isEmpty){
+                            //if entry is not found(not match with) in database, create a new group
+                            if (documents.isEmpty){
 //                            Log.i(TAG,"AM I HEERE")
-                            db.collection("NewGroup").document(groupName).set(groupInfo)
-                            Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
-                            findNavController().navigate(R.id.to_myGroupFragment)
-                        }
-
-                        //if entry matches the name in the database, alert user to reenter a new group name
-                        else{
-                            for (doc in documents) {
-//                            Log.i(TAG, "${doc.id} => ${doc.data}")
-//                            Log.i(TAG, doc.data.getValue("name") as String)
-                                if (doc.data.getValue("name") == groupName) {
-                                    binding.editGroupName.error = "Group name is already taken"
-                                }
+                                db.collection("NewGroup").document(groupName).set(groupInfo)
+                                Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+                                findNavController().navigate(R.id.to_myGroupFragment)
 
                             }
-                        }
 
-                    }
+                            //if entry matches the name in the database, alert user to reenter a new group name
+                            else{
+                                for (doc in documents) {
+//                            Log.i(TAG, "${doc.id} => ${doc.data}")
+//                            Log.i(TAG, doc.data.getValue("name") as String)
+                                    if (doc.data.getValue("name") == groupName) {
+                                        binding.editGroupName.error = "Group name is already taken"
+
+                                    }
+
+                                }
+                            }
+
+                        }
                         //database could not find the match with the entry
-                    .addOnFailureListener { e ->
-                        Log.i(TAG, "Error writing document", e)
-                    }
+                        .addOnFailureListener { e ->
+                            Log.i(TAG, "Error writing document", e)
+                        }
 
 
                 }
-            /**
-             * user hits the add button to add tag to the list
-             * Validating text fields if empty or not
-             */
-                binding.addTag.setOnClickListener{
-//                    if (binding.editTextAddTag.text.isNotEmpty()){
-                        addChip(binding.editTextAddTag.text.toString())
 
-            }
+
+
 
         }// end of button group creation
 
+        /**
+         * user hits the add button to add tag to the list
+         * Validating text fields if empty or not
+         */
+        binding.addTag.setOnClickListener{
+            if (binding.editTextAddTag.text.isNotEmpty()) {
+                addChip(binding.editTextAddTag.text.toString())
+            }
+            //validate tags if empty or not
+            else if (binding.editTextAddTag.text.isEmpty()) {
+                binding.editTextAddTag.error = "Invalid Entry"
+            }
 
+        }
 
 
         return binding.root
