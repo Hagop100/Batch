@@ -98,9 +98,14 @@ class GroupCreationFragment : Fragment() {
             val groupInfo = Group(groupName, users, tags, aboutUs,biscuit)
 
 
-            //Validating entry if empty or not
+            //Validating group name if empty or not
             if (groupName.isEmpty()){
                 binding.editGroupName.error = "Missing Group's Name"
+            }
+
+            //validate tags if empty or not
+            else if (binding.editTextAddTag.text.isEmpty()){
+                binding.editTextAddTag.error = "Invalid Entry"
             }
 
             //if entry not empty, validate existing group name
@@ -138,22 +143,20 @@ class GroupCreationFragment : Fragment() {
 
 
                 }
+            /**
+             * user hits the add button to add tag to the list
+             * Validating text fields if empty or not
+             */
+                binding.addTag.setOnClickListener{
+//                    if (binding.editTextAddTag.text.isNotEmpty()){
+                        addChip(binding.editTextAddTag.text.toString())
 
             }
 
+        }// end of button group creation
 
-        /**
-         * user hits the add button to add tag to the list
-         * Validating text fields if empty or not
-         */
-        binding.addTag.setOnClickListener{
-            if (binding.editTextAddTag.text.isNotEmpty()){
-                addChip(binding.editTextAddTag.text.toString())
-            }
-            else if (binding.editTextAddTag.text.isEmpty()){
-                binding.editTextAddTag.error = "Invalid Entry"
-            }
-        }
+
+
 
         return binding.root
     } // end of onCreateView
