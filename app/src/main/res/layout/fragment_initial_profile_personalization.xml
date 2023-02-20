@@ -31,37 +31,63 @@
             android:textStyle="bold"
             android:text="Let's Personalize Your New Account" />
 
-        <!-- Crops the image into a circleView     -->
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/iv_userPhoto"
-            android:layout_width="225dp"
-            android:layout_height="199dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="32dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/profile_icon"
-            app:civ_border_color="#FF000000"
-            app:layout_constraintBottom_toTopOf="@id/btn_image_prompt"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_greeting"
-            app:layout_constraintVertical_bias="1.0"
-            tools:ignore="MissingConstraints" />
-
-        <!--  Button will be used to update User Profile       -->
-        <Button
-            android:id="@+id/btn_image_prompt"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_image_image_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/purple_700"
-            app:layout_constraintTop_toBottomOf="@+id/iv_userPhoto"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:text="Select Image"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            />
+            app:layout_constraintTop_toBottomOf="@id/tv_greeting"
+            app:layout_constraintStart_toStartOf="@id/tv_greeting"
+            app:layout_constraintBottom_toTopOf="@id/tv_namePrompt">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_userPhoto"
+                android:layout_width="225dp"
+                android:layout_height="199dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile_icon"
+                app:civ_border_color="#FF000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="1.0"
+                tools:ignore="MissingConstraints" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_image_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                app:backgroundTint="@color/purple_500"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_userPhoto"
+                app:layout_constraintEnd_toEndOf="@+id/iv_userPhoto"
+                app:layout_constraintHorizontal_bias="0.905"
+                app:layout_constraintStart_toStartOf="@+id/iv_userPhoto"
+                app:layout_constraintTop_toTopOf="@+id/iv_userPhoto"
+                app:layout_constraintVertical_bias="1.0"
+                app:srcCompat="@drawable/change_profile"
+                tools:ignore="MissingConstraints"
+                android:contentDescription="TODO" />
+
+            <!--  Button will be used to update User Profile       -->
+<!--            <Button-->
+<!--                android:id="@+id/btn_image_prompt"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textColor="@color/purple_700"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/iv_userPhoto"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                android:text="Select Image"-->
+<!--                android:paddingTop="10dp"-->
+<!--                android:paddingBottom="10dp"-->
+<!--                />-->
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Crops the image into a circleView     -->
+
         <!--   Will Prompt User to Put a display name      -->
         <TextView
             android:id="@+id/tv_namePrompt"
@@ -71,7 +97,7 @@
             android:textColor="@color/purple_500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_image_prompt"
+            app:layout_constraintTop_toBottomOf="@id/cl_image_image_button"
             />
         <!--  Area where User will enter their display name    -->
         <EditText

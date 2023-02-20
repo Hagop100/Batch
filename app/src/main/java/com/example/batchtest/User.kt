@@ -1,6 +1,7 @@
 package com.example.batchtest
 
-// Addimport android.icu.number.NumberFormatter.DecimalSeparatorDisplay
+ import android.icu.number.NumberFormatter.DecimalSeparatorDisplay
+ import android.net.Uri
 
 // User data class
 // @param firstName - first name of user
@@ -14,6 +15,7 @@ data class User(
     val displayName : String = "",
     val gender: String = "N/A",
     val imageUrl: String? = null,
+    val imageUri: Uri? = null,
     val birthdate: String ="",
     val personalBio: String = "",
 

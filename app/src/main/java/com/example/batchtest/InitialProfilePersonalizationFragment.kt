@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -50,7 +51,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
     private lateinit var gender: String
     private lateinit var imageUri: Uri
     private lateinit var userDetails: User
-    private var imageURL: String = ""
+    private var imageURL: String? = null
 
     //ActivityResultLauncher must be initialized onCreate
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
@@ -119,7 +120,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
 
         //Ask for permission for camera and external storage
         //Select picture for userProfile
-        binding.btnImagePrompt.setOnClickListener {
+        binding.btnImageUpdate.setOnClickListener {
             getUserImage(view)
         }
         //On click, will bring up a DatePicker Dialog so the user can set their date of birth
@@ -130,43 +131,53 @@ class InitialProfilePersonalizationFragment : Fragment() {
         binding.btnUpdate.setOnClickListener {
 
             //Verify that no entry is empty and populate the hashMap with the User inputs.
-            if(validateEntries(it))
+            if(validateEntries(it) && imageURL != null)
             {
-                //Get the values the user has input
-                //Save values in a Hashmap that will be used to update the user's information
-                //in the firebase database.
-                displayName = binding.etDisplayName.text.toString().trim()
-                gender = when(binding.genderRadioGroup.checkedRadioButtonId)
-                {
-                    binding.maleRadioButton.id -> MALE
-                    binding.femaleRadioButton.id-> FEMALE
-                    binding.nonBinaryRadioButton.id -> NONBINARY
-                    else-> NOGENDER
-                }
-
-                birthday = binding.btnBirthdayPicker.text.toString()
-                personalBio = binding.etPersonalBio.text.toString()
-                userHasMap[FIRSTNAME] = "Emanuel"
-                userHasMap[LASTNAME] = "Ruiz"
-                userHasMap[EMAIL] = "eman@email.com"
-                userHasMap[DISPLAYNAME] = displayName
-                userHasMap[GENDER] = gender
-                userHasMap[BIRTHDATE] = birthday
-                userHasMap[PERSONALBIO] = personalBio
-                userHasMap[IMAGEURL] = imageURL
-
-                //Get a instance of the Firebase Firestore database and update the user's information
-                FirebaseFirestore.getInstance().collection("users")
-                    .document(getCurrentUserID())
-                    .update(userHasMap).addOnSuccessListener {
-                        Toast.makeText(context,"Successfully Updated Profile", Toast.LENGTH_SHORT).show()
-                    }.addOnFailureListener{
-                        Toast.makeText(context,"Failed to Update Profile", Toast.LENGTH_SHORT).show()
-                    }
-                //Will navigate to the next fragment, Currently not in use
-                // findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_groupCreationFragment)
+                updateUserProfileDatabase()
             }
+            //else wait and try again for image URL
         }
+    }
+
+    /**
+     * Gathers the user's input and places it in a hashmap
+     * Updates User details in the Firestore Database
+     * */
+    private fun updateUserProfileDatabase()
+    {
+        //Get the values the user has input
+        //Save values in a Hashmap that will be used to update the user's information
+        //in the firebase database.
+        displayName = binding.etDisplayName.text.toString().trim()
+        gender = when(binding.genderRadioGroup.checkedRadioButtonId)
+        {
+            binding.maleRadioButton.id -> MALE
+            binding.femaleRadioButton.id-> FEMALE
+            binding.nonBinaryRadioButton.id -> NONBINARY
+            else-> NOGENDER
+        }
+
+        birthday = binding.btnBirthdayPicker.text.toString()
+        personalBio = binding.etPersonalBio.text.toString()
+        userHasMap[FIRSTNAME] = "Emanuel"
+        userHasMap[LASTNAME] = "Ruiz"
+        userHasMap[EMAIL] = "eman@email.com"
+        userHasMap[DISPLAYNAME] = displayName
+        userHasMap[GENDER] = gender
+        userHasMap[BIRTHDATE] = birthday
+        userHasMap[PERSONALBIO] = personalBio
+        userHasMap[IMAGEURL] = imageURL!!
+
+        //Get a instance of the Firebase Firestore database and update the user's information
+        FirebaseFirestore.getInstance().collection("users")
+            .document(getCurrentUserID())
+            .update(userHasMap).addOnSuccessListener {
+                Toast.makeText(context,"Successfully Updated Profile", Toast.LENGTH_SHORT).show()
+                //Will navigate to the next fragment, Currently not in use should put
+                findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_groupCreationFragment)
+            }.addOnFailureListener{
+                Toast.makeText(context,"Failed to Update Profile", Toast.LENGTH_SHORT).show()
+            }
     }
 
     //Must unbind the view
@@ -189,6 +200,73 @@ class InitialProfilePersonalizationFragment : Fragment() {
         )
     }
 
+
+
+    /**Function will get the extension of type of the profile image */
+    private fun getFileExtension(activity: Activity?, uri: Uri?): String?
+    {
+        return MimeTypeMap.getSingleton()
+            .getExtensionFromMimeType(activity?.contentResolver?.getType(uri!!))
+    }
+
+    /**
+     * Called after the user has given permission to use the external memory and camera
+     * Creates and starts an Activity for result that will open the user's gallery folder.
+     * The user can then choose the image they wish for their personal user profile
+     * */
+    private fun showImageChooser(activity: Activity?)
+    {
+        val galleryIntent = Intent(
+            Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        )
+        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
+    }
+
+    /**Automatically called after startActivityForResult
+     * Function will set the image of the user profile.
+     * Function will call the uploadUserImagetoCloud*/
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val userPic = binding.ivUserPhoto
+        if(resultCode == Activity.RESULT_OK && requestCode == PICK_IMAGE_REQUEST_CODE){
+
+            if(data != null)
+            {
+                try {
+                    Toast.makeText(context,"Got URI",Toast.LENGTH_LONG).show()
+                    imageUri = data?.data!!
+                    userPic.setImageURI(imageUri)
+                    //Not necessarily the best location for this
+                    //However, since it takes time to receive the URL
+                    //Placing it here has led to successful results.
+                    //Still must determine if there is a better solution
+                    uploadUserImageToCloud(activity,imageUri)
+                }catch (e: IOException){
+                    e.printStackTrace()
+                    Toast.makeText(context, "Image Selection Failed", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+        else
+        {
+            Toast.makeText(context,"Something went Wrong trying to access image files", Toast.LENGTH_LONG).show()
+        }
+
+    }
+    /**Check whether the User has already given permissions to the application
+     * If permission has not been granted, Launch the request for permission*/
+    private fun getUserImage(view: View){
+        //Check if Permission have already been granted
+        if(ContextCompat.checkSelfPermission(view.context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(view.context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+            showImageChooser(activity)
+        }
+        else //Request for Permissions
+        {
+            //Launch the permission launcher
+            requestPermissionLauncher.launch(arrayOf(Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE))
+        }
+    }
     /**
      * Using the Firebase Storage Reference, upload the user image to
      * the Firebase Storage area.
@@ -211,12 +289,6 @@ class InitialProfilePersonalizationFragment : Fragment() {
             }
     }
 
-    /**Function will get the extension of type of the profile image */
-    private fun getFileExtension(activity: Activity?, uri: Uri?): String?
-    {
-        return MimeTypeMap.getSingleton()
-            .getExtensionFromMimeType(activity?.contentResolver?.getType(uri!!))
-    }
 
     /**Function Returns whether any User input is empty
      * Displays a toast to the user to fill in property*/
@@ -260,58 +332,6 @@ class InitialProfilePersonalizationFragment : Fragment() {
     }
 
 
-    /**
-     * Called after the user has given permission to use the external memory and camera
-     * Creates and starts an Activity for result that will open the user's gallery folder.
-     * The user can then choose the image they wish for their personal user profile
-     * */
-    private fun showImageChooser(activity: Activity?)
-    {
-        val galleryIntent = Intent(
-            Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        )
-        Toast.makeText(context,"Testing Image",Toast.LENGTH_SHORT).show()
-        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST_CODE)
-    }
-
-    /**Automatically called after startActivityForResult
-     * Function will set the image of the user profile.
-     * Function will call the uploadUserImagetoCloud*/
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        val userPic = binding.ivUserPhoto
-        if(resultCode == Activity.RESULT_OK && requestCode == PICK_IMAGE_REQUEST_CODE){
-
-            Toast.makeText(context,"Got URI",Toast.LENGTH_LONG).show()
-            imageUri = data?.data!!
-            userPic.setImageURI(imageUri)
-            //Not necessarily the best location for this
-            //However, since it takes time to receive the URL
-            //Placing it here has led to successful results.
-            //Still must determine if there is a better solution
-            uploadUserImageToCloud(activity,imageUri)
-        }
-        else
-        {
-            Toast.makeText(context,"Something went Wrong", Toast.LENGTH_LONG).show()
-        }
-
-    }
-
-    /**Check whether the User has already given permissions to the application
-     * If permission has not been granted, Launch the request for permission*/
-    private fun getUserImage(view: View){
-        //Check if Permission have already been granted
-        if(ContextCompat.checkSelfPermission(view.context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(view.context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            showImageChooser(activity)
-        }
-        else //Request for Permissions
-        {
-            //Launch the permission launcher
-            requestPermissionLauncher.launch(arrayOf(Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE))
-        }
-    }
 
     /**Opens a Date picker dialog that allows the user to show their birthday
      * A Calender window will pop up and they can choose the date. */
