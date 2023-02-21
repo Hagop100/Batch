@@ -68,7 +68,7 @@ class MyGroupFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.setHasFixedSize(true)
         myGroupList = arrayListOf()
-        myAdapter = MyGroupAdapter(myGroupList)
+        myAdapter = context?.let { MyGroupAdapter(it,myGroupList) }!!
         recyclerView.adapter = myAdapter
 
         EventChangeListener()
