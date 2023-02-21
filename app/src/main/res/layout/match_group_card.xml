@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!-- scroll view layout for each group card
+used to populate the cardStackView recycler -->
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -10,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <!-- linear layout holds the undo and more button -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,14 +25,17 @@
                 android:layout_height="25dp"
                 android:background="@drawable/undo"
                 android:layout_marginEnd="8dp"
+                android:fillColor="@color/black"
                 android:contentDescription="@string/undo_button"/>
             <ImageButton
                 android:id="@+id/match_more_btn"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:background="@drawable/more_horiz"
+                android:fillColor="@color/black"
                 android:contentDescription="@string/match_group_card_more_button"/>
         </LinearLayout>
+        <!-- card view that holds the card -->
         <androidx.cardview.widget.CardView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_height="wrap_content"
@@ -41,55 +46,57 @@
             app:cardCornerRadius="4dp"
             app:cardElevation="13dp"
             app:cardBackgroundColor="@color/off_white">
+            <!-- card will use a base linear layout for a vertical displaying of content -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <!-- relative layout holds the group name and biscuits -->
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp">
-                    <TextView
-                        android:id="@+id/group_name"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="15dp"
+                    android:paddingHorizontal="20dp">
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:theme="@style/page_title"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                    <include
-                        android:id="@+id/just_joined_tag"
-                        layout="@layout/interest_tag"
+                        android:orientation="vertical"
+                        android:layout_centerVertical="true">
+                        <TextView
+                            android:id="@+id/group_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:theme="@style/page_title"/>
+                    </LinearLayout>
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="7dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/group_name"
-                        app:layout_constraintTop_toTopOf="parent" />
-                    <TextView
-                        android:id="@+id/biscuit_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:textColor="@color/black"
-                        app:layout_constraintStart_toStartOf="@id/biscuit_icon"
-                        app:layout_constraintEnd_toStartOf="@id/biscuit_icon"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-                    <ImageView
-                        android:id="@+id/biscuit_icon"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:contentDescription="@string/biscuit_icon"
-                        android:src="@drawable/biscuits_icon"
-                        app:layout_constraintStart_toEndOf="@id/biscuit_value"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentEnd="true">
+                        <TextView
+                            android:id="@+id/biscuit_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:textColor="@color/black"
+                            app:layout_constraintStart_toStartOf="@id/biscuit_icon"
+                            app:layout_constraintEnd_toStartOf="@id/biscuit_icon"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                        <ImageView
+                            android:id="@+id/biscuit_icon"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:contentDescription="@string/biscuit_icon"
+                            android:src="@drawable/biscuits_icon"
+                            app:layout_constraintStart_toEndOf="@id/biscuit_value"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </LinearLayout>
+                </RelativeLayout>
+                <!-- group photo -->
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
@@ -97,7 +104,7 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/one_direction_photo"
                     android:contentDescription="matching group card photo"/>
-
+                <!-- a nested card view for the interest tags -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -109,6 +116,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
+                        <!-- use flex box layout to align the dynamic interest tags -->
                         <com.google.android.flexbox.FlexboxLayout
                             xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/interest_tags"
@@ -118,6 +126,7 @@
                             app:flexWrap="wrap"
                             app:justifyContent="center">
                         </com.google.android.flexbox.FlexboxLayout>
+                        <!-- a nested card view for the about us description -->
                         <androidx.cardview.widget.CardView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

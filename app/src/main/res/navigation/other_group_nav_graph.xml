@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/other_group_nav_graph"
+    app:startDestination="@id/matchedGroupFragment">
+
+    <fragment
+        android:id="@+id/matchedGroupFragment"
+        android:name="com.example.batchtest.MatchedGroupFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_matched_group">
+        <action
+            android:id="@+id/action_matchedGroupFragment_to_pendingGroupFragment"
+            app:destination="@id/pendingGroupFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/pendingGroupFragment"
+        android:name="com.example.batchtest.PendingGroupFragment"
+        android:label="fragment_pending_group"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_pendingGroupFragment_to_pendingGroupFragment"
+            app:destination="@id/matchedGroupFragment"/>
+    </fragment>
+</navigation>

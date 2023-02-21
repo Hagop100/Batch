@@ -17,4 +17,7 @@
 
     <!--    horizontal line-->
     <color name="horizontal_line">#EBE2D8</color>
+
+    <!-- misc colors -->
+    <color name="light_grey">#EFEBE7</color>
 </resources>

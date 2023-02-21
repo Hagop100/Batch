@@ -91,10 +91,6 @@ class CardStackAdapter(
             // set group description
             holder.description.text = group.aboutUsDescription
 
-            // get time since group was created
-            val timeSinceJoined: Long = Date().time - group.createdDate!!.time
-            Log.v(TAG, timeSinceJoined.toString())
-//            if (timeSinceJoined < (Date().time )
             // inflate the interest tag container
             val inflater: LayoutInflater = LayoutInflater.from(holder.interestTags.context)
             var interestTag: TextView
@@ -129,8 +125,6 @@ class CardStackAdapter(
             val description: TextView = binding.aboutUsDescription
             // interest tags of groups
             val interestTags: FlexboxLayout = binding.interestTags
-            // just joined tag
-            val justJoined: InterestTagBinding = binding.justJoinedTag
         }
 
     // match tab fragment listens to when undo or more button is clicked
