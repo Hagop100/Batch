@@ -50,7 +50,6 @@ class MyGroupFragment : Fragment() {
 
         }
 
-
     }
 
     /**
@@ -63,7 +62,7 @@ class MyGroupFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentMyGroupBinding.inflate(layoutInflater,container, false)
 
-        //for the card view of the group list info
+        //set the layout for the group info to display in the list
         recyclerView = binding.recycleView
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.setHasFixedSize(true)
@@ -71,6 +70,7 @@ class MyGroupFragment : Fragment() {
         myAdapter = context?.let { MyGroupAdapter(it,myGroupList) }!!
         recyclerView.adapter = myAdapter
 
+        // call function to retrieve info from database
         EventChangeListener()
 
 
@@ -91,7 +91,8 @@ class MyGroupFragment : Fragment() {
     }
 
     /**
-     * Query the document database to get the group info
+     * Query the document database to get the group info include group image, group name and descrption
+     * This works with the Adapter class to retrieve info of the group
      */
     private fun EventChangeListener(){
         db = FirebaseFirestore.getInstance()

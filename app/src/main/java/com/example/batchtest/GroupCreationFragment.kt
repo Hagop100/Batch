@@ -59,10 +59,7 @@ class GroupCreationFragment : Fragment() {
             biscuits = 0,
             image = null
         )
-
-
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -71,8 +68,6 @@ class GroupCreationFragment : Fragment() {
 
         // Inflate the layout for this fragment
         _binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
-
-
 
         /**
          * user clicks the close button to navigate back to my groups tab
@@ -107,7 +102,6 @@ class GroupCreationFragment : Fragment() {
 
             val groupInfo = Group(groupName, users, tags, aboutUs,biscuit, image)
 
-
                 //Validating group name and tag if empty or not
                 if (groupName.isEmpty() && binding.editTextAddTag.text.isEmpty()){
                     binding.editGroupName.error = "Missing Group's Name"
@@ -134,6 +128,7 @@ class GroupCreationFragment : Fragment() {
                                     }
                                     // if tag is not empty, create a new group
                                     else{
+                                        //set the group name as the document name in firebase
                                         db.collection("NewGroup").document(groupName).set(groupInfo)
                                         Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
                                         findNavController().navigate(R.id.to_myGroupFragment)
@@ -192,6 +187,7 @@ class GroupCreationFragment : Fragment() {
 
     /**
      * Get A Firebase Storage reference to save the user image to
+     * Set the file name and extension to the time that the image is uploaded
      * return Firebase Reference
      * */
     private fun getStorageReference(): StorageReference {
@@ -232,7 +228,6 @@ class GroupCreationFragment : Fragment() {
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
             }
     }
-
 
 
     /**
@@ -290,11 +285,5 @@ class GroupCreationFragment : Fragment() {
     }
 
 }
-
-
-
-
-
-
 
 

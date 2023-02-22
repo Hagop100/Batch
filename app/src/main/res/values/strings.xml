@@ -43,4 +43,9 @@
     <string name="accept_button">accept button</string>
     <string name="matched">Matched</string>
     <string name="pending">Pending</string>
+
+<!--    user profile tab-->
+    <string name="edit_profile">Edit Profile</string>
+    <string name="preferences">Preferences</string>
+    <string name="settings">Settings</string>
 </resources>
