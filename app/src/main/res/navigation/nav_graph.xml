@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_loginFragment_to_registrationFragment"
             app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_MFAuthenticationVerificationDialogFragment"
+            app:destination="@id/MFAuthenticationVerificationDialogFragment" />
     </fragment>
     <!-- match tab fragment -->
     <fragment
@@ -59,7 +62,11 @@
         android:id="@+id/initialProfilePersonalizationFragment"
         android:name="com.example.batchtest.InitialProfilePersonalizationFragment"
         android:label="fragment_initial_profile_personalization"
-        tools:layout="@layout/fragment_initial_profile_personalization" />
+        tools:layout="@layout/fragment_initial_profile_personalization" >
+        <action
+            android:id="@+id/action_initialProfilePersonalizationFragment_to_groupCreationFragment"
+            app:destination="@id/groupCreationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/registrationFragment"
         android:name="com.example.batchtest.RegistrationFragment"
@@ -69,5 +76,10 @@
             android:id="@+id/action_registrationFragment_to_initialProfilePersonalizationFragment"
             app:destination="@id/initialProfilePersonalizationFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/MFAuthenticationVerificationDialogFragment"
+        android:name="com.example.batchtest.MFAuthenticationVerificationDialogFragment"
+        android:label="fragment_m_f_authentication_verification_dialog"
+        tools:layout="@layout/fragment_m_f_authentication_verification_dialog" />
 
 </navigation>
