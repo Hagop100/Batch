@@ -49,7 +49,7 @@
             android:id="@+id/to_groupCreationFragment"
             app:destination="@id/groupCreationFragment" />
     </fragment>
-    <!-- pending tab fragment -->
+    <!-- other group tab fragment -->
     <fragment
         android:id="@+id/otherGroupTabFragment"
         android:name="com.example.batchtest.OtherGroupTabFragment"

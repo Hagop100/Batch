@@ -28,8 +28,7 @@ uses fragment to switch between matched groups and pending groups -->
                 android:paddingHorizontal="24dp"
                 android:paddingVertical="7dp"
                 android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"/>
+                android:focusable="true" />
             <TextView
                 android:id="@+id/pending_btn"
                 android:background="@drawable/selector_white_rounded_button"
@@ -42,8 +41,7 @@ uses fragment to switch between matched groups and pending groups -->
                 android:paddingHorizontal="24dp"
                 android:paddingVertical="7dp"
                 android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"/>
+                android:focusable="true" />
         </LinearLayout>
     <include
         android:layout_width="wrap_content"

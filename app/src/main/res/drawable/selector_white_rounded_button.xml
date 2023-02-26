@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- selector is used to change styles depending on the state of the item -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- item uses white rounded button styling when clicked and focused -->
-    <item android:drawable="@drawable/white_rounded_button" android:state_checked="true"/>
-    <item android:drawable="@drawable/white_rounded_button" android:state_focused="true"/>
+    <!-- item uses white rounded button styling when pressed -->
+    <item android:drawable="@drawable/white_rounded_button"  android:state_selected="true"/>
+    <item android:drawable="@drawable/white_rounded_button"  android:state_focused="true"/>
 </selector>
