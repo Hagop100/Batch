@@ -1,6 +1,7 @@
 package com.example.batchtest
 
 
+
 import android.app.Activity
 
 import android.content.Intent
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -18,7 +20,10 @@ import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.google.android.material.chip.Chip
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -30,14 +35,13 @@ private const val TAG = "print"
  * create an instance of this fragment.
  */
 class GroupCreationFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var _binding: FragmentGroupCreationBinding? = null
     private val binding get() = _binding!!
     private lateinit var group: Group
     lateinit var grouppic: CircleImageView
     private var imageUri: Uri? = null
     private val pickImage = 100
-
+    private var imageURL: String? = null
 
 
     /**
@@ -52,10 +56,9 @@ class GroupCreationFragment : Fragment() {
             users = ArrayList<User>(),
             interestTags = ArrayList(),
             aboutUsDescription = "",
-            biscuits = 0
+            biscuits = 0,
+            image = null
         )
-
-
     }
 
     override fun onCreateView(
@@ -65,8 +68,6 @@ class GroupCreationFragment : Fragment() {
 
         // Inflate the layout for this fragment
         _binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
-
-
 
         /**
          * user clicks the close button to navigate back to my groups tab
@@ -82,11 +83,11 @@ class GroupCreationFragment : Fragment() {
             //view gallery by accessing the internal contents from mobile media
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             startActivityForResult(gallery, pickImage)
-
         }
 
         /**
          * user creates a group and save data to database
+         * This function use entry validation by checking for existing values in the database
          */
 
         binding.btnCreateGroup.setOnClickListener{
@@ -97,8 +98,9 @@ class GroupCreationFragment : Fragment() {
             val users = group.users
             val tags = group.interestTags
             val biscuit = group.biscuits
-            val groupInfo = Group(groupName, users, tags, aboutUs,biscuit)
+            val image = imageURL
 
+            val groupInfo = Group(groupName, users, tags, aboutUs,biscuit, image)
 
                 //Validating group name and tag if empty or not
                 if (groupName.isEmpty() && binding.editTextAddTag.text.isEmpty()){
@@ -124,12 +126,13 @@ class GroupCreationFragment : Fragment() {
                                     if (binding.editTextAddTag.text.isEmpty()) {
                                         binding.editTextAddTag.error = "Missing Tag"
                                     }
+                                    // if tag is not empty, create a new group
                                     else{
+                                        //set the group name as the document name in firebase
                                         db.collection("NewGroup").document(groupName).set(groupInfo)
                                         Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
                                         findNavController().navigate(R.id.to_myGroupFragment)
                                     }
-
 
                                 }
 
@@ -174,11 +177,63 @@ class GroupCreationFragment : Fragment() {
 
         return binding.root
     } // end of onCreateView
+//
+    /**Function will get the extension of type of the profile image */
+    private fun getFileExtension(activity: Activity?, uri: Uri?): String?
+    {
+        return MimeTypeMap.getSingleton()
+            .getExtensionFromMimeType(activity?.contentResolver?.getType(uri!!))
+    }
+
+    /**
+     * Get A Firebase Storage reference to save the user image to
+     * Set the file name and extension to the time that the image is uploaded
+     * return Firebase Reference
+     * */
+    private fun getStorageReference(): StorageReference {
+        //get the image's file type
+        val imageExtension = getFileExtension(activity, imageUri)
+        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
+        val now = Date()
+        val fileName = formatter.format(now)
+
+        return FirebaseStorage.getInstance().getReference("GroupPic/$fileName.$imageExtension")
+        //get the image's file type
+//        val imageExtension = getFileExtension(activity, imageUri)
+//
+//        return FirebaseStorage.getInstance().reference.child(
+//            InitialProfilePersonalizationFragment.USER_PROFILE_IMAGE + System.currentTimeMillis() + "."
+//                    + imageExtension)
+    }
+    /**
+     * Using the Firebase Storage Reference, upload the user image to
+     * the Firebase Storage area.
+     * The SuccessListener returns the URL of the image.
+     * imageURL is updated with the returned URl
+     * */
+    private fun uploadUserImageToCloud(activity: Activity?, imageUri: Uri?)
+    {
+
+        val storageReference: StorageReference = getStorageReference()
+        storageReference.putFile(imageUri!!)
+            .addOnSuccessListener { taskSnapshot ->
+                // Get the downloadable url from the task snapshot
+                // The Success Listener is Asynchronous, and any following code will run
+                // Getting the TaskSnapshot takes a bit of time,
+//                imageURL = taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
+                imageURL = imageUri.toString()
+                Log.i(TAG, "IMAGEURL: $imageURL")
+
+            }.addOnFailureListener {
+                Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
+            }
+    }
 
 
     /**
      * set profile image
      */
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         grouppic = binding.groupProfile
@@ -186,7 +241,10 @@ class GroupCreationFragment : Fragment() {
         //setting that was selected from the gallery
         if(resultCode == Activity.RESULT_OK && requestCode == pickImage){
             imageUri = data?.data
+            Log.i(TAG, "Image URi: $imageUri.toString()")
             grouppic.setImageURI(imageUri)
+            uploadUserImageToCloud(activity, imageUri)
+
         }
 
     }
@@ -227,11 +285,5 @@ class GroupCreationFragment : Fragment() {
     }
 
 }
-
-
-
-
-
-
 
 

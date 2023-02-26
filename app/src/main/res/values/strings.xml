@@ -48,4 +48,10 @@
     <string name="mf_verification_code_text">Enter Code</string>
     <string name="mf_verification_enter_code">Code</string>
     <string name="mf_authentication_verify_btn_text">Verify</string>
+
+<!--    user profile tab-->
+    <string name="edit_profile">Edit Profile</string>
+    <string name="preferences">Preferences</string>
+    <string name="settings">Settings</string>
+
 </resources>
