@@ -23,6 +23,12 @@
         <item name="android:textSize">28sp</item>
     </style>
 
+<!--    -->
+    <style name="custom_button_view" parent="" >
+        <item name="android:background">@color/app_background</item>
+        <item name="android:backgroundTint">@color/app_background</item>
+    </style>
+
 <!--   regular font for page text-->
     <style name="page_text" parent="" >
         <item name="android:fontFamily">@font/karla</item>

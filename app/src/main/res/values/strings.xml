@@ -64,6 +64,7 @@
     <string name="deal_breaker">Deal Breakers</string>
     <string name="max_distance">Max Distance from Current Location</string>
     <string name="gender">Gender</string>
+    <string name="save_preferences_btn">Save</string>
 
 
 
