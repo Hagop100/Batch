@@ -16,7 +16,7 @@ import com.example.batchtest.databinding.FragmentOtherGroupTabBinding
 
 /**
  * A simple [Fragment] subclass.
- * Use the [OtherGroupTabFragment.newInstance] factory method to
+ * Use the [OtherGroupTabFragment] factory method to
  * create an instance of this fragment.
  */
 
@@ -25,9 +25,7 @@ private var TAG = "OtherGroupsTab"
 class OtherGroupTabFragment : Fragment() {
     private lateinit var binding: FragmentOtherGroupTabBinding
     // initially set to matched fragment
-    private var isMatched: Boolean = true;
-    // initially set was matched to false
-    private var wasMatched: Boolean = false;
+    private var isMatched: Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -39,16 +37,11 @@ class OtherGroupTabFragment : Fragment() {
         // else initialize to the matched fragment
         if (savedInstanceState != null) {
             // get the saved nested fragment states
-
             // true if the user was on matched
             // false if the user was on pending
             isMatched = savedInstanceState.getBoolean("isMatched")
-            // true if the user was on pending
-            // false if the user was on matched
-            wasMatched = savedInstanceState.getBoolean("wasMatched")
             // begin a nested fragment transaction
             val transaction: FragmentTransaction = cfm.beginTransaction()
-            cfm.popBackStack()
             // if the saved state was on the matched tab, then restore it
             // else the saved state was on the pending tab and will be restored
             if (isMatched) {
@@ -56,15 +49,11 @@ class OtherGroupTabFragment : Fragment() {
                 val matchedGroupFragment = MatchedGroupFragment()
                 // use fragment transaction method to replace the current fragment with the matched group fragment
                 transaction.replace(R.id.other_group_fragment_container, matchedGroupFragment)
-                transaction.addToBackStack("matched")
-                wasMatched = false
             } else {
                 // initialize PendingGroupFragment
                 val pendingGroupFragment = PendingGroupFragment()
                 // use fragment transaction method to replace the current fragment with the pending group fragment
-                transaction.replace(R.id.other_group_fragment_container, pendingGroupFragment, "pending")
-                transaction.addToBackStack("pending")
-                wasMatched = true
+                transaction.replace(R.id.other_group_fragment_container, pendingGroupFragment)
             }
             // commit the transaction
             transaction.commit()
@@ -73,7 +62,6 @@ class OtherGroupTabFragment : Fragment() {
             val transaction: FragmentTransaction = cfm.beginTransaction()
             val matchedGroupFragment = MatchedGroupFragment()
             transaction.replace(R.id.other_group_fragment_container, matchedGroupFragment)
-            transaction.addToBackStack("matched")
             transaction.commit()
         }
     }
@@ -81,7 +69,7 @@ class OtherGroupTabFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // bind to other group tab layout
         binding = FragmentOtherGroupTabBinding.inflate(inflater, container, false)
 
@@ -104,48 +92,21 @@ class OtherGroupTabFragment : Fragment() {
         if (isMatched) {
             focusBtn(binding.matchedBtn, binding.pendingBtn)
             isMatched = true
-            wasMatched = false
         } else {
             focusBtn(binding.pendingBtn, binding.matchedBtn)
             isMatched = false
-            wasMatched = true
         }
 
-        // when the back button is pressed, it will call this callback to refocus on the previous tab
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(this) {
+        // when the back button is pressed, it will clear the back stack for fragment transaction
+        // and return to  login screen rather than return to previous nested fragments
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
             // initialize a fragment manager for the nested children fragments
             val cfm = childFragmentManager
             // get the count of child fragments in the stack
             val count = cfm.backStackEntryCount
-            // check if fragment is not at the bottom of stack, which is an empty fragment
-            if (count > 1) {
-                // get the tag name of the fragment from when addToBackStack(name) was called
-                val name = cfm.getBackStackEntryAt(count - 1).name
-                // if the tag name was matched then we know the previous state was pending
-                wasMatched = name !== "matched"
-                // if isMatched is not true, then it will focus on the matched button
-                // because the current will be the pending button
-                // else if isMatched is true, focus on the pending button
-                if (wasMatched) {
-                    focusBtn(binding.matchedBtn, binding.pendingBtn)
-                    isMatched = true
-                    wasMatched = false
-                } else {
-                    focusBtn(binding.pendingBtn, binding.matchedBtn)
-                    isMatched = false
-                    wasMatched = true
-                }
-            } else {
-                // when at the bottom of the stack (empty nested fragment)
-                // reenable ability to click button
-                if (isMatched) {
-                    binding.matchedBtn.isClickable = true
-                } else {
-                    binding.pendingBtn.isClickable = true
-                }
+            for (i in 0..count) {
+                cfm.popBackStack()
             }
-            // this will call the normal back button callback
-            // so the fragment transaction can be reverted
             if (isEnabled) {
                 isEnabled = false
                 requireActivity().onBackPressed()
@@ -158,13 +119,11 @@ class OtherGroupTabFragment : Fragment() {
         binding.pendingBtn.setOnClickListener {
             focusBtn(binding.pendingBtn, binding.matchedBtn)
             isMatched = false
-            wasMatched = true
             // initialize PendingGroupFragment
             val pendingGroupFragment = PendingGroupFragment()
             // replace nested matched fragment with pending fragment using transaction
             val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
             transaction.replace(R.id.other_group_fragment_container, pendingGroupFragment)
-            transaction.addToBackStack("pending")
             transaction.commit()
         }
 
@@ -173,13 +132,11 @@ class OtherGroupTabFragment : Fragment() {
         binding.matchedBtn.setOnClickListener {
             focusBtn(binding.matchedBtn, binding.pendingBtn)
             isMatched = true
-            wasMatched = false
             // initialize MatchedGroupFragment
             val matchedGroupFragment = MatchedGroupFragment()
             // replace nested pending fragment with matched fragment using transaction
             val transaction: FragmentTransaction = childFragmentManager.beginTransaction()
             transaction.replace(R.id.other_group_fragment_container, matchedGroupFragment)
-            transaction.addToBackStack("matched")
             transaction.commit()
         }
         // inflate the layout for this fragment
@@ -191,7 +148,5 @@ class OtherGroupTabFragment : Fragment() {
         super.onSaveInstanceState(outState)
         // save the latest isMatched value
         outState.putBoolean("isMatched", isMatched)
-        // save the latest wasMatched value
-        outState.putBoolean("wasMatched", wasMatched)
     }
 }
