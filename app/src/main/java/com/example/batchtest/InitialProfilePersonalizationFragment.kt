@@ -51,6 +51,8 @@ class InitialProfilePersonalizationFragment : Fragment() {
     private lateinit var gender: String
     private lateinit var imageUri: Uri
     private lateinit var userDetails: User
+    private lateinit var firstName: String
+    private lateinit var lastName: String
     private var imageURL: String? = null
 
     //ActivityResultLauncher must be initialized onCreate
@@ -66,7 +68,6 @@ class InitialProfilePersonalizationFragment : Fragment() {
         const val MALE: String = "male"
         const val FEMALE: String = "female"
         const val NONBINARY: String = "nonbinary"
-        const val NOGENDER: String = "N/A"
         const val DISPLAYNAME: String = "displayName"
         const val IMAGEURL: String = "imageUrl"
         const val BIRTHDATE: String = "birthdate"
@@ -149,18 +150,19 @@ class InitialProfilePersonalizationFragment : Fragment() {
         //Save values in a Hashmap that will be used to update the user's information
         //in the firebase database.
         displayName = binding.etDisplayName.text.toString().trim()
+        firstName = binding.etFirstName.text.toString().trim()
+        lastName = binding.etLastName.text.toString().trim()
         gender = when(binding.genderRadioGroup.checkedRadioButtonId)
         {
             binding.maleRadioButton.id -> MALE
             binding.femaleRadioButton.id-> FEMALE
-            binding.nonBinaryRadioButton.id -> NONBINARY
-            else-> NOGENDER
+            else -> NONBINARY
         }
 
         birthday = binding.btnBirthdayPicker.text.toString()
         personalBio = binding.etPersonalBio.text.toString()
-        userHasMap[FIRSTNAME] = "Emanuel"
-        userHasMap[LASTNAME] = "Ruiz"
+        userHasMap[FIRSTNAME] = firstName
+        userHasMap[LASTNAME] = lastName
         userHasMap[EMAIL] = "eman@email.com"
         userHasMap[DISPLAYNAME] = displayName
         userHasMap[GENDER] = gender
@@ -294,6 +296,14 @@ class InitialProfilePersonalizationFragment : Fragment() {
      * Displays a toast to the user to fill in property*/
     private fun validateEntries(view: View):Boolean{
         return when{
+            TextUtils.isEmpty(binding.etFirstName.text.toString().trim{it <= ' '})-> {
+                Toast.makeText(view.context,"Please Enter Your First Name", Toast.LENGTH_LONG).show()
+                return false
+            }
+            TextUtils.isEmpty(binding.etLastName.text.toString().trim{it <= ' '})-> {
+                Toast.makeText(view.context,"Please Enter Your Last Name", Toast.LENGTH_LONG).show()
+                return false
+            }
             TextUtils.isEmpty(binding.etDisplayName.text.toString().trim{it <= ' '})-> {
                 Toast.makeText(view.context,"Please Enter a Display Name", Toast.LENGTH_LONG).show()
                 //TODO check if user name is unique.

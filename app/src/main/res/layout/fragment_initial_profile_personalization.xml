@@ -70,25 +70,52 @@
                 tools:ignore="MissingConstraints"
                 android:contentDescription="TODO" />
 
-            <!--  Button will be used to update User Profile       -->
-<!--            <Button-->
-<!--                android:id="@+id/btn_image_prompt"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textColor="@color/purple_700"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/iv_userPhoto"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                android:text="Select Image"-->
-<!--                android:paddingTop="10dp"-->
-<!--                android:paddingBottom="10dp"-->
-<!--                />-->
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <!-- Crops the image into a circleView     -->
 
         <!--   Will Prompt User to Put a display name      -->
+        <TextView
+            android:id="@+id/tv_first_name"
+            android:layout_width="331dp"
+            android:layout_height="wrap_content"
+            android:text="Enter First Name"
+            android:textColor="@color/purple_500"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_image_image_button"
+            />
+        <EditText
+            android:id="@+id/et_first_name"
+            android:layout_width="331dp"
+            android:layout_height="wrap_content"
+            android:hint="First Name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_first_name"
+            android:paddingBottom="15dp"
+            android:background="@drawable/round_corner"
+            />
+        <TextView
+            android:id="@+id/tv_last_name"
+            android:layout_width="331dp"
+            android:layout_height="wrap_content"
+            android:text="Enter Last Name"
+            android:textColor="@color/purple_500"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_first_name"
+            />
+        <EditText
+            android:id="@+id/et_last_name"
+            android:layout_width="331dp"
+            android:layout_height="wrap_content"
+            android:hint="Last Name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_last_name"
+            android:paddingBottom="15dp"
+            />
         <TextView
             android:id="@+id/tv_namePrompt"
             android:layout_width="331dp"
@@ -97,7 +124,8 @@
             android:textColor="@color/purple_500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_image_image_button"
+            app:layout_constraintTop_toBottomOf="@id/et_last_name"
+            android:background=""
             />
         <!--  Area where User will enter their display name    -->
         <EditText
@@ -108,6 +136,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_namePrompt"
+            android:background="@drawable/round_corner"
             android:paddingBottom="15dp"
             />
         <!--    Prompts User to select their birthdate     -->
@@ -133,6 +162,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_birthDatePrompt"
             android:layout_marginTop="10dp"
+            android:textColorHint="@color/white"
             />
 
         <!--   Prompts User to Select their Gender      -->
@@ -152,11 +182,13 @@
         <!--     RadioGroup that Contains the Gender options    -->
         <RadioGroup
             android:id="@+id/gender_radioGroup"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/tv_genderPrompt"
             app:layout_constraintStart_toStartOf="@id/tv_genderPrompt"
-            android:orientation="vertical">
+            app:layout_constraintEnd_toEndOf="@id/tv_genderPrompt"
+            android:orientation="vertical"
+            android:background="@drawable/round_corner">
 
             <RadioButton
                 android:id="@+id/male_radioButton"
@@ -172,13 +204,6 @@
             <RadioButton
                 android:id="@+id/nonBinary_radioButton"
                 android:text="NonBinary"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                />
-            <RadioButton
-                android:id="@+id/na_radioButton"
-                android:checked="true"
-                android:text="Do not specify"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 />
