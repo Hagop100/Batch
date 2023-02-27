@@ -43,9 +43,15 @@
     <string name="accept_button">accept button</string>
     <string name="matched">Matched</string>
     <string name="pending">Pending</string>
+    <string name="phone_number_text">(***)***-****</string>
+    <string name="mfVerificationTitle">SMS Verification</string>
+    <string name="mf_verification_code_text">Enter Code</string>
+    <string name="mf_verification_enter_code">Code</string>
+    <string name="mf_authentication_verify_btn_text">Verify</string>
 
 <!--    user profile tab-->
     <string name="edit_profile">Edit Profile</string>
     <string name="preferences">Preferences</string>
     <string name="settings">Settings</string>
+
 </resources>
