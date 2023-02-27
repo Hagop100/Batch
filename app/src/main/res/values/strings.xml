@@ -49,9 +49,22 @@
     <string name="mf_verification_enter_code">Code</string>
     <string name="mf_authentication_verify_btn_text">Verify</string>
 
-<!--    user profile tab-->
+    <!--    user profile tab-->
     <string name="edit_profile">Edit Profile</string>
     <string name="preferences">Preferences</string>
     <string name="settings">Settings</string>
+
+    <!--    preferences -->
+    <string name="preferences_title">Preferences</string>
+    <string name="general_info">General Information</string>
+    <string name="set_age">Set Age Range</string>
+    <string name="set_location">Set Location</string>
+    <string name="location">Location</string>
+    <string name="set_tags">Set Tags</string>
+    <string name="deal_breaker">Deal Breakers</string>
+    <string name="max_distance">Max Distance from Current Location</string>
+    <string name="gender">Gender</string>
+
+
 
 </resources>

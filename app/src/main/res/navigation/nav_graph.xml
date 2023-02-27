@@ -82,4 +82,11 @@
         android:label="fragment_m_f_authentication_verification_dialog"
         tools:layout="@layout/fragment_m_f_authentication_verification_dialog" />
 
+<!--   user profile tab-->
+    <fragment
+        android:id="@+id/userProfileTabFragment"
+        android:name="com.example.batchtest.UserProfileTabFragment"
+        android:label="UserProfileTabFragment"
+        tools:layout="@layout/fragment_user_profile_tab"/>
+
 </navigation>

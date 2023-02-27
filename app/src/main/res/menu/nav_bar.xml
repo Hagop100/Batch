@@ -16,7 +16,7 @@
         android:icon="@drawable/other_groups_icon"
         android:title="@string/other_groups"/>
     <item
-        android:id="@id/myGroupsTab"
+        android:id="@id/userProfileTabFragment"
         android:icon="@drawable/profile_icon"
         android:title="@string/profile"/>
 </menu>
