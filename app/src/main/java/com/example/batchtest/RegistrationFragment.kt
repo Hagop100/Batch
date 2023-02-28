@@ -50,13 +50,29 @@ class RegistrationFragment : Fragment() {
         return binding.root
     }
 
+    //Registration function
     private fun registration(email: String, password: String){
+        //if the email or password slot is empty prompt the user to enter email and password
         if(email.isEmpty() || password.isEmpty()) {
             Toast.makeText(activity, "Please Enter Email and Password.", Toast.LENGTH_SHORT).show()
         }
 
+        //When pressing the registration button sends the user to the profile personalization screen
         else{
             activity?.let{
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            val user = auth.currentUser
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(activity, "Authentication failed.",
+                                Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
                 findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment)
             }
         }
