@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PreferencesFragment"
+    android:orientation="vertical"
+    android:background="@color/app_background"
+    android:layout_marginBottom="20dp"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="10dp"
+
+        android:backgroundTint="@color/app_background">
+
+        <TextView
+            android:id="@+id/preferences_title"
+            android:layout_width="208dp"
+            android:layout_height="35dp"
+            android:text="@string/preferences_title"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:theme="@style/page_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.038"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btn_to_user_profile_tab"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="59dp"
+            android:layout_height="43dp"
+            app:icon="@drawable/close_icon"
+            app:iconTint="@color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.99"
+            app:layout_constraintStart_toEndOf="@+id/preferences_title"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <View
+        android:id="@+id/horizontal_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/horizontal_line"
+        />
+
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/general_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/general_info"
+        android:textStyle="bold"
+        android:textSize="17sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+
+        android:background="@drawable/round_corner"
+        android:padding="20dp">
+    <TextView
+        android:id="@+id/set_age"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/set_age"
+        android:textColor="@color/gray"
+        android:textStyle="bold" />
+
+    <com.google.android.material.slider.RangeSlider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:valueFrom="0"
+        android:valueTo="100"
+        android:value="18"
+        android:stepSize="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/round_corner"
+        android:padding="20dp">
+    <TextView
+
+        android:id="@+id/set_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/set_location"
+        android:textColor="@color/gray"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/location" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/round_corner"
+        android:padding="20dp">
+    <TextView
+
+        android:id="@+id/set_tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/set_tags"
+        android:textColor="@color/gray"
+        android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="20dp"
+        android:id="@+id/deal_breaker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/deal_breaker"
+        android:textStyle="bold"
+        android:textSize="17sp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/round_corner"
+        android:padding="20dp">
+        <TextView
+            android:id="@+id/max_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/max_distance"
+            android:textColor="@color/gray"
+            android:textStyle="bold" />
+        <com.google.android.material.slider.RangeSlider
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </com.google.android.material.slider.RangeSlider>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/round_corner"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/gender"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/gender"
+            android:textColor="@color/gray"
+            android:textStyle="bold"/>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Male" />
+
+            <RadioButton
+                android:id="@+id/radioButton2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Female" />
+
+            <RadioButton
+                android:id="@+id/radioButton3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Both" />
+        </RadioGroup>
+
+
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/save_preferences_btn"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/save_preferences_btn" />
+
+
+</LinearLayout>
+</ScrollView>

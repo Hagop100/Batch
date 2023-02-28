@@ -1,8 +1,9 @@
 package com.example.batchtest
 
 
+
 import android.app.Activity
-import android.app.appsearch.AppSearchResult.RESULT_OK
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -11,33 +12,22 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.chip.Chip
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
+import java.text.SimpleDateFormat
 import java.util.*
 
 
-
 private const val TAG = "print"
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
@@ -45,16 +35,18 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class GroupCreationFragment : Fragment() {
-    // TODO: Rename and change types of parameters
     private var _binding: FragmentGroupCreationBinding? = null
     private val binding get() = _binding!!
     private lateinit var group: Group
     lateinit var grouppic: CircleImageView
     private var imageUri: Uri? = null
     private val pickImage = 100
+    private var imageURL: String? = null
 
 
-
+    /**
+     * initialize the values of Group class when the app is starting up
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,10 +56,9 @@ class GroupCreationFragment : Fragment() {
             users = ArrayList<User>(),
             interestTags = ArrayList(),
             aboutUsDescription = "",
-            biscuits = 0
+            biscuits = 0,
+            image = null
         )
-
-
     }
 
     override fun onCreateView(
@@ -77,8 +68,6 @@ class GroupCreationFragment : Fragment() {
 
         // Inflate the layout for this fragment
         _binding = FragmentGroupCreationBinding.inflate(layoutInflater, container, false)
-
-
 
         /**
          * user clicks the close button to navigate back to my groups tab
@@ -91,15 +80,16 @@ class GroupCreationFragment : Fragment() {
          * user picks an image from the image gallery in their phone
          */
         binding.changeProfileBtn.setOnClickListener{
-            //view gallery
+            //view gallery by accessing the internal contents from mobile media
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             startActivityForResult(gallery, pickImage)
-
         }
 
         /**
          * user creates a group and save data to database
+         * This function use entry validation by checking for existing values in the database
          */
+
         binding.btnCreateGroup.setOnClickListener{
 
             val db = Firebase.firestore
@@ -108,80 +98,153 @@ class GroupCreationFragment : Fragment() {
             val users = group.users
             val tags = group.interestTags
             val biscuit = group.biscuits
-            val groupInfo = Group(groupName, users, tags, aboutUs,biscuit)
+            val image = imageURL
 
+            val groupInfo = Group(groupName, users, tags, aboutUs,biscuit, image)
 
-            //Validating entry if empty or not
-            if (groupName.isEmpty()){
-                binding.editGroupName.error = "Missing Group's Name"
-            }
+                //Validating group name and tag if empty or not
+                if (groupName.isEmpty() && binding.editTextAddTag.text.isEmpty()){
+                    binding.editGroupName.error = "Missing Group's Name"
+                    binding.editTextAddTag.error = "Missing Tag"
+                }
 
-            //if entry not empty, validate existing group name
-            else {
+                //validate if tag is not empty but group name is empty
+                else if (binding.editTextAddTag.text.isNotEmpty() && groupName.isEmpty()) {
+                    binding.editGroupName.error = "Missing Group's Name"
+                }
+                //if entry not empty, validate existing group name
+                else {
 
-                //find existing group name in database that matches with the name entry
-                db.collection("NewGroup").whereEqualTo("name", groupName).get()
-                    .addOnSuccessListener { documents ->
+                        //find existing group name in database that matches with the name entry
+                        db.collection("NewGroup").whereEqualTo("name", groupName).get()
+                            .addOnSuccessListener { documents ->
 
-                        //if entry is not found(not match with) in database, create a new group
-                        if (documents.isEmpty){
-//                            Log.i(TAG,"AM I HEERE")
-                            db.collection("NewGroup").document(groupName).set(groupInfo)
-                            Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
-                            findNavController().navigate(R.id.to_myGroupFragment)
-                        }
+                                //if entry is not found(not match with) in database, create a new group
+                                if (documents.isEmpty){
 
-                        //if entry matches the name in the database, alert user to reenter a new group name
-                        else{
-                            for (doc in documents) {
+                                    //if valid group name is entered, check whether the tag is empty
+                                    if (binding.editTextAddTag.text.isEmpty()) {
+                                        binding.editTextAddTag.error = "Missing Tag"
+                                    }
+                                    // if tag is not empty, create a new group
+                                    else{
+                                        //set the group name as the document name in firebase
+                                        db.collection("NewGroup").document(groupName).set(groupInfo)
+                                        Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
+                                        findNavController().navigate(R.id.to_myGroupFragment)
+                                    }
+
+                                }
+
+                                //if entry matches the name in the database, alert user to reenter a new group name
+                                else{
+                                    for (doc in documents) {
 //                            Log.i(TAG, "${doc.id} => ${doc.data}")
 //                            Log.i(TAG, doc.data.getValue("name") as String)
-                                if (doc.data.getValue("name") == groupName) {
-                                    binding.editGroupName.error = "Group name is already taken"
+                                        if (doc.data.getValue("name") == groupName) {
+                                            binding.editGroupName.error = "Group name is already taken"
+
+                                        }
+
+                                    }
                                 }
 
                             }
-                        }
-
+                            //database could not find the match with the entry
+                            .addOnFailureListener { e ->
+                                Log.i(TAG, "Error writing document", e)
+                            }
                     }
-                    .addOnFailureListener { e ->
-                        Log.i(TAG, "Error writing document", e)
-                    }
 
 
-                }
-
-            }
-
+        }// end of button group creation
 
         /**
          * user hits the add button to add tag to the list
          * Validating text fields if empty or not
          */
         binding.addTag.setOnClickListener{
-            if (binding.editTextAddTag.text.isNotEmpty()){
+            if (binding.editTextAddTag.text.isNotEmpty()) {
                 addChip(binding.editTextAddTag.text.toString())
             }
-            else if (binding.editTextAddTag.text.isEmpty()){
-                binding.editTextAddTag.error = "Invalid Entry"
+            //validate tags if empty or not
+            else if (binding.editTextAddTag.text.isEmpty()) {
+                binding.editTextAddTag.error = "Missing Tag"
             }
+
         }
+
 
         return binding.root
     } // end of onCreateView
+//
+    /**Function will get the extension of type of the profile image */
+    private fun getFileExtension(activity: Activity?, uri: Uri?): String?
+    {
+        return MimeTypeMap.getSingleton()
+            .getExtensionFromMimeType(activity?.contentResolver?.getType(uri!!))
+    }
+
+    /**
+     * Get A Firebase Storage reference to save the user image to
+     * Set the file name and extension to the time that the image is uploaded
+     * return Firebase Reference
+     * */
+    private fun getStorageReference(): StorageReference {
+        //get the image's file type
+        val imageExtension = getFileExtension(activity, imageUri)
+        val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
+        val now = Date()
+        val fileName = formatter.format(now)
+
+        return FirebaseStorage.getInstance().getReference("GroupPic/$fileName.$imageExtension")
+        //get the image's file type
+//        val imageExtension = getFileExtension(activity, imageUri)
+//
+//        return FirebaseStorage.getInstance().reference.child(
+//            InitialProfilePersonalizationFragment.USER_PROFILE_IMAGE + System.currentTimeMillis() + "."
+//                    + imageExtension)
+    }
+    /**
+     * Using the Firebase Storage Reference, upload the user image to
+     * the Firebase Storage area.
+     * The SuccessListener returns the URL of the image.
+     * imageURL is updated with the returned URl
+     * */
+    private fun uploadUserImageToCloud(activity: Activity?, imageUri: Uri?)
+    {
+
+        val storageReference: StorageReference = getStorageReference()
+        storageReference.putFile(imageUri!!)
+            .addOnSuccessListener { taskSnapshot ->
+                // Get the downloadable url from the task snapshot
+                // The Success Listener is Asynchronous, and any following code will run
+                // Getting the TaskSnapshot takes a bit of time,
+//                imageURL = taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
+                imageURL = imageUri.toString()
+                Log.i(TAG, "IMAGEURL: $imageURL")
+
+            }.addOnFailureListener {
+                Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
+            }
+    }
 
 
     /**
      * set profile image
      */
-
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         grouppic = binding.groupProfile
 
+        //setting that was selected from the gallery
         if(resultCode == Activity.RESULT_OK && requestCode == pickImage){
             imageUri = data?.data
+            Log.i(TAG, "Image URi: $imageUri.toString()")
             grouppic.setImageURI(imageUri)
+            uploadUserImageToCloud(activity, imageUri)
+
         }
 
     }
@@ -222,11 +285,5 @@ class GroupCreationFragment : Fragment() {
     }
 
 }
-
-
-
-
-
-
 
 

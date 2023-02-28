@@ -3,71 +3,127 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fillViewport="true"
+    android:layout_height="wrap_content"
+    android:fillViewport="false"
     tools:ignore="NamespaceTypo"
     tools:context=".InitialProfilePersonalizationFragment"
     >
 
-
+ <!--         -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/sv_personalize"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/tv_greeting"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/app_background"
-        android:layout_gravity="center"
         >
+        <!--TextView that tells user about the purpose of the page      -->
         <TextView
             android:id="@+id/tv_greeting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/sv_personalize"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center"
+            android:gravity="fill_vertical"
             android:textSize="20sp"
             android:textColor="@color/purple_700"
             android:textStyle="bold"
-            tools:text="Let's Personalize Your New Account" />
+            android:text="Let's Personalize Your New Account" />
 
-        <ImageView
-            android:id="@+id/iv_userPhoto"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_greeting"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/btn_image_prompt"
-            android:src="@drawable/profile_icon"
-            android:scaleType="fitCenter"
-            />
-        <Button
-            android:id="@+id/btn_image_prompt"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_image_image_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/purple_700"
-            app:layout_constraintTop_toBottomOf="@+id/iv_userPhoto"
+            app:layout_constraintTop_toBottomOf="@id/tv_greeting"
+            app:layout_constraintStart_toStartOf="@id/tv_greeting"
+            app:layout_constraintBottom_toTopOf="@id/tv_namePrompt">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_userPhoto"
+                android:layout_width="225dp"
+                android:layout_height="199dp"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:src="@drawable/profile_icon"
+                app:civ_border_color="#FF000000"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingConstraints" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_image_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                app:backgroundTint="@color/purple_500"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_userPhoto"
+                app:layout_constraintEnd_toEndOf="@+id/iv_userPhoto"
+                app:layout_constraintHorizontal_bias="0.905"
+                app:layout_constraintStart_toStartOf="@+id/iv_userPhoto"
+                app:layout_constraintTop_toTopOf="@+id/iv_userPhoto"
+                app:layout_constraintVertical_bias="1.0"
+                app:srcCompat="@drawable/change_profile"
+                tools:ignore="MissingConstraints"
+                android:contentDescription="TODO" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Crops the image into a circleView     -->
+
+        <!--   Will Prompt User to Put a display name      -->
+        <TextView
+            android:id="@+id/tv_first_name"
+            android:layout_width="331dp"
+            android:layout_height="wrap_content"
+            android:text="Enter First Name"
+            android:textColor="@color/purple_500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            tools:text="Select Image"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            app:layout_constraintTop_toBottomOf="@id/cl_image_image_button"
+            />
+        <EditText
+            android:id="@+id/et_first_name"
+            android:layout_width="331dp"
+            android:layout_height="wrap_content"
+            android:hint="First Name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_first_name"
+            android:paddingBottom="15dp"
+            android:background="@drawable/round_corner"
+            />
+        <TextView
+            android:id="@+id/tv_last_name"
+            android:layout_width="331dp"
+            android:layout_height="wrap_content"
+            android:text="Enter Last Name"
+            android:textColor="@color/purple_500"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_first_name"
+            />
+        <EditText
+            android:id="@+id/et_last_name"
+            android:layout_width="331dp"
+            android:layout_height="wrap_content"
+            android:hint="Last Name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_last_name"
+            android:paddingBottom="15dp"
             />
         <TextView
             android:id="@+id/tv_namePrompt"
             android:layout_width="331dp"
             android:layout_height="wrap_content"
-            tools:text="What should be your display Name: "
+            android:text="What should be your display Name: "
             android:textColor="@color/purple_500"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_image_prompt"
+            app:layout_constraintTop_toBottomOf="@id/et_last_name"
             />
+        <!--  Area where User will enter their display name    -->
         <EditText
             android:id="@+id/et_displayName"
             android:layout_width="331dp"
@@ -76,19 +132,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_namePrompt"
+            android:background="@drawable/round_corner"
             android:paddingBottom="15dp"
             />
+        <!--    Prompts User to select their birthdate     -->
         <TextView
             android:id="@+id/tv_birthDatePrompt"
             android:layout_width="331dp"
             android:layout_height="wrap_content"
             android:textColor="@color/purple_500"
-            tools:text="Select Your Date Of Birth: "
+            android:text="Select Your Date Of Birth: "
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_displayName"
             android:paddingTop="10dp"
             />
+
+        <!--    Used by the user to select their birthdate     -->
         <Button
             android:id="@+id/btn_birthdayPicker"
             android:layout_width="331dp"
@@ -98,13 +158,16 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_birthDatePrompt"
             android:layout_marginTop="10dp"
+            android:textColorHint="@color/white"
             />
+
+        <!--   Prompts User to Select their Gender      -->
         <TextView
             android:id="@+id/tv_genderPrompt"
             android:layout_width="331dp"
             android:layout_height="wrap_content"
             android:textColor="@color/purple_500"
-            tools:text="What Gender Do You Classify Yourself as "
+            android:text="What Gender Do You Classify Yourself as "
             android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@+id/btn_birthdayPicker"
             app:layout_constraintStart_toStartOf="parent"
@@ -112,13 +175,16 @@
             app:layout_constraintBottom_toTopOf="@+id/gender_radioGroup"
             />
 
+        <!--     RadioGroup that Contains the Gender options    -->
         <RadioGroup
             android:id="@+id/gender_radioGroup"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/tv_genderPrompt"
             app:layout_constraintStart_toStartOf="@id/tv_genderPrompt"
-            android:orientation="vertical">
+            app:layout_constraintEnd_toEndOf="@id/tv_genderPrompt"
+            android:orientation="vertical"
+            android:background="@drawable/round_corner">
 
             <RadioButton
                 android:id="@+id/male_radioButton"
@@ -137,15 +203,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 />
-            <RadioButton
-                android:id="@+id/na_radioButton"
-                android:text="Do not specify"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                />
 
         </RadioGroup>
 
+        <!--   Prompts User to input personal bio      -->
         <TextView
             android:id="@+id/tv_personalBioPrompt"
             android:layout_width="331dp"
@@ -157,24 +218,32 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/gender_radioGroup"
             />
+        <!--    Area for User to input personal bio     -->
         <EditText
             android:id="@+id/et_personalBio"
-            android:layout_width="330dp"
-            android:layout_height="220dp"
-            android:layout_marginTop="10dp"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
             android:background="@drawable/round_corner"
-            android:lineSpacingMultiplier="@integer/material_motion_duration_long_1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            android:minHeight="48dp"
+            android:padding="10dp"
+            app:layout_constraintStart_toStartOf="@id/gender_radioGroup"
+            app:layout_constraintEnd_toEndOf="@id/btn_birthdayPicker"
             app:layout_constraintTop_toBottomOf="@id/tv_personalBioPrompt"
             />
+        <!--    Button for user to update their profile and move on to the next section     -->
         <Button
+            android:id="@+id/btn_update"
             android:layout_width="330dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/et_personalBio"
             app:layout_constraintStart_toStartOf="@id/et_personalBio"
+            app:layout_constraintBottom_toBottomOf="@id/sv_personalize"
             android:layout_marginTop="10dp"
             android:paddingTop="5dp"
+            android:layout_marginBottom="40dp"
             android:text="Update"
             />
 

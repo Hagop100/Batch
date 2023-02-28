@@ -21,6 +21,8 @@ private const val TAG = "GroupsFetchLog"
 /**
  * Match Tab Fragment
  * displays potential groups the user can match with
+ * extends Fragment class
+ * implements CardStackAdapterListener interface to listen to actions such as undo button clicks
  */
 class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
     private lateinit var binding: FragmentMatchTabBinding

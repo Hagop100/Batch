@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--match tab using scoll view layout -->
-
+<!--match tab using relative layout -->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MatchTabFragment"
     android:background="@color/off_white">
 
-    <!--card stack view to display cards -->
+    <!--card stack recycler view to display cards -->
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/card_stack_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/off_white"/>
 
+    <!-- empty view on bottom due to bottom nav bar covering fragment view -->
     <View
         android:id="@+id/nav_bar_filler"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"/>
 
+    <!-- container for the accept and reject button -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
+            android:contentDescription="@string/reject_button"
             android:src="@drawable/reject_btn" />
 
         <ImageButton
@@ -42,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:background="@null"
+            android:contentDescription="@string/accept_button"
             android:src="@drawable/accept_btn" />
     </RelativeLayout>
 </RelativeLayout>

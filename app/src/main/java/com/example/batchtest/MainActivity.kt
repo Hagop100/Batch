@@ -14,6 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.batchtest.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -43,33 +44,5 @@ class MainActivity : AppCompatActivity() {
         }
         // connect bottom navigation bar with nav controller to navigate
         navView.setupWithNavController(navController)
-
-
-//        val db = Firebase.firestore;
-//
-//        // create new user
-//        val user = hashMapOf(
-//            "name" to "Steven",
-//        );
-//
-//        db.collection("users")
-//            .add(user)
-//            .addOnSuccessListener { docRef ->
-//                Log.d(TAG, "document snapshot added with id: ${docRef.id}");
-//            }
-//            .addOnFailureListener { e ->
-//                Log.w(TAG, "error adding document", e);
-//            }
-//
-//        db.collection("users")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                for (doc in result) {
-//                    Log.d(TAG, "${doc.id} => ${doc.data}")
-//                }
-//            }
-//            .addOnFailureListener { e ->
-//                Log.w(TAG, "error getting documents: ", e)
-//            }
     }
 }

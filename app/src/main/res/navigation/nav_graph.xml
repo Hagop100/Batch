@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_loginFragment_to_registrationFragment"
             app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_MFAuthenticationVerificationDialogFragment"
+            app:destination="@id/MFAuthenticationVerificationDialogFragment" />
     </fragment>
     <!-- match tab fragment -->
     <fragment
@@ -49,11 +52,21 @@
             android:id="@+id/to_groupCreationFragment"
             app:destination="@id/groupCreationFragment" />
     </fragment>
+    <!-- other group tab fragment -->
+    <fragment
+        android:id="@+id/otherGroupTabFragment"
+        android:name="com.example.batchtest.OtherGroupTabFragment"
+        android:label="fragment_match_tab"
+        tools:layout="@layout/fragment_match_tab"/>
     <fragment
         android:id="@+id/initialProfilePersonalizationFragment"
         android:name="com.example.batchtest.InitialProfilePersonalizationFragment"
         android:label="fragment_initial_profile_personalization"
-        tools:layout="@layout/fragment_initial_profile_personalization" />
+        tools:layout="@layout/fragment_initial_profile_personalization" >
+        <action
+            android:id="@+id/action_initialProfilePersonalizationFragment_to_groupCreationFragment"
+            app:destination="@id/groupCreationFragment" />
+    </fragment>
     <fragment
         android:id="@+id/registrationFragment"
         android:name="com.example.batchtest.RegistrationFragment"
@@ -63,5 +76,17 @@
             android:id="@+id/action_registrationFragment_to_initialProfilePersonalizationFragment"
             app:destination="@id/initialProfilePersonalizationFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/MFAuthenticationVerificationDialogFragment"
+        android:name="com.example.batchtest.MFAuthenticationVerificationDialogFragment"
+        android:label="fragment_m_f_authentication_verification_dialog"
+        tools:layout="@layout/fragment_m_f_authentication_verification_dialog" />
+
+<!--   user profile tab-->
+    <fragment
+        android:id="@+id/userProfileTabFragment"
+        android:name="com.example.batchtest.UserProfileTabFragment"
+        android:label="UserProfileTabFragment"
+        tools:layout="@layout/fragment_user_profile_tab"/>
 
 </navigation>
