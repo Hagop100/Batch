@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background"
+    android:layout_marginBottom="50dp"
    >
 
     <LinearLayout
@@ -24,6 +25,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="30dp"
             android:layout_marginRight="10dp"
+            android:paddingBottom="10dp"
             app:layout_constraintBottom_toTopOf="@+id/textView2"
             app:layout_constraintTop_toTopOf="@+id/textView2"
             android:backgroundTint="@color/app_background">
