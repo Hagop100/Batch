@@ -6,7 +6,6 @@
     android:layout_height="wrap_content"
     android:fillViewport="false"
     tools:ignore="NamespaceTypo"
-    android:layout_gravity="center_vertical"
     tools:context=".InitialProfilePersonalizationFragment"
     >
 
@@ -44,14 +43,12 @@
                 android:layout_width="225dp"
                 android:layout_height="199dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="32dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/profile_icon"
                 app:civ_border_color="#FF000000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintVertical_bias="1.0"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="MissingConstraints" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -125,7 +122,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_last_name"
-            android:background=""
             />
         <!--  Area where User will enter their display name    -->
         <EditText
