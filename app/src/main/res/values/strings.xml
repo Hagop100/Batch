@@ -66,6 +66,10 @@
     <string name="gender">Gender</string>
     <string name="save_preferences_btn">Save</string>
 
+    <!--  Setting -->
+    <string name="account_setting_title">Account Settings</string>
+    <string name="notification">Notifications</string>
+
 
 
 </resources>
