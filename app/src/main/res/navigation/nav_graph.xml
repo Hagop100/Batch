@@ -87,6 +87,21 @@
         android:id="@+id/userProfileTabFragment"
         android:name="com.example.batchtest.UserProfileTabFragment"
         android:label="UserProfileTabFragment"
-        tools:layout="@layout/fragment_user_profile_tab"/>
+        tools:layout="@layout/fragment_user_profile_tab">
+        <action
+            android:id="@+id/action_userProfileTabFragment_to_accountSettingFragment"
+            app:destination="@id/accountSettingFragment" />
+    </fragment>
+
+<!--   account setting -->
+    <fragment
+        android:id="@+id/accountSettingFragment"
+        android:name="com.example.batchtest.AccountSettingFragment"
+        android:label="fragment_account_setting"
+        tools:layout="@layout/fragment_account_setting" >
+        <action
+            android:id="@+id/action_accountSettingFragment_to_userProfileTabFragment"
+            app:destination="@id/userProfileTabFragment" />
+    </fragment>
 
 </navigation>
