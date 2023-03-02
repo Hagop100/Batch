@@ -35,7 +35,7 @@
     <!-- group creation fragment -->
     <fragment
         android:id="@+id/groupCreationFragment"
-        android:name="com.example.batchtest.GroupCreationFragment"
+        android:name="com.example.batchtest.myGroupsTab.GroupCreationFragment"
         android:label="GroupCreationFragment"
         tools:layout="@layout/fragment_group_creation">
         <action
@@ -45,7 +45,7 @@
     <!-- my group fragment -->
     <fragment
         android:id="@+id/myGroupFragment"
-        android:name="com.example.batchtest.MyGroupFragment"
+        android:name="com.example.batchtest.myGroupsTab.MyGroupFragment"
         android:label="fragment_my_group"
         tools:layout="@layout/fragment_my_group" >
         <action
@@ -85,7 +85,7 @@
 <!--   user profile tab-->
     <fragment
         android:id="@+id/userProfileTabFragment"
-        android:name="com.example.batchtest.UserProfileTabFragment"
+        android:name="com.example.batchtest.UserProfileTab.UserProfileTabFragment"
         android:label="UserProfileTabFragment"
         tools:layout="@layout/fragment_user_profile_tab">
         <action
