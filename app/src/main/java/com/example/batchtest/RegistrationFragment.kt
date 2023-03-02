@@ -25,6 +25,7 @@ class RegistrationFragment : Fragment() {
     //email and password
     private lateinit var email: String //email variable
     private lateinit var password: String //password variable
+    private lateinit var phone_number: String //phone number variable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +42,7 @@ class RegistrationFragment : Fragment() {
             // Grabs user input for email and password and assigns it to the variables
             email = binding.fragmentRegistrationEmailEt.text.toString()
             password = binding.fragmentRegistrationPasswordEt.text.toString()
+            phone_number = binding.fragmentRegistrationPhoneNumberEt.text.toString()
 
             // Backend function to complete registration
             registration(email, password)
