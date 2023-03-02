@@ -6,7 +6,7 @@ used to populate the cardStackView recycler -->
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="none"
-    android:background="@color/off_white">
+    android:background="@color/app_background">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -45,7 +45,7 @@ used to populate the cardStackView recycler -->
             android:layout_marginBottom="120dp"
             app:cardCornerRadius="4dp"
             app:cardElevation="13dp"
-            app:cardBackgroundColor="@color/off_white">
+            app:cardBackgroundColor="@color/app_background">
             <!-- card will use a base linear layout for a vertical displaying of content -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -109,7 +109,7 @@ used to populate the cardStackView recycler -->
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    app:cardBackgroundColor="@color/off_white"
+                    app:cardBackgroundColor="@color/app_background"
                     app:cardCornerRadius="4dp"
                     app:cardElevation="15dp">
                     <LinearLayout
@@ -131,7 +131,7 @@ used to populate the cardStackView recycler -->
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            app:cardBackgroundColor="@color/off_white"
+                            app:cardBackgroundColor="@color/app_background"
                             app:cardCornerRadius="4dp"
                             app:cardElevation="15dp">
                             <LinearLayout

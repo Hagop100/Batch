@@ -25,6 +25,7 @@
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/more_horiz-48px.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/other_groups_icon.xml" value="0.167" />
+        <entry key="app/src/main/res/drawable/person-48px.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/profile_icon.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/round_corner.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/rounded_tag.xml" value="0.11" />
@@ -46,10 +47,11 @@
         <entry key="app/src/main/res/layout/fragment_my_group.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_my_groups.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_other_group_tab.xml" value="0.12092391304347826" />
-        <entry key="app/src/main/res/layout/fragment_pending_group.xml" value="0.23731884057971014" />
+        <entry key="app/src/main/res/layout/fragment_pending_group.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_registration.xml" value="0.12454710144927536" />
         <entry key="app/src/main/res/layout/fragment_user_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_user_list2.xml" value="0.1105072463768116" />
+        <entry key="app/src/main/res/layout/fragment_user_profile_tab.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/layout/group_creation.xml" value="0.1" />
         <entry key="app/src/main/res/layout/horizontal_bar.xml" value="0.12092391304347826" />
         <entry key="app/src/main/res/layout/interest_tag.xml" value="0.15677083333333333" />
@@ -57,6 +59,7 @@
         <entry key="app/src/main/res/layout/match_group_card.xml" value="0.1" />
         <entry key="app/src/main/res/layout/my_group_list.xml" value="0.12092391304347826" />
         <entry key="app/src/main/res/layout/nav_bar.xml" value="0.1644021739130435" />
+        <entry key="app/src/main/res/layout/vote_group_card.xml" value="0.19270833333333334" />
         <entry key="app/src/main/res/menu/nav_bar.xml" value="0.1" />
       </map>
     </option>

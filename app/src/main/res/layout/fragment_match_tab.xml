@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MatchTabFragment"
-    android:background="@color/off_white">
+    android:background="@color/app_background">
 
     <!--card stack recycler view to display cards -->
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/card_stack_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/off_white"/>
+        android:background="@color/app_background"/>
 
     <!-- empty view on bottom due to bottom nav bar covering fragment view -->
     <View

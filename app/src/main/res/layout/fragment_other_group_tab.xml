@@ -5,7 +5,7 @@ uses fragment to switch between matched groups and pending groups -->
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/off_white"
+    android:background="@color/app_background"
     tools:context=".OtherGroupTabFragment"
     android:orientation="vertical"
     android:padding="20dp">
