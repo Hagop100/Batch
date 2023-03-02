@@ -5,8 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MatchTabFragment"
-    android:background="@color/app_background">
+    tools:context="MatchTab.MatchTabFragment"
+    android:background="@color/app_background"
+    android:layout_marginBottom="60dp">
 
     <!--card stack recycler view to display cards -->
     <com.yuyakaido.android.cardstackview.CardStackView
@@ -15,19 +16,12 @@
         android:layout_height="match_parent"
         android:background="@color/app_background"/>
 
-    <!-- empty view on bottom due to bottom nav bar covering fragment view -->
-    <View
-        android:id="@+id/nav_bar_filler"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"/>
-
     <!-- container for the accept and reject button -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/nav_bar_filler"
-        android:padding="30dp">
+        android:padding="30dp"
+        android:layout_alignParentBottom="true">
 
         <ImageButton
             android:id="@+id/reject_btn"
