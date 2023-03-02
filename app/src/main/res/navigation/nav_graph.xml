@@ -29,7 +29,7 @@
     <!-- match tab fragment -->
     <fragment
         android:id="@+id/matchTabFragment"
-        android:name="com.example.batchtest.MatchTabFragment"
+        android:name="com.example.batchtest.MatchTab.MatchTabFragment"
         android:label="fragment_match_tab"
         tools:layout="@layout/fragment_match_tab"/>
     <!-- group creation fragment -->
@@ -55,7 +55,7 @@
     <!-- other group tab fragment -->
     <fragment
         android:id="@+id/otherGroupTabFragment"
-        android:name="com.example.batchtest.OtherGroupTabFragment"
+        android:name="com.example.batchtest.OtherGroupsTab.OtherGroupTabFragment"
         android:label="fragment_match_tab"
         tools:layout="@layout/fragment_match_tab"/>
     <fragment

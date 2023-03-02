@@ -1,4 +1,4 @@
-package com.example.batchtest
+package com.example.batchtest.MatchTab
 
 import android.content.Context
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.widget.TextView
+import com.example.batchtest.Group
 import com.example.batchtest.databinding.DialogLayoutBinding
 import com.example.batchtest.databinding.FragmentMatchTabBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView

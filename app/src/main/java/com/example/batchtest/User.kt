@@ -18,7 +18,7 @@ data class User(
     val imageUri: Uri? = null,
     val birthdate: String ="",
     val personalBio: String = "",
-
+    val pendingGroups: ArrayList<Group>? = null,
     // password ???
 ) {
     // returns full name of user

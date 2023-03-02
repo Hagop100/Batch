@@ -1,11 +1,11 @@
-package com.example.batchtest
+package com.example.batchtest.OtherGroupsTab.PendingGroups
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import android.content.Context
+import com.example.batchtest.Group
 import com.example.batchtest.databinding.VoteGroupCardBinding
 import de.hdodenhof.circleimageview.CircleImageView
 
