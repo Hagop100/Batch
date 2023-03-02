@@ -104,8 +104,6 @@ class LoginFragment : Fragment() {
             Log.i(TAG, "user is signed out")
         }
 
-
-
         //Sign Up navigates to registration fragment
         binding.fragmentLoginSignUpBtn.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registrationFragment)
@@ -166,7 +164,6 @@ class LoginFragment : Fragment() {
             val dialog = ForgotPasswordDialogFragment()
             dialog.show(childFragmentManager, "forgotPasswordDialog")
         }
-
 
         /*
         This button remains for debugging purposes and will be removed upon release of the final build
