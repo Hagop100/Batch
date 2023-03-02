@@ -14,6 +14,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.MimeTypeMap
 import android.widget.Toast
+import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
@@ -111,6 +112,11 @@ class GroupCreationFragment : Fragment() {
                 //validate if tag is not empty but group name is empty
                 else if (binding.editTextAddTag.text.isNotEmpty() && groupName.isEmpty()) {
                     binding.editGroupName.error = "Missing Group's Name"
+                }
+
+                //check to see if the user added the tag into the tag list
+                else if (binding.tagGroupChip.isEmpty()){
+                    binding.editTextAddTag.error = "Must add tags"
                 }
                 //if entry not empty, validate existing group name
                 else {
@@ -273,6 +279,8 @@ class GroupCreationFragment : Fragment() {
 //   add chip to the arraylist of interest tags
         binding.tagGroupChip.addView(chip)
         tags?.add(chip.text.toString())
+
+
     }
 
 

@@ -30,7 +30,15 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
         val info: Group = groupNameList[position]
         holder.groupName.text = info.name
         holder.aboutUs.text = info.aboutUsDescription
-        Glide.with(context).load(groupNameList[position].image).into(holder.groupPic)
+
+        //if user does not change the default picture. then set the default as group pic
+        if (groupNameList[position].image == null){
+            holder.groupPic.setImageResource(R.drawable.one_direction_photo)
+        }
+        else{
+            Glide.with(context).load(groupNameList[position].image).into(holder.groupPic)
+        }
+
 
     }
 
