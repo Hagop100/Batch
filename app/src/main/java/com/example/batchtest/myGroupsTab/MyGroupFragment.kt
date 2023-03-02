@@ -1,4 +1,4 @@
-package com.example.batchtest
+package com.example.batchtest.myGroupsTab
 
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +9,8 @@ import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.batchtest.Group
+import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentMyGroupBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.DocumentChange
@@ -39,6 +41,7 @@ class MyGroupFragment : Fragment() {
     private lateinit var myGroupList: ArrayList<Group>
     private lateinit var myAdapter: MyGroupAdapter
     private lateinit var db: FirebaseFirestore
+
 
 
     private val binding get() = _binding!!
@@ -96,7 +99,7 @@ class MyGroupFragment : Fragment() {
      */
     private fun EventChangeListener(){
         db = FirebaseFirestore.getInstance()
-        db.collection("NewGroup").addSnapshotListener(object: com.google.firebase.firestore.EventListener<QuerySnapshot>{
+        db.collection("groups").addSnapshotListener(object: com.google.firebase.firestore.EventListener<QuerySnapshot>{
             override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                 if (error != null){
                     Log.e("Firestore Error", error.message.toString())

@@ -42,7 +42,7 @@ used to populate the cardStackView recycler -->
             android:layout_width="match_parent"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="120dp"
+            android:layout_marginBottom="60dp"
             app:cardCornerRadius="4dp"
             app:cardElevation="13dp"
             app:cardBackgroundColor="@color/app_background">
@@ -57,44 +57,28 @@ used to populate the cardStackView recycler -->
                     android:layout_height="wrap_content"
                     android:paddingVertical="15dp"
                     android:paddingHorizontal="20dp">
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/group_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:theme="@style/page_title"
+                        android:layout_centerVertical="true"/>
+                    <TextView
+                        android:id="@+id/biscuit_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_centerVertical="true">
-                        <TextView
-                            android:id="@+id/group_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:theme="@style/page_title"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_alignParentEnd="true">
-                        <TextView
-                            android:id="@+id/biscuit_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
-                            android:textColor="@color/black"
-                            app:layout_constraintStart_toStartOf="@id/biscuit_icon"
-                            app:layout_constraintEnd_toStartOf="@id/biscuit_icon"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"/>
-                        <ImageView
-                            android:id="@+id/biscuit_icon"
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:contentDescription="@string/biscuit_icon"
-                            android:src="@drawable/biscuits_icon"
-                            app:layout_constraintStart_toEndOf="@id/biscuit_value"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent"/>
-                    </LinearLayout>
+                        android:layout_marginEnd="5dp"
+                        android:textColor="@color/black"
+                        android:layout_toStartOf="@id/biscuit_icon"
+                        android:layout_centerInParent="true"/>
+                    <ImageView
+                        android:id="@+id/biscuit_icon"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:contentDescription="@string/biscuit_icon"
+                        android:src="@drawable/biscuits_icon"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"/>
                 </RelativeLayout>
                 <!-- group photo -->
                 <ImageView

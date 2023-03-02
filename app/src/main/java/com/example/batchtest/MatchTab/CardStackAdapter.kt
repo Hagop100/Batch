@@ -1,4 +1,4 @@
-package com.example.batchtest
+package com.example.batchtest.MatchTab
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.batchtest.Group
+import com.example.batchtest.R
 import com.example.batchtest.databinding.InterestTagBinding
 import com.example.batchtest.databinding.MatchGroupCardBinding
 import com.google.android.flexbox.FlexboxLayout

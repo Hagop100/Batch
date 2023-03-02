@@ -37,6 +37,8 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/dialog_button.xml" value="0.14990942028985507" />
         <entry key="app/src/main/res/layout/dialog_layout.xml" value="0.22055385423743207" />
+        <entry key="app/src/main/res/layout/fragment_account_setting.xml" value="0.22418478260869565" />
+        <entry key="app/src/main/res/layout/fragment_edit_profile.xml" value="0.22418478260869565" />
         <entry key="app/src/main/res/layout/fragment_forgot_password_dialog.xml" value="0.12454710144927536" />
         <entry key="app/src/main/res/layout/fragment_group_creation.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_initial_profile_personalization.xml" value="0.12092391304347826" />

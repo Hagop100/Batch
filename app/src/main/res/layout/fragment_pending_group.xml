@@ -3,19 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PendingGroupFragment">
+    tools:context=".OtherGroupsTab.PendingGroups.PendingGroupFragment">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pendingGroupRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-<!--    <include-->
-<!--        layout="@layout/vote_group_card"-->
-<!--        android:layout_height="250dp"-->
-<!--        android:layout_width="160dp"/>-->
-<!--    <include-->
-<!--        layout="@layout/vote_group_card"-->
-<!--        android:layout_height="250dp"-->
-<!--        android:layout_width="160dp"-->
-<!--        />-->
-
+        android:layout_height="match_parent"
+        android:paddingBottom="80dp"
+        android:clipToPadding="false"/>
 </RelativeLayout>

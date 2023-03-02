@@ -1,10 +1,11 @@
-package com.example.batchtest
+package com.example.batchtest.OtherGroupsTab.MatchedGroups
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.batchtest.R
 
 class MatchedGroupFragment : Fragment() {
     override fun onCreateView(

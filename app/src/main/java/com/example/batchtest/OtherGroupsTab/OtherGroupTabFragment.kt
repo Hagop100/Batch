@@ -1,16 +1,16 @@
-package com.example.batchtest
+package com.example.batchtest.OtherGroupsTab
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupFragment
+import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupFragment
+import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentOtherGroupTabBinding
 
 
