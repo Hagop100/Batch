@@ -2,6 +2,7 @@ package com.example.batchtest.myGroupsTab
 
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 
 import android.content.Intent
@@ -65,6 +66,7 @@ class GroupCreationFragment : Fragment() {
         )
     }
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

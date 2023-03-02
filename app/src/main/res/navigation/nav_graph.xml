@@ -96,7 +96,7 @@
 <!--   account setting -->
     <fragment
         android:id="@+id/accountSettingFragment"
-        android:name="com.example.batchtest.AccountSettingFragment"
+        android:name="com.example.batchtest.UserProfileTab.AccountSettingFragment"
         android:label="fragment_account_setting"
         tools:layout="@layout/fragment_account_setting" >
         <action
