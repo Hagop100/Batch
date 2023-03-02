@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- card for each pending group -->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="200dp"
+    android:layout_width="match_parent"
+    android:layout_margin="7dp"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="@color/off_white">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <!-- container for the pending group image and the matching group image -->
+        <RelativeLayout
+            android:id="@+id/pendingProfileImages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_above="@id/pendingGroupName">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/myGroupImg"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/one_direction_photo"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="40dp"
+            />
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/pendingGroupImg"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/one_direction_photo"
+                app:civ_border_color="@color/off_white"
+                app:civ_border_width="3dp"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <!-- name of the pending group -->
+        <TextView
+            android:id="@+id/pendingGroupName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/karla_extra_bold"
+            android:layout_centerInParent="true"
+            android:layout_above="@id/votingPersonIcons"
+            android:paddingTop="10dp"
+            android:paddingBottom="4dp"
+            android:textSize="15sp"
+            android:text="lulz"/>
+        <!-- container for the person icons during voting -->
+        <LinearLayout
+            android:id="@+id/votingPersonIcons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/person_icon"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/person_icon"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/person_icon"/>
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/person_icon"/>
+        </LinearLayout>
+        <!-- container for the accept and reject button -->
+        <RelativeLayout
+            android:id="@+id/voteButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/votingPersonIcons"
+            android:layout_centerInParent="true"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="10dp">
+            <ImageButton
+                android:id="@+id/reject_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:contentDescription="@string/reject_button"
+                android:background="@drawable/reject_btn" />
+
+            <ImageButton
+                android:id="@+id/accept_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@string/accept_button"
+                android:background="@drawable/accept_btn"/>
+        </RelativeLayout>
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
