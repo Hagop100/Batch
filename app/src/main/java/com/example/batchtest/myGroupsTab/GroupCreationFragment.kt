@@ -1,4 +1,4 @@
-package com.example.batchtest
+package com.example.batchtest.myGroupsTab
 
 
 
@@ -17,6 +17,9 @@ import android.widget.Toast
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.batchtest.Group
+import com.example.batchtest.R
+import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.google.android.material.chip.Chip
 import com.google.firebase.firestore.ktx.firestore
@@ -122,7 +125,7 @@ class GroupCreationFragment : Fragment() {
                 else {
 
                         //find existing group name in database that matches with the name entry
-                        db.collection("NewGroup").whereEqualTo("name", groupName).get()
+                        db.collection("groups").whereEqualTo("name", groupName).get()
                             .addOnSuccessListener { documents ->
 
                                 //if entry is not found(not match with) in database, create a new group
@@ -135,7 +138,7 @@ class GroupCreationFragment : Fragment() {
                                     // if tag is not empty, create a new group
                                     else{
                                         //set the group name as the document name in firebase
-                                        db.collection("NewGroup").document(groupName).set(groupInfo)
+                                        db.collection("groups").document(groupName).set(groupInfo)
                                         Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
                                         findNavController().navigate(R.id.to_myGroupFragment)
                                     }

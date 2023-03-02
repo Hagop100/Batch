@@ -1,4 +1,4 @@
-package com.example.batchtest
+package com.example.batchtest.myGroupsTab
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.batchtest.Group
+import com.example.batchtest.R
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.coroutines.withContext
-import org.w3c.dom.Text
 
 /**
  * bridge the communication between MyGroupFragment and GroupCreationFragment.
@@ -25,7 +25,7 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
 
     //This function is used to bind the list items to our widgets such as TextView, ImageView, etc.
     @SuppressLint("CheckResult")
-    override fun onBindViewHolder(holder: MyGroupAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val info: Group = groupNameList[position]
         holder.groupName.text = info.name
