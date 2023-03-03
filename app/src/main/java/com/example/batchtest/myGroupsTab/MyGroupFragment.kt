@@ -77,8 +77,9 @@ class MyGroupFragment : Fragment() {
         EventChangeListener()
 
 
-
-//      this button navigates from My Group view to Create a group view fragment
+        /**
+         *  navigates from My Group view to Create a group view fragment
+          */
         binding.btnToGroupCreation.setOnClickListener{
 
 //            hides the bottom nav when navigate to the group creation page
@@ -88,6 +89,13 @@ class MyGroupFragment : Fragment() {
             //navigate to the group creation page
             findNavController().navigate(R.id.to_groupCreationFragment)
         }
+
+        /**
+         * opens group profile when clicks on profile picture
+         */
+
+
+
 
         return binding.root
 
