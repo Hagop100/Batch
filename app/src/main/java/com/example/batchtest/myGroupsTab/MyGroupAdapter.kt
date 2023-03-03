@@ -1,11 +1,19 @@
 package com.example.batchtest.myGroupsTab
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.batchtest.Group
@@ -39,6 +47,15 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
             Glide.with(context).load(groupNameList[position].image).into(holder.groupPic)
         }
 
+        /**
+         * clicks on the image at position n to view group profile
+         */
+        holder.groupPic.setOnClickListener{ view ->
+//            Toast.makeText(this.context, "Testing here $position", Toast.LENGTH_SHORT).show()
+            findNavController(view).navigate(R.id.action_myGroupFragment_to_editGroupProfile)
+
+        }
+
 
     }
 
@@ -56,7 +73,11 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
     }
 
 
+
+
 }
+
+
 
 
 
