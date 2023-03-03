@@ -2,13 +2,13 @@ package com.example.batchtest.MatchTab
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.example.batchtest.Group
-import com.example.batchtest.MainActivity
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMatchTabBinding
 import com.google.firebase.auth.ktx.auth
@@ -16,6 +16,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
+
 
 private const val TAG = "GroupsFetchLog"
 /**
@@ -26,7 +27,12 @@ private const val TAG = "GroupsFetchLog"
  */
 class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
     private lateinit var binding: FragmentMatchTabBinding
+    // set layout manager to card stack view to arrange recycler view
+    private lateinit var manager: CardStackLayoutManager
 
+    val db = Firebase.firestore
+    // get the authenticated logged in user
+    val currentUser = Firebase.auth.currentUser
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,17 +40,14 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
     ): View {
         // bind fragment
         binding = FragmentMatchTabBinding.inflate(inflater, container, false)
-
+        manager = CardStackLayoutManager(context)
         // get card stack view
         val cardStackView = binding.cardStackView
-        // set layout manager to card stack view to arrange recycler view
-        val manager = CardStackLayoutManager(context)
         // prevent users from swiping cards
         manager.setCanScrollHorizontal(false)
         manager.setCanScrollVertical(false)
         // show one card on stack
         manager.setStackFrom(StackFrom.None)
-
         // manager will define the layout for the card stack view
         cardStackView.layoutManager = manager
 
@@ -53,9 +56,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         * and send to adapter which will display the groups in a recycler view
          */
         val groups = arrayListOf<Group>()
-        val db = Firebase.firestore
-        // get the authenticated logged in user
-        val currentUser = Firebase.auth.currentUser
         // fetches a user from firestore using the uid from the authenticated user
         val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
         currentUserDocRef
@@ -89,33 +89,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                     }
             }
 
-        // accept button accepts group when clicked
-        val acceptBtn = binding.acceptBtn
-        acceptBtn.setOnClickListener{
-            // animation for card moving right for accept
-            val setting = SwipeAnimationSetting.Builder()
-                .setDirection(Direction.Right)
-                .setDuration(Duration.Normal.duration)
-                .setInterpolator(AccelerateInterpolator())
-                .build()
-            manager.setSwipeAnimationSetting(setting)
-            cardStackView.swipe()
-            Log.v(TAG, binding.cardStackView.id.toString())
-//            currentUserDocRef.update("pendingGroups", FieldValue.arrayUnion(""))
-        }
-
-        // reject button rejects group when clicked
-        val rejectBtn = binding.rejectBtn
-        rejectBtn.setOnClickListener{
-            // animation card moving left for reject
-            val setting = SwipeAnimationSetting.Builder()
-                .setDirection(Direction.Left)
-                .setDuration(Duration.Normal.duration)
-                .setInterpolator(AccelerateInterpolator())
-                .build()
-            manager.setSwipeAnimationSetting(setting)
-            cardStackView.swipe()
-        }
         // test groups without fetching for speed
 //        val g1 = Group("One Direction", arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), arrayListOf("singing", "dancing", "partying", "soccer"), "one direction test description")
 //        val g2 = Group("The Beatles", arrayListOf(User("John", "Lennon", "johnlennon@gmail.com")), arrayListOf("cooking", "karaoke", "gaming", "movies"), "the beatles test description")
@@ -150,5 +123,31 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
     // rewind to previous card when undo button is clicked
     override fun onUndoBtnClick() {
         binding.cardStackView.rewind()
+    }
+
+    override fun onAcceptBtnClick(groupName:String) {
+        // set animation card moving right for reject
+        val setting = SwipeAnimationSetting.Builder()
+            .setDirection(Direction.Right)
+            .setDuration(Duration.Normal.duration)
+            .setInterpolator(AccelerateInterpolator())
+            .build()
+        manager.setSwipeAnimationSetting(setting)
+        // add the group to the list of pending groups for the user
+        db.collection("users").document(currentUser!!.uid).update("pendingGroups", FieldValue.arrayUnion(groupName))
+        // swipe the card
+        binding.cardStackView.swipe()
+    }
+
+    override fun onRejectBtnClick(groupName:String) {
+        // set animation card moving left for reject
+        val setting = SwipeAnimationSetting.Builder()
+            .setDirection(Direction.Left)
+            .setDuration(Duration.Normal.duration)
+            .setInterpolator(AccelerateInterpolator())
+            .build()
+        manager.setSwipeAnimationSetting(setting)
+        // swipe the card
+        binding.cardStackView.swipe()
     }
 }

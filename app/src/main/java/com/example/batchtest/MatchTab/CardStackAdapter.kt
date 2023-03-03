@@ -29,19 +29,16 @@ class CardStackAdapter(
     private val groups: ArrayList<Group>,
     private val listener: CardStackAdapterListener
     ) : RecyclerView.Adapter<CardStackAdapter.CardStackHolder>() {
+        private lateinit var binding: MatchGroupCardBinding
         // inflate parent fragment with card item layout when ViewHolder is created
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardStackHolder {
             // inflater from parent fragment
             val inflater = LayoutInflater.from(parent.context)
 
             // inflate parent using group card layout
-            val binding = MatchGroupCardBinding.inflate(inflater, parent, false)
+            binding = MatchGroupCardBinding.inflate(inflater, parent, false)
 
-            // undo on click listener
-            binding.undoBtn.setOnClickListener {
-                listener.onUndoBtnClick()
-            }
-
+            // more button on match page opens dialog
             binding.matchMoreBtn.setOnClickListener {
                 // create a bottom sheet dialog
                 val dialog = BottomSheetDialog(parent.context)
@@ -77,6 +74,7 @@ class CardStackAdapter(
                 // show the dialog
                 dialog.show()
             }
+
             // pass into a holder to bind
             return CardStackHolder(binding)
         }
@@ -111,6 +109,21 @@ class CardStackAdapter(
                 // add the interest tag text view to the layout
                 holder.interestTags.addView(interestTag)
             }
+
+            // undo on click listener
+            binding.undoBtn.setOnClickListener {
+                listener.onUndoBtnClick()
+            }
+
+            // accept button accepts group when clicked
+            binding.acceptBtn.setOnClickListener{
+                listener.onAcceptBtnClick(group.name!!)
+            }
+
+            // reject button rejects group when clicked
+            binding.rejectBtn.setOnClickListener{
+                listener.onRejectBtnClick(group.name!!)
+            }
         }
         // returns number of groups
         override fun getItemCount(): Int {
@@ -132,5 +145,7 @@ class CardStackAdapter(
     // match tab fragment listens to when undo or more button is clicked
     interface CardStackAdapterListener {
         fun onUndoBtnClick()
+        fun onAcceptBtnClick(groupName:String)
+        fun onRejectBtnClick(groupName:String)
     }
 }
