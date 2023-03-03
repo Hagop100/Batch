@@ -1,6 +1,5 @@
 package com.example.batchtest.MatchTab
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,12 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
-import android.widget.TextView
 import com.example.batchtest.Group
-import com.example.batchtest.databinding.DialogLayoutBinding
+import com.example.batchtest.MainActivity
+import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMatchTabBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
@@ -27,6 +25,7 @@ private const val TAG = "GroupsFetchLog"
  */
 class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
     private lateinit var binding: FragmentMatchTabBinding
+
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +47,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         // accept button accepts group when clicked
         val acceptBtn = binding.acceptBtn
         acceptBtn.setOnClickListener{
-            // card swipes right for accept
+            // animation for card moving right for accept
             val setting = SwipeAnimationSetting.Builder()
                 .setDirection(Direction.Right)
                 .setDuration(Duration.Normal.duration)
@@ -61,7 +60,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         // reject button rejects group when clicked
         val rejectBtn = binding.rejectBtn
         rejectBtn.setOnClickListener{
-            // card swipes left for accept
+            // animation card moving left for reject
             val setting = SwipeAnimationSetting.Builder()
                 .setDirection(Direction.Left)
                 .setDuration(Duration.Normal.duration)
@@ -74,9 +73,48 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         // manager will define the layout for the card stack view
         cardStackView.layoutManager = manager
 
-        // fetch groups from database using firebase's firestore
+        /*
+        * fetch all possible groups to match based on logged in user
+        * and send to adapter which will display the groups in a recycler view
+         */
         val groups = arrayListOf<Group>()
         val db = Firebase.firestore
+        // get the authenticated logged in user
+        val currentUser = Firebase.auth.currentUser
+        // check if user exists / is still authenticated
+        if (currentUser != null) {
+            // fetches a user from firestore using the uid from the authenticated user
+            db.collection("users").document(currentUser.uid)
+                // reads the document reference
+                .get()
+                // if successful filter out certain groups for matching
+                .addOnSuccessListener { result ->
+                    // convert the fetched user into a User object
+                    val user: User = result.toObject(User::class.java)!!
+                    // filter groups will store all group to remove from the match group pool
+                    val filterGroups: ArrayList<String> = ArrayList()
+                    // all groups the user is will be filtered out so the user cannot match with their own groups
+                    filterGroups.addAll(user.myGroups!!)
+                    // all groups the user has already matched in will be filtered out
+                    filterGroups.addAll(user.matchedGroups!!)
+                    // all groups that are awaiting the voting process will be filtered out
+                    filterGroups.addAll(user.pendingGroups!!)
+                    // fetch all groups from the database filtering out the groups with
+                    // names matching the unwanted group's name
+                    db.collection("groups").whereNotIn("name", filterGroups)
+                        .get()
+                        .addOnSuccessListener {
+                            // convert the resulting groups into group object
+                            for (doc in it) {
+                                val group: Group = doc.toObject(Group::class.java)
+                                // add the group to the groups list
+                                groups.add(group)
+                            }
+                            // attach adapter and send groups and listener
+                            cardStackView.adapter = CardStackAdapter(groups, this)
+                        }
+                }
+        }
 
         // test groups without fetching for speed
 //        val g1 = Group("One Direction", arrayListOf(User("Harry", "Styles", "harrystyles@gmail.com")), arrayListOf("singing", "dancing", "partying", "soccer"), "one direction test description")
@@ -90,21 +128,21 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         * fetch all groups and send to adapter which
         * will display the groups in a recycler view
          */
-        db.collection("groups")
-            .get()
-            .addOnSuccessListener { result ->
-                for (doc in result) {
-                    // get group's data in form of map
-                    val group: Group = doc.toObject(Group::class.java)
-                    // add group to groups
-                    groups.add(group)
-                }
-                // attach adapter and send groups and listener
-                cardStackView.adapter = CardStackAdapter(groups, this)
-            }
-            .addOnFailureListener { e ->
-                Log.v(TAG, "error getting documents: ", e)
-            }
+//        db.collection("groups")
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (doc in result) {
+//                    // get group's data in form of map
+//                    val group: Group = doc.toObject(Group::class.java)
+//                    // add group to groups
+//                    groups.add(group)
+//                }
+//                // attach adapter and send groups and listener
+//                cardStackView.adapter = CardStackAdapter(groups, this)
+//            }
+//            .addOnFailureListener { e ->
+//                Log.v(TAG, "error getting documents: ", e)
+//            }
 
         return binding.root
     }
