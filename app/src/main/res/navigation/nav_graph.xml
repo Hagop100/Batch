@@ -51,6 +51,9 @@
         <action
             android:id="@+id/to_groupCreationFragment"
             app:destination="@id/groupCreationFragment" />
+        <action
+            android:id="@+id/action_myGroupFragment_to_editGroupProfile"
+            app:destination="@id/editGroupProfile" />
     </fragment>
     <!-- other group tab fragment -->
     <fragment
@@ -103,5 +106,10 @@
             android:id="@+id/action_accountSettingFragment_to_userProfileTabFragment"
             app:destination="@id/userProfileTabFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/editGroupProfile"
+        android:name="com.example.batchtest.myGroupsTab.EditGroupProfile"
+        android:label="fragment_edit_group_profile"
+        tools:layout="@layout/fragment_edit_group_profile" />
 
 </navigation>

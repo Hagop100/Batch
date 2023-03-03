@@ -29,7 +29,6 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
         // inflate parent using vote group card layout
         val binding = VoteGroupCardBinding.inflate(inflater, parent, false)
 
-
         // pass binding into the holder
         return PendingGroupHolder(binding)
     }
