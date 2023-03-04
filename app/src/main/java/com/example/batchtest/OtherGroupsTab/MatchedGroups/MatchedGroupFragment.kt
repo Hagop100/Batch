@@ -75,13 +75,13 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                 buffer: MutableList<MatchedGroupButton>
             ) {
                 buffer.add(MatchedGroupButton(requireActivity(),
-                    "Delete",
+                    "UnMatch",
                     30,
                     R.drawable.ic_baseline_delete_24,
                     Color.parseColor("#FF3C30"),
                     object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
                         override fun onItemClick(position: Int) {
-                            Toast.makeText(requireActivity(), "Delete " + matchedGroupArrayList[position], Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireActivity(), "UnMatch " + matchedGroupArrayList[position].name, Toast.LENGTH_SHORT).show()
                         }
                     }
                 ))
@@ -107,7 +107,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
         alertDialogBuilder.setTitle("Confirm Action")
             .setMessage("Are you sure you want to report this group?")
             .setCancelable(true)
-            .setPositiveButton("Report") {dialogInterface, it ->
+            .setPositiveButton("Report") { _, _ ->
                 db.collection("groups")
                     .whereEqualTo("name", matchedGroupArrayList[position].name)
                     .get()
@@ -127,7 +127,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                         Log.w(TAG, "Error getting documents: ", exception)
                     }
             }
-            .setNegativeButton("No") {dialogInterface, it ->
+            .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
             }
             .show()
