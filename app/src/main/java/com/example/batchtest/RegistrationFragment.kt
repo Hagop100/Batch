@@ -76,11 +76,10 @@ class RegistrationFragment : Fragment() {
             MFA_opt = ""
             MFA_opt = onCheckboxClicked(binding.fragmentRegistrationMFAEnrollmentBox)
 
-            //user info value to store all user information in registration
-            val userInfo = User(email, MFA_opt, phone_number)
 
             // Backend function to complete registration
             registration(email, password, phone_number, MFA_opt)
+
 
 
 
@@ -171,10 +170,7 @@ class RegistrationFragment : Fragment() {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            //val userUID = auth.createUserWithEmailAndPassword(email, password) // Grabs UUID from the
-                                                                                               // createUserwithEmailandPassword function
-                            val userUID = Firebase.auth.currentUser?.uid
-
+                            val userUID = Firebase.auth.currentUser?.uid //Grabs the userUID
                             val userInfo = User("", "", email, "", "", imageUrl = null, imageUri = null, "",
                                 "", phone_number, MFA_opt, user.myGroups, user.matchedGroups, user.pendingGroups) // assigns all info from user class to userInfo
 
@@ -187,7 +183,14 @@ class RegistrationFragment : Fragment() {
                                         Log.i(email, "Error writing document", e) //fails send error to logcat
                                     }
                             }
-                            val user = auth.currentUser
+                            val user = Firebase.auth.currentUser
+
+                            user!!.sendEmailVerification() //sends the user an email verification
+                                .addOnCompleteListener{ task ->
+                                    if(task.isSuccessful){
+                                        Log.d("print", "Email sent.")
+                                    }
+                                }
 
 
                         } else {
