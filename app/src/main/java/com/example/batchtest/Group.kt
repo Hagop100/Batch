@@ -11,6 +11,7 @@ data class Group(
     val aboutUsDescription: String? = null,
     val biscuits: Int = 0,
     val image: String? = null,
+    var reportCount: Int = 0,
 
     @ServerTimestamp
     var createdDate: Date? = Date(),
