@@ -36,10 +36,22 @@ class RegistrationFragment : Fragment() {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth //Firebase.auth initialization
 
+        //initialize user class variables
         user = User(
-            email = "",
-            MFA_Opt = "",
+            firstName = null,
+            lastName = null,
+            email = null,
+            displayName = "",
+            gender = "",
+            imageUrl = null,
+            imageUri = null,
+            birthdate = "",
+            personalBio = "",
             phoneNumber = null,
+            MFA_Opt = "",
+            myGroups = ArrayList(),
+            matchedGroups = ArrayList(),
+            pendingGroups = ArrayList(),
         )
     }
 
@@ -58,6 +70,7 @@ class RegistrationFragment : Fragment() {
             password = binding.fragmentRegistrationPasswordEt.text.toString()
             phone_number = binding.fragmentRegistrationPhoneNumberEt.text.toString()
 
+            //Check box to see if user opt in for MFA
             MFA_opt = ""
             MFA_opt = onCheckboxClicked()
 
@@ -67,33 +80,35 @@ class RegistrationFragment : Fragment() {
             // Backend function to complete registration
             registration(email, password)
 
-            //Adds info to database
-            db.collection("users").whereEqualTo("email", email).get()
-                .addOnSuccessListener { documents ->
-                    if(documents.isEmpty)
-                    {
-                        //Checks if email is empty
-                        if(binding.fragmentRegistrationEmailEt.text.isEmpty())
-                        {
-                            binding.fragmentRegistrationEmailEt.error = "Missing email"
-                        }
-                        else
-                        {
-                            db.collection("users").document(email).set(userInfo)
-                            Toast.makeText(this.context, "Account Created", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    else{
-                        for(doc in documents){
-                            if(doc.data.getValue("email") == email){
-                                binding.fragmentRegistrationEmailEt.error = "Email already taken"
-                            }
-                        }
-                    }
-                }
-                .addOnFailureListener{ e ->
-                    Log.i(email, "Error writing document", e)
-                }
+
+
+            //Adds info to database with email as document title
+//            db.collection("users").whereEqualTo("email", email).get()
+//                .addOnSuccessListener { documents ->
+//                    if(documents.isEmpty)
+//                    {
+//                        //Checks if email is empty
+//                        if(binding.fragmentRegistrationEmailEt.text.isEmpty())
+//                        {
+//                            binding.fragmentRegistrationEmailEt.error = "Missing email"
+//                        }
+//                        else
+//                        {
+//                            db.collection("users").document(email).set(userInfo)
+//                            Toast.makeText(this.context, "Account Created", Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                    else{
+//                        for(doc in documents){
+//                            if(doc.data.getValue("email") == email){
+//                                binding.fragmentRegistrationEmailEt.error = "Email already taken"
+//                            }
+//                        }
+//                    }
+//                }
+//                .addOnFailureListener{ e ->
+//                    Log.i(email, "Error writing document", e)
+//                }
 
 
         }
@@ -122,6 +137,7 @@ class RegistrationFragment : Fragment() {
 
     //Registration function
     private fun registration(email: String, password: String){
+        val db = Firebase.firestore // database
 
         //if the email or password slot is empty prompt the user to enter email and password
         if(email.isEmpty() || password.isEmpty()) {
@@ -134,9 +150,24 @@ class RegistrationFragment : Fragment() {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            // Sign in success, update UI with the signed-in user's information
+                            //val userUID = auth.createUserWithEmailAndPassword(email, password) // Grabs UUID from the
+                                                                                               // createUserwithEmailandPassword function
+                            val userUID = Firebase.auth.currentUser?.uid
+
+                            val userInfo = User("", "", email, "", "", imageUrl = null, imageUri = null, "",
+                                "", phoneNumber = null,"", user.myGroups, user.matchedGroups, user.pendingGroups) // assigns all info from user class to userInfo
+
+                            if (userUID != null) { //Checks if CurrentUserUID is not NULL
+                                db.collection("users").document(userUID.toString()).set(userInfo) //database adds UUID to document and sets userinfo
+                                    .addOnSuccessListener {
+                                        findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment) //if successful navigate
+                                    }
+                                    .addOnFailureListener{ e->
+                                        Log.i(email, "Error writing document", e) //fails send error to logcat
+                                    }
+                            }
                             val user = auth.currentUser
-                            findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment)
+
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -148,5 +179,32 @@ class RegistrationFragment : Fragment() {
             }
         }
     }
-
+    //Old Registration function for email
+//    private fun registration(email: String, password: String){
+//
+//        //if the email or password slot is empty prompt the user to enter email and password
+//        if(email.isEmpty() || password.isEmpty()) {
+//            Toast.makeText(activity, "Please Enter Email and Password.", Toast.LENGTH_SHORT).show()
+//        }
+//
+//        //When pressing the registration button sends the user to the profile personalization screen
+//        else{
+//            activity?.let{
+//                auth.createUserWithEmailAndPassword(email, password)
+//                    .addOnCompleteListener { task ->
+//                        if (task.isSuccessful) {
+//                            // Sign in success, update UI with the signed-in user's information
+//                            val user = auth.currentUser
+//                            findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment)
+//
+//                        } else {
+//                            // If sign in fails, display a message to the user.
+//                            Toast.makeText(activity, "Authentication failed.",
+//                                Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//
+//            }
+//        }
+//    }
 }
