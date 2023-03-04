@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_loginFragment_to_MFAuthenticationVerificationDialogFragment"
             app:destination="@id/MFAuthenticationVerificationDialogFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_initialProfilePersonalizationFragment"
+            app:destination="@id/initialProfilePersonalizationFragment" />
     </fragment>
     <!-- match tab fragment -->
     <fragment
@@ -94,6 +97,9 @@
         <action
             android:id="@+id/action_userProfileTabFragment_to_accountSettingFragment"
             app:destination="@id/accountSettingFragment" />
+        <action
+            android:id="@+id/action_userProfileTabFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
     </fragment>
 
 <!--   account setting -->
@@ -111,5 +117,14 @@
         android:name="com.example.batchtest.myGroupsTab.EditGroupProfile"
         android:label="fragment_edit_group_profile"
         tools:layout="@layout/fragment_edit_group_profile" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.batchtest.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_userProfileTabFragment"
+            app:destination="@id/userProfileTabFragment" />
+    </fragment>
 
 </navigation>
