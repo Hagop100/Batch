@@ -13,10 +13,12 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.R
+import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentAccountSettingBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 
@@ -25,7 +27,8 @@ class AccountSettingFragment : Fragment() {
     private var _binding: FragmentAccountSettingBinding? = null
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
-
+    private lateinit var userInfo: User
+    val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,6 +99,8 @@ class AccountSettingFragment : Fragment() {
          */
         binding.deleteAccountBtn.setOnClickListener{
             val user = Firebase.auth.currentUser!!
+            val userID = auth.currentUser?.uid
+
             this.context?.let { it1 -> MaterialAlertDialogBuilder(it1) }
             ?.setTitle("Are you sure?")
             ?.setMessage("Proceed to delete account...")
@@ -103,10 +108,16 @@ class AccountSettingFragment : Fragment() {
              //yes to delete user account and navigate back to the registration page
             ?.setPositiveButton("YES")
             { dialog, which ->
-
                 user.delete().addOnCompleteListener { task ->
                     if (task.isSuccessful){
-                        Log.i(TAG, "user account deleted")
+                        if (userID != null) {
+                            db.collection("users").document(userID).delete().addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                                .addOnFailureListener {
+                                        e -> Log.w(TAG, "Error deleting document", e)
+                                }
+                            Log.i(TAG, "user with account of ${user.email} is deleted")
+                        }
+
                         findNavController().navigate(R.id.registrationFragment)
                     }
 
