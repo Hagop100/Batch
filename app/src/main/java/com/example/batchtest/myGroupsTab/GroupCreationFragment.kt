@@ -23,6 +23,7 @@ import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.google.android.material.chip.Chip
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -99,6 +100,7 @@ class GroupCreationFragment : Fragment() {
         binding.btnCreateGroup.setOnClickListener{
 
             val db = Firebase.firestore
+            val currentUser = Firebase.auth.currentUser
             val groupName = binding.editGroupName.text.toString()
             val aboutUs = binding.editGroupAboutUs.text.toString()
             val users = group.users
@@ -141,6 +143,8 @@ class GroupCreationFragment : Fragment() {
                                     else{
                                         //set the group name as the document name in firebase
                                         db.collection("groups").document(groupName).set(groupInfo)
+
+                                        //
                                         Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
                                         findNavController().navigate(R.id.to_myGroupFragment)
                                     }
