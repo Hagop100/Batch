@@ -40,6 +40,14 @@ class UserProfileTabFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentUserProfileTabBinding.inflate(layoutInflater, container, false)
 
+        binding.editProfileBtn.setOnClickListener{
+
+            //hides the bottom nav when navigate to the account setting page
+            val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
+            navBar?.visibility = View.GONE
+
+            findNavController().navigate(R.id.action_userProfileTabFragment_to_editProfileFragment)
+        }
 
         binding.settingBtn.setOnClickListener{
 
