@@ -1,5 +1,6 @@
 package com.example.batchtest.OtherGroupsTab.MatchedGroups
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Group
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupAdapter
 import com.example.batchtest.R
@@ -32,7 +34,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
 
         val matchedGroupRV = binding.fragmentMatchedGroupsRecyclerView
         matchedGroupRV.layoutManager = LinearLayoutManager(context)
-        //matchedGroupRV.setHasFixedSize(true)
+        matchedGroupRV.setHasFixedSize(true)
 
         matchedGroupArrayList = arrayListOf<Group>()
         val db = Firebase.firestore
@@ -56,6 +58,37 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
             .addOnFailureListener { e ->
                 Log.v(TAG, "error getting documents: ", e)
             }
+
+        val swipe = object: MatchedGroupsSwipeHelper(requireActivity(), matchedGroupRV, 200) {
+            override fun instantiateMatchedGroupButton(
+                viewHolder: RecyclerView.ViewHolder,
+                buffer: MutableList<MatchedGroupButton>
+            ) {
+                buffer.add(MatchedGroupButton(requireActivity(),
+                    "Delete",
+                    30,
+                    R.drawable.ic_baseline_delete_24,
+                    Color.parseColor("#FF3C30"),
+                    object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
+                        override fun onItemClick(position: Int) {
+                            Toast.makeText(requireActivity(), "Delete" + position, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                ))
+
+                buffer.add(MatchedGroupButton(requireActivity(),
+                    "Report",
+                    30,
+                    R.drawable.ic_baseline_report_24,
+                    Color.parseColor("#FF9502"),
+                    object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
+                        override fun onItemClick(position: Int) {
+                            Toast.makeText(requireActivity(), "Report" + position, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                ))
+            }
+        }
 
         return binding.root
     }
