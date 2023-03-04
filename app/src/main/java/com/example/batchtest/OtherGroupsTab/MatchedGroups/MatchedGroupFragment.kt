@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Group
@@ -29,6 +30,13 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
 
     //ArrayList for groups
     private var matchedGroupArrayList: ArrayList<Group> = arrayListOf<Group>()
+
+    private var alertDialogBuilder: AlertDialog.Builder? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        alertDialogBuilder = AlertDialog.Builder(requireActivity())
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -73,7 +81,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                     Color.parseColor("#FF3C30"),
                     object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
                         override fun onItemClick(position: Int) {
-                            Toast.makeText(requireActivity(), "Delete" + position, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireActivity(), "Delete " + matchedGroupArrayList[position], Toast.LENGTH_SHORT).show()
                         }
                     }
                 ))
@@ -85,25 +93,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                     Color.parseColor("#FF9502"),
                     object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
                         override fun onItemClick(position: Int) {
-                            Toast.makeText(requireActivity(), "Report" + position, Toast.LENGTH_SHORT).show()
-                            db.collection("groups")
-                                .whereEqualTo("name", matchedGroupArrayList[position].name)
-                                .get()
-                                .addOnSuccessListener { documents ->
-                                    for (document in documents) {
-                                        Log.d(TAG, "${document.id} => ${document.data}")
-                                        val group: Group = document.toObject<Group>()
-                                        group.reportCount += 1
-                                        val currGroup = db.collection("groups").document(document.id)
-                                        currGroup
-                                            .update("reportCount", group.reportCount)
-                                            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
-                                            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
-                                    }
-                                }
-                                .addOnFailureListener { exception ->
-                                    Log.w(TAG, "Error getting documents: ", exception)
-                                }
+                            buildAlertDialog(alertDialogBuilder!!, db, position)
                         }
                     }
                 ))
@@ -111,6 +101,36 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
         }
 
         return binding.root
+    }
+
+    private fun buildAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
+        alertDialogBuilder.setTitle("Confirm Action")
+            .setMessage("Are you sure you want to report this group?")
+            .setCancelable(true)
+            .setPositiveButton("Report") {dialogInterface, it ->
+                db.collection("groups")
+                    .whereEqualTo("name", matchedGroupArrayList[position].name)
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            Log.d(TAG, "${document.id} => ${document.data}")
+                            val group: Group = document.toObject<Group>()
+                            group.reportCount += 1
+                            val currGroup = db.collection("groups").document(document.id)
+                            currGroup
+                                .update("reportCount", group.reportCount)
+                                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
+                                .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w(TAG, "Error getting documents: ", exception)
+                    }
+            }
+            .setNegativeButton("No") {dialogInterface, it ->
+                dialogInterface.cancel()
+            }
+            .show()
     }
 
     override fun onDestroyView() {
