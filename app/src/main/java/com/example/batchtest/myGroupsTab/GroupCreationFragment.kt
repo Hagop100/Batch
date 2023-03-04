@@ -231,9 +231,11 @@ class GroupCreationFragment : Fragment() {
                 // Get the downloadable url from the task snapshot
                 // The Success Listener is Asynchronous, and any following code will run
                 // Getting the TaskSnapshot takes a bit of time,
-//                imageURL = taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
-                imageURL = imageUri.toString()
-                Log.i(TAG, "IMAGEURL: $imageURL")
+                taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
+                    imageURL = uri.toString()
+                }
+//                imageURL = imageUri.toString()
+//                Log.i(TAG, "IMAGEURL: $imageURL")
 
             }.addOnFailureListener {
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
