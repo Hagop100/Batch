@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentEditGroupInfoBinding
 import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
@@ -32,7 +33,6 @@ class ViewGroupInfoFragment : Fragment() {
 
         }
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,10 +53,13 @@ class ViewGroupInfoFragment : Fragment() {
             val editProfileDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
             editProfileDialogBtn.text = "Edit Group Profile"
             // perform action on click
+
             editProfileDialogBtn.setOnClickListener {
-                // add block group logic
+                // navigate to the edit page
+                findNavController().navigate(R.id.action_viewGroupInfoFragment_to_editGroupProfile)
                 dialog.dismiss()
             }
+
             // add the block dialog button to the bottom dialog view
             view.addView(editProfileDialogBtn)
 
@@ -64,6 +67,11 @@ class ViewGroupInfoFragment : Fragment() {
             dialog.setContentView(view)
             // show the dialog
             dialog.show()
+        }
+
+        //Exit to navigate back to the my groups page
+        binding.exitViewBtn.setOnClickListener{
+            findNavController().navigate(R.id.action_viewGroupInfoFragment_to_myGroupFragment)
         }
         return binding.root
     }

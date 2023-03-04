@@ -18,7 +18,7 @@ FragmentStateAdapter(fragmentManager, lifecycle) {
     override fun createFragment(position: Int): Fragment {
         return when (position){
             0 -> EditGroupInfoFragment()
-            1 -> ViewGroupInfoFragment()
+            1 -> PreviewGroupInfoFragment()
             else -> EditGroupInfoFragment()
         }
 
