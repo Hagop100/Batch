@@ -20,6 +20,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.batchtest.databinding.FragmentInitialProfilePersonalizationBinding
 import java.text.SimpleDateFormat
 import com.google.firebase.auth.FirebaseAuth
@@ -53,7 +54,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
     private lateinit var userDetails: User
     private lateinit var firstName: String
     private lateinit var lastName: String
-    private var imageURL: String? = null
+    private lateinit var imageURL: String
 
     //ActivityResultLauncher must be initialized onCreate
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
@@ -70,10 +71,11 @@ class InitialProfilePersonalizationFragment : Fragment() {
         const val NONBINARY: String = "nonbinary"
         const val DISPLAYNAME: String = "displayName"
         const val IMAGEURL: String = "imageUrl"
+        const val IMAGEURI: String = "imageUri"
         const val BIRTHDATE: String = "birthdate"
         const val PERSONALBIO: String = "personalBio"
         const val USER_PROFILE_IMAGE: String = "User_Profile_Image"
-        const val FIRSTNAME: String = "firstname"
+        const val FIRSTNAME: String = "firstName"
         const val LASTNAME: String ="lastName"
         const val EMAIL: String = "email"
     }
@@ -168,7 +170,8 @@ class InitialProfilePersonalizationFragment : Fragment() {
         userHasMap[GENDER] = gender
         userHasMap[BIRTHDATE] = birthday
         userHasMap[PERSONALBIO] = personalBio
-        userHasMap[IMAGEURL] = imageURL!!
+        userHasMap[IMAGEURI] = imageUri
+        userHasMap[IMAGEURL] = imageURL
 
         //Get a instance of the Firebase Firestore database and update the user's information
         FirebaseFirestore.getInstance().collection("users")
@@ -236,8 +239,8 @@ class InitialProfilePersonalizationFragment : Fragment() {
             {
                 try {
                     Toast.makeText(context,"Got URI",Toast.LENGTH_LONG).show()
-                    imageUri = data?.data!!
-                    userPic.setImageURI(imageUri)
+                    imageUri = data.data!!
+                    Glide.with(this).load(imageUri).into(userPic)
                     //Not necessarily the best location for this
                     //However, since it takes time to receive the URL
                     //Placing it here has led to successful results.
@@ -284,7 +287,9 @@ class InitialProfilePersonalizationFragment : Fragment() {
                 // Get the downloadable url from the task snapshot
                 // The Success Listener is Asynchronous, and any following code will run
                 // Getting the TaskSnapshot takes a bit of time,
-                imageURL = taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
+                taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
+                    imageURL = uri.toString()
+                }
 
             }.addOnFailureListener {
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
@@ -338,7 +343,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
         {
             currentUserId = currentUser.uid
         }
-        return "u8hmrDrrQqSCr7fWqxBYL9XlgNH2"
+        return currentUser!!.uid
     }
 
 
