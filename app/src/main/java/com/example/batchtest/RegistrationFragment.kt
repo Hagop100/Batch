@@ -36,6 +36,7 @@ class RegistrationFragment : Fragment() {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth //Firebase.auth initialization
 
+
         //initialize user class variables
         user = User(
             firstName = null,
@@ -59,6 +60,7 @@ class RegistrationFragment : Fragment() {
         val db = Firebase.firestore // database
 
 
+
         // Inflate the layout for this fragment
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
 
@@ -72,13 +74,13 @@ class RegistrationFragment : Fragment() {
 
             //Check box to see if user opt in for MFA
             MFA_opt = ""
-            MFA_opt = onCheckboxClicked()
+            MFA_opt = onCheckboxClicked(binding.fragmentRegistrationMFAEnrollmentBox)
 
             //user info value to store all user information in registration
             val userInfo = User(email, MFA_opt, phone_number)
 
             // Backend function to complete registration
-            registration(email, password)
+            registration(email, password, phone_number, MFA_opt)
 
 
 
@@ -116,17 +118,17 @@ class RegistrationFragment : Fragment() {
         return binding.root
     }
 
-    //function to check if the MFA enrollment checkbox is checked
-    private fun onCheckboxClicked(): String {
-        if (view is CheckBox){
-            val checked: Boolean = (view as CheckBox).isChecked
-            when((view as CheckBox).id){
-                R.id.fragment_registration_MFA_enrollment_box ->{
+    //Function to check if the MFA enrollment box is checked.
+    fun onCheckboxClicked(view: View): String {
+        if(view is CheckBox) {
+            val checked: Boolean = view.isChecked
+
+            when (view.id) {
+                R.id.fragment_registration_MFA_enrollment_box -> {
                     if (checked) {
                         MFA_opt = "Enrolled"
                     }
-                    else
-                    {
+                    else{
                         MFA_opt = "Not Enrolled"
                     }
                 }
@@ -135,8 +137,27 @@ class RegistrationFragment : Fragment() {
         return MFA_opt
     }
 
+    //function to check if the MFA enrollment checkbox is checked
+//    private fun onCheckboxClicked(): String {
+//        if (view is CheckBox){
+//            val checked: Boolean = (view as CheckBox).isChecked
+//            when((view as CheckBox).id){
+//                R.id.fragment_registration_MFA_enrollment_box ->{
+//                    if (checked) {
+//                        MFA_opt = "Enrolled"
+//                    }
+//                    else
+//                    {
+//                        MFA_opt = "Not Enrolled"
+//                    }
+//                }
+//            }
+//        }
+//        return MFA_opt
+//    }
+
     //Registration function
-    private fun registration(email: String, password: String){
+    private fun registration(email: String, password: String, phone_number: String, MFA_opt: String){
         val db = Firebase.firestore // database
 
         //if the email or password slot is empty prompt the user to enter email and password
@@ -155,7 +176,7 @@ class RegistrationFragment : Fragment() {
                             val userUID = Firebase.auth.currentUser?.uid
 
                             val userInfo = User("", "", email, "", "", imageUrl = null, imageUri = null, "",
-                                "", phoneNumber = null,"", user.myGroups, user.matchedGroups, user.pendingGroups) // assigns all info from user class to userInfo
+                                "", phone_number, MFA_opt, user.myGroups, user.matchedGroups, user.pendingGroups) // assigns all info from user class to userInfo
 
                             if (userUID != null) { //Checks if CurrentUserUID is not NULL
                                 db.collection("users").document(userUID.toString()).set(userInfo) //database adds UUID to document and sets userinfo
@@ -179,6 +200,7 @@ class RegistrationFragment : Fragment() {
             }
         }
     }
+
     //Old Registration function for email
 //    private fun registration(email: String, password: String){
 //
