@@ -18,6 +18,8 @@ data class User(
     val imageUri: String? = null,
     val birthdate: String ="",
     val personalBio: String = "",
+    val phoneNumber: Number? = null,
+    val MFA_Opt: String = "",
     val myGroups: ArrayList<String>? = null,
     val matchedGroups: ArrayList<String>? = null,
     val pendingGroups: ArrayList<String>? = null,

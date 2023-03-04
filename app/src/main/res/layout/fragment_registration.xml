@@ -8,36 +8,70 @@
     android:background="@color/app_background"
     tools:context=".RegistrationFragment">
 
-    <TextView
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/fragment_registration_phone_number_et"
+        style="@style/Widget.AppCompat.AutoCompleteTextView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        style="@style/page_title"
-        android:id="@+id/fragment_registration_title"
-        android:text = "Registration"
-        android:textColor = "@color/purple_700"
-        android:textSize="34sp"
-        android:textAlignment="center"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="108dp"
+        android:layout_marginEnd="8dp"
+        android:ems="10"
+        android:fontFamily="@font/poppins_regular"
+        android:hint="@string/user_registration_enter_phone_number"
+        android:inputType="phone"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-    />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_username" />
+
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/fragment_registration_phone_number"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_registration_username"
-        android:text="Email"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/poppins_regular"
+        android:text="@string/user_registration_phone_number"
         android:textColor="@color/purple_500"
         android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_email_et" />
+
+    <TextView
+        android:id="@+id/fragment_registration_title"
+        style="@style/page_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/user_registration_Register_title"
+        android:textAlignment="center"
+        android:textColor="@color/purple_700"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/fragment_registration_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins_regular"
+        android:text="Email"
+        android:textColor="@color/purple_500"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_registration_title"
 
-    />
+        />
 
     <EditText
         android:id="@+id/fragment_registration_email_et"
@@ -53,24 +87,23 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_username"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_username" />
 
     <TextView
         android:id="@+id/fragment_registration_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins_regular"
         android:text="@string/password_text"
         android:textColor="@color/purple_500"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_email_et" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_phone_number_et" />
 
     <EditText
         android:id="@+id/fragment_registration_password_et"
@@ -95,47 +128,58 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="56dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins_regular"
-        android:text="By creating an account you agree to the terms of service for this application."
+        android:text="@string/user_registration_TOS"
         android:textAlignment="center"
         android:textColor="@color/purple_500"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_password_et" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_MFA_enrollment_box" />
 
     <Button
         android:id="@+id/fragment_registration_btn"
-        android:layout_width="0dp"
+        android:layout_width="395dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="76dp"
         android:backgroundTint="@color/purple_700"
-        android:text="Register"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/user_registration_Register_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_password_et" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_MFA_enrollment_box" />
 
     <TextView
         android:id="@+id/fragment_registration_copyright"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="132dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/poppins_regular"
-        android:text="Batch2023"
+        android:text="@string/user_registration_Batch2023"
         android:textAlignment="center"
         android:textColor="@color/purple_500"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_registration_btn" />
+
+    <CheckBox
+        android:id="@+id/fragment_registration_MFA_enrollment_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/user_registration_MFA_enrollment"
+        android:textColor="@color/purple_500"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_password_et"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="439dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

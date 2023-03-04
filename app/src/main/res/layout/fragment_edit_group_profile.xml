@@ -21,16 +21,20 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            >
 
-            <TextView
-                android:id="@+id/group_profile_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="BatchNormies"
-                android:theme="@style/page_title"
+
+            <Button
+                android:id="@+id/cancel_group_edit"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="92dp"
+                android:layout_height="48dp"
+                android:text="Cancel"
+                android:textColor="@color/purple_700"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/exit_group_edit"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -41,10 +45,13 @@
             <Button
                 android:id="@+id/exit_group_edit"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="58dp"
-                android:layout_height="46dp"
-                app:icon="@drawable/close_icon"
-                app:iconTint="#312B28"
+                android:layout_width="76dp"
+                android:layout_height="48dp"
+                android:text="Save"
+                android:textColor="@color/purple_700"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.996"
                 app:layout_constraintStart_toStartOf="parent"
@@ -56,28 +63,20 @@
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:background="@color/horizontal_line"
-            android:layout_marginTop="10dp"
+
             />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/group_edit_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/app_background"
-            >
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Edit" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Preview" />
+            android:background="@color/white"
+            app:tabIndicatorHeight="3sp">
 
         </com.google.android.material.tabs.TabLayout>
-        <androidx.viewpager.widget.ViewPager
+
+
+        <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/group_profile_viewpager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
