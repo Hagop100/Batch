@@ -74,8 +74,12 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 // all groups that are awaiting the voting process will be filtered out
                 filterGroups.addAll(user.pendingGroups!!)
                 // fetch all groups from the database filtering out the groups with
+                val groupsDocRef = db.collection("groups")
                 // names matching the unwanted group's name
-                db.collection("groups").whereNotIn("name", filterGroups)
+                if (filterGroups.isNotEmpty()) {
+                    groupsDocRef.whereNotIn("name", filterGroups)
+                }
+                groupsDocRef
                     .get()
                     .addOnSuccessListener {
                         // convert the resulting groups into group object
@@ -90,6 +94,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                     .addOnFailureListener { e ->
                         Log.v(TAG, "error getting documents: ", e)
                     }
+            }
+            .addOnFailureListener { e ->
+                Log.v(TAG, "error getting user from documents: ", e)
             }
 
         // test groups without fetching for speed

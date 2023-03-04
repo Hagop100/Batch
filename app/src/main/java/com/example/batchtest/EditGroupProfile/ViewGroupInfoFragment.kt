@@ -5,9 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentEditGroupInfoBinding
 import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,6 +40,31 @@ class ViewGroupInfoFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentViewGroupInfoBinding.inflate(layoutInflater, container, false)
 
+        // more button on match page opens dialog
+        binding.groupProfileMoreBtn.setOnClickListener {
+            // create a bottom sheet dialog
+            val dialog = BottomSheetDialog(requireContext())
+            // inflate the view with the dialog linear layout
+            val view: LinearLayout = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_layout, binding.root, false) as LinearLayout
+
+            // create block dialog button to add into the dialog layout dynamically
+            // using the dialog button layout
+            // inflate a text view to hold the edit profile dialog
+            val editProfileDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+            editProfileDialogBtn.text = "Edit Group Profile"
+            // perform action on click
+            editProfileDialogBtn.setOnClickListener {
+                // add block group logic
+                dialog.dismiss()
+            }
+            // add the block dialog button to the bottom dialog view
+            view.addView(editProfileDialogBtn)
+
+            // set the view of the dialog using the inflated layout
+            dialog.setContentView(view)
+            // show the dialog
+            dialog.show()
+        }
         return binding.root
     }
 
