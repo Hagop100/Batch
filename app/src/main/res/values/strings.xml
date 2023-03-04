@@ -40,23 +40,27 @@
     <string name="forgot_password_text"><u>Forgot Password?</u></string>
     <string name="remember_me_rb_text">Remember Me</string>
     <string name="login_button_text">Login</string>
-    <string name="biscuit_icon">biscuit icon</string>
-    <string name="about_us">About us</string>
-    <string name="undo_button">undo button</string>
-    <string name="match_group_card_more_button">match group card more button</string>
     <string name="forgot_password_title_text">Forgot Password?</string>
     <string name="enter_email_text">Enter Email</string>
     <string name="cancel_button_text">Cancel</string>
     <string name="submit_btn_text2">Submit</string>
-    <string name="reject_button">reject button</string>
-    <string name="accept_button">accept button</string>
-    <string name="matched">Matched</string>
-    <string name="pending">Pending</string>
     <string name="phone_number_text">(***)***-****</string>
     <string name="mfVerificationTitle">SMS Verification</string>
     <string name="mf_verification_code_text">Enter Code</string>
     <string name="mf_verification_enter_code">Code</string>
     <string name="mf_authentication_verify_btn_text">Verify</string>
+
+    <!--    matched groups tab -->
+    <string name="reject_button">reject button</string>
+    <string name="accept_button">accept button</string>
+    <string name="undo_button">undo button</string>
+    <string name="match_group_card_more_button">match group card more button</string>
+    <string name="biscuit_icon">biscuit icon</string>
+    <string name="about_us">About us</string>
+
+    <!--    other groups tab -->
+    <string name="matched">Matched</string>
+    <string name="pending">Pending</string>
 
     <!--    user profile tab-->
     <string name="edit_profile">Edit Profile</string>
@@ -78,7 +82,6 @@
     <!--  Setting -->
     <string name="account_setting_title">Account Settings</string>
     <string name="notification">Notifications</string>
-
 
 
 </resources>

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/matchedGroupFragment"
-        android:name="com.example.batchtest.MatchedGroupFragment"
+        android:name="com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_matched_group">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/pendingGroupFragment"
-        android:name="com.example.batchtest.PendingGroupFragment"
+        android:name="com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupFragment"
         android:label="fragment_pending_group"
         tools:layout="@layout/fragment_login">
         <action

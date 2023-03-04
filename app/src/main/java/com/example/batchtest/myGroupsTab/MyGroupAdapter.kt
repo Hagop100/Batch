@@ -1,16 +1,24 @@
-package com.example.batchtest
+package com.example.batchtest.myGroupsTab
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
+import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.batchtest.Group
+import com.example.batchtest.R
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.coroutines.withContext
-import org.w3c.dom.Text
 
 /**
  * bridge the communication between MyGroupFragment and GroupCreationFragment.
@@ -25,7 +33,7 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
 
     //This function is used to bind the list items to our widgets such as TextView, ImageView, etc.
     @SuppressLint("CheckResult")
-    override fun onBindViewHolder(holder: MyGroupAdapter.MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
 
         val info: Group = groupNameList[position]
         holder.groupName.text = info.name
@@ -33,10 +41,19 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
 
         //if user does not change the default picture. then set the default as group pic
         if (groupNameList[position].image == null){
-            holder.groupPic.setImageResource(R.drawable.one_direction_photo)
+            holder.groupPic.setImageResource(R.drawable.placeholder)
         }
         else{
             Glide.with(context).load(groupNameList[position].image).into(holder.groupPic)
+        }
+
+        /**
+         * clicks on the image at position n to view group profile
+         */
+        holder.groupPic.setOnClickListener{ view ->
+//            Toast.makeText(this.context, "Testing here $position", Toast.LENGTH_SHORT).show()
+            findNavController(view).navigate(R.id.action_myGroupFragment_to_editGroupProfile)
+
         }
 
 
@@ -56,7 +73,11 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
     }
 
 
+
+
 }
+
+
 
 
 

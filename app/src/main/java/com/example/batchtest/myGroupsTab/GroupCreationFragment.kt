@@ -1,7 +1,8 @@
-package com.example.batchtest
+package com.example.batchtest.myGroupsTab
 
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 
 import android.content.Intent
@@ -17,8 +18,12 @@ import android.widget.Toast
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.batchtest.Group
+import com.example.batchtest.R
+import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.google.android.material.chip.Chip
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -62,6 +67,7 @@ class GroupCreationFragment : Fragment() {
         )
     }
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,6 +100,7 @@ class GroupCreationFragment : Fragment() {
         binding.btnCreateGroup.setOnClickListener{
 
             val db = Firebase.firestore
+            val currentUser = Firebase.auth.currentUser
             val groupName = binding.editGroupName.text.toString()
             val aboutUs = binding.editGroupAboutUs.text.toString()
             val users = group.users
@@ -122,7 +129,7 @@ class GroupCreationFragment : Fragment() {
                 else {
 
                         //find existing group name in database that matches with the name entry
-                        db.collection("NewGroup").whereEqualTo("name", groupName).get()
+                        db.collection("groups").whereEqualTo("name", groupName).get()
                             .addOnSuccessListener { documents ->
 
                                 //if entry is not found(not match with) in database, create a new group
@@ -135,7 +142,9 @@ class GroupCreationFragment : Fragment() {
                                     // if tag is not empty, create a new group
                                     else{
                                         //set the group name as the document name in firebase
-                                        db.collection("NewGroup").document(groupName).set(groupInfo)
+                                        db.collection("groups").document(groupName).set(groupInfo)
+
+                                        //
                                         Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
                                         findNavController().navigate(R.id.to_myGroupFragment)
                                     }
@@ -226,9 +235,11 @@ class GroupCreationFragment : Fragment() {
                 // Get the downloadable url from the task snapshot
                 // The Success Listener is Asynchronous, and any following code will run
                 // Getting the TaskSnapshot takes a bit of time,
-//                imageURL = taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
-                imageURL = imageUri.toString()
-                Log.i(TAG, "IMAGEURL: $imageURL")
+                taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
+                    imageURL = uri.toString()
+                }
+//                imageURL = imageUri.toString()
+//                Log.i(TAG, "IMAGEURL: $imageURL")
 
             }.addOnFailureListener {
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()

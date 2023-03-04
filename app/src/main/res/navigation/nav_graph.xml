@@ -25,17 +25,20 @@
         <action
             android:id="@+id/action_loginFragment_to_MFAuthenticationVerificationDialogFragment"
             app:destination="@id/MFAuthenticationVerificationDialogFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_initialProfilePersonalizationFragment"
+            app:destination="@id/initialProfilePersonalizationFragment" />
     </fragment>
     <!-- match tab fragment -->
     <fragment
         android:id="@+id/matchTabFragment"
-        android:name="com.example.batchtest.MatchTabFragment"
+        android:name="com.example.batchtest.MatchTab.MatchTabFragment"
         android:label="fragment_match_tab"
         tools:layout="@layout/fragment_match_tab"/>
     <!-- group creation fragment -->
     <fragment
         android:id="@+id/groupCreationFragment"
-        android:name="com.example.batchtest.GroupCreationFragment"
+        android:name="com.example.batchtest.myGroupsTab.GroupCreationFragment"
         android:label="GroupCreationFragment"
         tools:layout="@layout/fragment_group_creation">
         <action
@@ -45,17 +48,20 @@
     <!-- my group fragment -->
     <fragment
         android:id="@+id/myGroupFragment"
-        android:name="com.example.batchtest.MyGroupFragment"
+        android:name="com.example.batchtest.myGroupsTab.MyGroupFragment"
         android:label="fragment_my_group"
         tools:layout="@layout/fragment_my_group" >
         <action
             android:id="@+id/to_groupCreationFragment"
             app:destination="@id/groupCreationFragment" />
+        <action
+            android:id="@+id/action_myGroupFragment_to_editGroupProfile"
+            app:destination="@id/editGroupProfile" />
     </fragment>
     <!-- other group tab fragment -->
     <fragment
         android:id="@+id/otherGroupTabFragment"
-        android:name="com.example.batchtest.OtherGroupTabFragment"
+        android:name="com.example.batchtest.OtherGroupsTab.OtherGroupTabFragment"
         android:label="fragment_match_tab"
         tools:layout="@layout/fragment_match_tab"/>
     <fragment
@@ -85,22 +91,39 @@
 <!--   user profile tab-->
     <fragment
         android:id="@+id/userProfileTabFragment"
-        android:name="com.example.batchtest.UserProfileTabFragment"
+        android:name="com.example.batchtest.UserProfileTab.UserProfileTabFragment"
         android:label="UserProfileTabFragment"
         tools:layout="@layout/fragment_user_profile_tab">
         <action
             android:id="@+id/action_userProfileTabFragment_to_accountSettingFragment"
             app:destination="@id/accountSettingFragment" />
+        <action
+            android:id="@+id/action_userProfileTabFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
     </fragment>
 
 <!--   account setting -->
     <fragment
         android:id="@+id/accountSettingFragment"
-        android:name="com.example.batchtest.AccountSettingFragment"
+        android:name="com.example.batchtest.UserProfileTab.AccountSettingFragment"
         android:label="fragment_account_setting"
         tools:layout="@layout/fragment_account_setting" >
         <action
             android:id="@+id/action_accountSettingFragment_to_userProfileTabFragment"
+            app:destination="@id/userProfileTabFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editGroupProfile"
+        android:name="com.example.batchtest.myGroupsTab.EditGroupProfile"
+        android:label="fragment_edit_group_profile"
+        tools:layout="@layout/fragment_edit_group_profile" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.batchtest.EditProfileFragment"
+        android:label="fragment_edit_profile"
+        tools:layout="@layout/fragment_edit_profile" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_userProfileTabFragment"
             app:destination="@id/userProfileTabFragment" />
     </fragment>
 

@@ -96,15 +96,15 @@ class LoginFragment : Fragment() {
         A debugging tool to check if the user is signed in or not upon running the application
         If a user is not explicitly signed out, then it is the case that the user could be
         logged in or out depending on the startup of the application
+        If a user is signed in now, they  do not need to login
          */
         if (user != null) {
             Log.i(TAG, "user is signed in")
             Log.i(TAG, user!!.email.toString())
+            findNavController().navigate(R.id.action_loginFragment_to_matchTabFragment)
         } else {
             Log.i(TAG, "user is signed out")
         }
-
-
 
         //Sign Up navigates to registration fragment
         binding.fragmentLoginSignUpBtn.setOnClickListener {
@@ -166,7 +166,6 @@ class LoginFragment : Fragment() {
             val dialog = ForgotPasswordDialogFragment()
             dialog.show(childFragmentManager, "forgotPasswordDialog")
         }
-
 
         /*
         This button remains for debugging purposes and will be removed upon release of the final build

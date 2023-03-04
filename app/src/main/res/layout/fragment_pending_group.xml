@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PendingGroupFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    tools:context=".OtherGroupsTab.PendingGroups.PendingGroupFragment">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pendingGroupRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Pending Gorup" />
-
-</FrameLayout>
+        android:paddingBottom="80dp"
+        android:clipToPadding="false"/>
+</RelativeLayout>

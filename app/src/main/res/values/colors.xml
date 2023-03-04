@@ -13,6 +13,7 @@
 
     <color name="dark_brown">#312B28</color>
     <color name="off_white">#FAF4EC</color>
+    <color name="opaque">#FFFDFB</color>
     <color name="creme">#EBD7B9</color>
     <color name="gray">#B3ADAD</color>
 
@@ -20,5 +21,5 @@
     <color name="horizontal_line">#EBE2D8</color>
 
     <!-- misc colors -->
-    <color name="light_grey">#80ECE9E7</color>
+    <color name="light_grey">#80E4E0DD</color>
 </resources>

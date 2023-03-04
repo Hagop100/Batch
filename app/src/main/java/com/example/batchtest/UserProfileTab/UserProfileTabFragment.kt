@@ -1,4 +1,4 @@
-package com.example.batchtest
+package com.example.batchtest.UserProfileTab
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentAccountSettingBinding
 import com.example.batchtest.databinding.FragmentUserProfileTabBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -39,6 +40,14 @@ class UserProfileTabFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentUserProfileTabBinding.inflate(layoutInflater, container, false)
 
+        binding.editProfileBtn.setOnClickListener{
+
+            //hides the bottom nav when navigate to the account setting page
+            val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
+            navBar?.visibility = View.GONE
+
+            findNavController().navigate(R.id.action_userProfileTabFragment_to_editProfileFragment)
+        }
 
         binding.settingBtn.setOnClickListener{
 

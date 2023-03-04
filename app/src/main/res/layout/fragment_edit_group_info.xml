@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/groupCreationFragment"
->
+    tools:context=".EditGroupProfile.EditGroupInfoFragment"
+    android:theme="@style/page_text"
+    android:background="@color/app_background">
 
     <LinearLayout
         android:orientation="vertical"
@@ -13,48 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@color/app_background"
         android:theme="@style/page_text"
-      >
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/linearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp">
-
-            <TextView
-                android:id="@+id/group_creation_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="@string/group_creation_title"
-                android:theme="@style/page_title"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/exit_group_creatn"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <Button
-                android:id="@+id/exit_group_creatn"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="58dp"
-                android:layout_height="46dp"
-                app:icon="@drawable/close_icon"
-                app:iconTint="#312B28"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.996"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:id="@+id/horizontal_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="@color/horizontal_line"
-            />
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -94,22 +54,12 @@
                 tools:ignore="MissingConstraints" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--        <ImageView-->
-<!--            android:id="@+id/group_profile"-->
-<!--            android:layout_width="182dp"-->
-<!--            android:layout_height="165dp"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:layout_marginTop="30dp"-->
-<!--            android:scaleType="centerCrop"-->
-<!--            android:src="@drawable/one_direction_photo" />-->
-
-
         <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:theme="@style/page_margin"
-                    >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:theme="@style/page_margin"
+            >
 
             <TextView
                 android:id="@+id/group_name"
@@ -232,12 +182,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
-
 </ScrollView>
-
-
-<!--for chip group sample-->
-<!--    https://mobikul.com/android-chips-dynamicaly-add-remove-tags-chips-view/-->
-
-

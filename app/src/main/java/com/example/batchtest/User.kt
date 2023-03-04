@@ -15,12 +15,14 @@ data class User(
     val displayName : String = "",
     val gender: String = "N/A",
     val imageUrl: String? = null,
-    val imageUri: Uri? = null,
+    val imageUri: String? = null,
     val birthdate: String ="",
     val personalBio: String = "",
     val phoneNumber: Number? = null,
     val MFA_Opt: String = "",
-
+    val myGroups: ArrayList<String>? = null,
+    val matchedGroups: ArrayList<String>? = null,
+    val pendingGroups: ArrayList<String>? = null,
     // password ???
 ) {
     // returns full name of user
