@@ -175,6 +175,10 @@
         android:text="@string/user_registration_MFA_enrollment"
         android:textColor="@color/purple_500"
         android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_registration_password_et"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="439dp" />
