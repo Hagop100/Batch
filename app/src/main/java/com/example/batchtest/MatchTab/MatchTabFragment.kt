@@ -30,9 +30,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
     // set layout manager to card stack view to arrange recycler view
     private lateinit var manager: CardStackLayoutManager
 
-    val db = Firebase.firestore
+    private val db = Firebase.firestore
     // get the authenticated logged in user
-    val currentUser = Firebase.auth.currentUser
+    private val currentUser = Firebase.auth.currentUser
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,6 +87,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                         // attach adapter and send groups and listener
                         cardStackView.adapter = CardStackAdapter(groups, this)
                     }
+                    .addOnFailureListener { e ->
+                        Log.v(TAG, "error getting documents: ", e)
+                    }
             }
 
         // test groups without fetching for speed
@@ -97,26 +100,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
 //        groups.add(g2)
 //        groups.add(g3)
 //        cardStackView.adapter = CardStackAdapter(groups, this)
-        /*
-        * fetch all groups and send to adapter which
-        * will display the groups in a recycler view
-         */
-//        db.collection("groups")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                for (doc in result) {
-//                    // get group's data in form of map
-//                    val group: Group = doc.toObject(Group::class.java)
-//                    // add group to groups
-//                    groups.add(group)
-//                }
-//                // attach adapter and send groups and listener
-//                cardStackView.adapter = CardStackAdapter(groups, this)
-//            }
-//            .addOnFailureListener { e ->
-//                Log.v(TAG, "error getting documents: ", e)
-//            }
-
         return binding.root
     }
 

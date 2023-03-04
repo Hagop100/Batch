@@ -9,8 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.batchtest.Group
+import com.example.batchtest.MatchTab.CardStackAdapter
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupAdapter
+import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentPendingGroupBinding
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -23,10 +26,14 @@ private const val TAG = "PendingGroupsLog"
  */
 class PendingGroupFragment : Fragment() {
     private lateinit var binding: FragmentPendingGroupBinding
+    private val db = Firebase.firestore
+    // get the authenticated logged in user
+    private val currentUser = Firebase.auth.currentUser
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // inflate the layout for pending group fragment
         binding = FragmentPendingGroupBinding.inflate(inflater, container, false)
 
@@ -46,25 +53,44 @@ class PendingGroupFragment : Fragment() {
 
         // fetch groups from database using firebase's firestore
         val pendingGroups = arrayListOf<Group>()
-        val db = Firebase.firestore
+        // fetches a user from firestore using the uid from the authenticated user
+        val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
         /*
         * fetch all groups and send to adapter which
         * will display the groups in a recycler view
          */
-        db.collection("groups")
+        currentUserDocRef
+            // reads the document reference
             .get()
+            // if successful filter out certain groups for matching
             .addOnSuccessListener { result ->
-                for (doc in result) {
-                    // get group's data in form of map
-                    val group: Group = doc.toObject(Group::class.java)
-                    // add group to groups
-                    pendingGroups.add(group)
-                }
-                // attach adapter and send groups
-                val pendingGroupAdapter = PendingGroupAdapter(context, pendingGroups)
-                pendingGroupRV.adapter = pendingGroupAdapter
+                // convert the fetched user into a User object
+                val user: User = result.toObject(User::class.java)!!
+                // filter pending groups from all groups stored in database
+                val filterGroups: ArrayList<String> = ArrayList()
+                // all groups that are awaiting the voting process will be filtered out
+                filterGroups.addAll(user.pendingGroups!!)
+                // fetch all groups from the database filtering out the groups with
+                // names matching the unwanted group's name
+                db.collection("groups").whereIn("name", filterGroups)
+                    .get()
+                    .addOnSuccessListener {
+                        // convert the resulting groups into group object
+                        for (doc in it) {
+                            val group: Group = doc.toObject(Group::class.java)
+                            // add the group to the groups list
+                            pendingGroups.add(group)
+                        }
+                        // attach adapter and send groups and listener
+                        pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
+                    }
+                    .addOnFailureListener { e ->
+                        // error in retrieving filtered group documents
+                        Log.v(TAG, "error getting documents: ", e)
+                    }
             }
             .addOnFailureListener { e ->
+                // error in retrieving current user document
                 Log.v(TAG, "error getting documents: ", e)
             }
 
