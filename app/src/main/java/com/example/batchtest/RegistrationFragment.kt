@@ -35,6 +35,12 @@ class RegistrationFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth //Firebase.auth initialization
+
+        user = User(
+            email = "",
+            MFA_Opt = "",
+            phoneNumber = null,
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,7 +62,7 @@ class RegistrationFragment : Fragment() {
             MFA_opt = onCheckboxClicked()
 
             //user info value to store all user information in registration
-            val userInfo = User(email, phone_number, MFA_opt)
+            val userInfo = User(email, MFA_opt, phone_number)
 
             // Backend function to complete registration
             registration(email, password)
