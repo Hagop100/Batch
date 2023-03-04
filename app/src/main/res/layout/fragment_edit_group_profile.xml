@@ -1,9 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".myGroupsTab.EditGroupProfile">
+    tools:context=".myGroupsTab.EditGroupProfile"
+    android:theme="@style/page_text"
+    android:background="@color/app_background"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp">
+
+            <TextView
+                android:id="@+id/group_profile_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="BatchNormies"
+                android:theme="@style/page_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/exit_group_edit"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <Button
+                android:id="@+id/exit_group_edit"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="58dp"
+                android:layout_height="46dp"
+                app:icon="@drawable/close_icon"
+                app:iconTint="#312B28"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.996"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/horizontal_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/horizontal_line"
+            android:layout_marginTop="10dp"
+            />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/group_edit_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/app_background"
+            >
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit" />
+
+            <com.google.android.material.tabs.TabItem
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Preview" />
+
+        </com.google.android.material.tabs.TabLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/group_profile_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
 
-</FrameLayout>
+
+
+    </LinearLayout>
+
+
+
+</ScrollView>

@@ -68,7 +68,7 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginBottom="32dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/one_direction_photo"
+                android:src="@drawable/placeholder"
                 app:civ_border_color="#FF000000"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -82,7 +82,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                app:backgroundTint="@color/purple_500"
+                android:contentDescription="TODO"
+                app:backgroundTint="@color/purple_200"
                 app:layout_constraintBottom_toBottomOf="@+id/group_profile"
                 app:layout_constraintEnd_toEndOf="@+id/group_profile"
                 app:layout_constraintHorizontal_bias="0.905"
@@ -90,8 +91,7 @@
                 app:layout_constraintTop_toTopOf="@+id/group_profile"
                 app:layout_constraintVertical_bias="1.0"
                 app:srcCompat="@drawable/change_profile"
-                tools:ignore="MissingConstraints"
-                android:contentDescription="TODO" />
+                tools:ignore="MissingConstraints" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 <!--        <ImageView-->

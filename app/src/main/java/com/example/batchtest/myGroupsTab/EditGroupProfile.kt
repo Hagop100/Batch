@@ -1,11 +1,21 @@
 package com.example.batchtest.myGroupsTab
 
+import android.app.Activity
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.batchtest.R
+import androidx.constraintlayout.widget.StateSet.TAG
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager.widget.ViewPager
+import com.example.batchtest.EditGroupProfile.EditGroupInfoFragment
+import com.example.batchtest.EditGroupProfile.GroupProfileAdapter
+import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
+import com.example.batchtest.databinding.FragmentEditGroupProfileBinding
+import com.google.android.material.appbar.AppBarLayout.Behavior
+import com.google.android.material.tabs.TabLayout
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,16 +28,22 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class EditGroupProfile : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentEditGroupProfileBinding? = null
+    private val binding get() = _binding!!
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+//        tabLayout = binding.groupEditTabs
+//        viewPager = binding.groupProfileViewpager
+//        viewPager.adapter = GroupProfileAdapter(this)
+
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
     }
 
     override fun onCreateView(
@@ -35,8 +51,29 @@ class EditGroupProfile : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_group_profile, container, false)
+        _binding = FragmentEditGroupProfileBinding.inflate(layoutInflater, container, false)
+
+        setUpTabs()
+
+
+        return binding.root
+
+
     }
+    private fun setUpTabs(){
+
+        val adapter = GroupProfileAdapter(childFragmentManager)
+        val viewPager = binding.groupProfileViewpager
+        adapter.addFragment(EditGroupInfoFragment(), "Edit")
+        adapter.addFragment(ViewGroupInfoFragment(), "Preview")
+        viewPager.adapter = adapter
+        binding.groupEditTabs.setupWithViewPager(viewPager)
+
+
+
+    }
+
+
 
     companion object {
         /**
