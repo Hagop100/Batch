@@ -35,10 +35,30 @@ class RegistrationFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth //Firebase.auth initialization
+
+
+        //initialize user class variables
+        user = User(
+            firstName = null,
+            lastName = null,
+            email = null,
+            displayName = "",
+            gender = "",
+            imageUrl = null,
+            imageUri = null,
+            birthdate = "",
+            personalBio = "",
+            phoneNumber = null,
+            MFA_Opt = "",
+            myGroups = ArrayList(),
+            matchedGroups = ArrayList(),
+            pendingGroups = ArrayList(),
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val db = Firebase.firestore // database
+
 
 
         // Inflate the layout for this fragment
@@ -52,42 +72,45 @@ class RegistrationFragment : Fragment() {
             password = binding.fragmentRegistrationPasswordEt.text.toString()
             phone_number = binding.fragmentRegistrationPhoneNumberEt.text.toString()
 
+            //Check box to see if user opt in for MFA
             MFA_opt = ""
-            MFA_opt = onCheckboxClicked()
+            MFA_opt = onCheckboxClicked(binding.fragmentRegistrationMFAEnrollmentBox)
 
             //user info value to store all user information in registration
-            val userInfo = User(email, phone_number, MFA_opt)
+            val userInfo = User(email, MFA_opt, phone_number)
 
             // Backend function to complete registration
-            registration(email, password)
+            registration(email, password, phone_number, MFA_opt)
 
-            //Adds info to database
-            db.collection("users").whereEqualTo("email", email).get()
-                .addOnSuccessListener { documents ->
-                    if(documents.isEmpty)
-                    {
-                        //Checks if email is empty
-                        if(binding.fragmentRegistrationEmailEt.text.isEmpty())
-                        {
-                            binding.fragmentRegistrationEmailEt.error = "Missing email"
-                        }
-                        else
-                        {
-                            db.collection("users").document(email).set(userInfo)
-                            Toast.makeText(this.context, "Account Created", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    else{
-                        for(doc in documents){
-                            if(doc.data.getValue("email") == email){
-                                binding.fragmentRegistrationEmailEt.error = "Email already taken"
-                            }
-                        }
-                    }
-                }
-                .addOnFailureListener{ e ->
-                    Log.i(email, "Error writing document", e)
-                }
+
+
+            //Adds info to database with email as document title
+//            db.collection("users").whereEqualTo("email", email).get()
+//                .addOnSuccessListener { documents ->
+//                    if(documents.isEmpty)
+//                    {
+//                        //Checks if email is empty
+//                        if(binding.fragmentRegistrationEmailEt.text.isEmpty())
+//                        {
+//                            binding.fragmentRegistrationEmailEt.error = "Missing email"
+//                        }
+//                        else
+//                        {
+//                            db.collection("users").document(email).set(userInfo)
+//                            Toast.makeText(this.context, "Account Created", Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                    else{
+//                        for(doc in documents){
+//                            if(doc.data.getValue("email") == email){
+//                                binding.fragmentRegistrationEmailEt.error = "Email already taken"
+//                            }
+//                        }
+//                    }
+//                }
+//                .addOnFailureListener{ e ->
+//                    Log.i(email, "Error writing document", e)
+//                }
 
 
         }
@@ -95,17 +118,17 @@ class RegistrationFragment : Fragment() {
         return binding.root
     }
 
-    //function to check if the MFA enrollment checkbox is checked
-    private fun onCheckboxClicked(): String {
-        if (view is CheckBox){
-            val checked: Boolean = (view as CheckBox).isChecked
-            when((view as CheckBox).id){
-                R.id.fragment_registration_MFA_enrollment_box ->{
+    //Function to check if the MFA enrollment box is checked.
+    fun onCheckboxClicked(view: View): String {
+        if(view is CheckBox) {
+            val checked: Boolean = view.isChecked
+
+            when (view.id) {
+                R.id.fragment_registration_MFA_enrollment_box -> {
                     if (checked) {
                         MFA_opt = "Enrolled"
                     }
-                    else
-                    {
+                    else{
                         MFA_opt = "Not Enrolled"
                     }
                 }
@@ -114,8 +137,28 @@ class RegistrationFragment : Fragment() {
         return MFA_opt
     }
 
+    //function to check if the MFA enrollment checkbox is checked
+//    private fun onCheckboxClicked(): String {
+//        if (view is CheckBox){
+//            val checked: Boolean = (view as CheckBox).isChecked
+//            when((view as CheckBox).id){
+//                R.id.fragment_registration_MFA_enrollment_box ->{
+//                    if (checked) {
+//                        MFA_opt = "Enrolled"
+//                    }
+//                    else
+//                    {
+//                        MFA_opt = "Not Enrolled"
+//                    }
+//                }
+//            }
+//        }
+//        return MFA_opt
+//    }
+
     //Registration function
-    private fun registration(email: String, password: String){
+    private fun registration(email: String, password: String, phone_number: String, MFA_opt: String){
+        val db = Firebase.firestore // database
 
         //if the email or password slot is empty prompt the user to enter email and password
         if(email.isEmpty() || password.isEmpty()) {
@@ -128,9 +171,24 @@ class RegistrationFragment : Fragment() {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            // Sign in success, update UI with the signed-in user's information
+                            //val userUID = auth.createUserWithEmailAndPassword(email, password) // Grabs UUID from the
+                                                                                               // createUserwithEmailandPassword function
+                            val userUID = Firebase.auth.currentUser?.uid
+
+                            val userInfo = User("", "", email, "", "", imageUrl = null, imageUri = null, "",
+                                "", phone_number, MFA_opt, user.myGroups, user.matchedGroups, user.pendingGroups) // assigns all info from user class to userInfo
+
+                            if (userUID != null) { //Checks if CurrentUserUID is not NULL
+                                db.collection("users").document(userUID.toString()).set(userInfo) //database adds UUID to document and sets userinfo
+                                    .addOnSuccessListener {
+                                        findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment) //if successful navigate
+                                    }
+                                    .addOnFailureListener{ e->
+                                        Log.i(email, "Error writing document", e) //fails send error to logcat
+                                    }
+                            }
                             val user = auth.currentUser
-                            findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment)
+
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -143,4 +201,32 @@ class RegistrationFragment : Fragment() {
         }
     }
 
+    //Old Registration function for email
+//    private fun registration(email: String, password: String){
+//
+//        //if the email or password slot is empty prompt the user to enter email and password
+//        if(email.isEmpty() || password.isEmpty()) {
+//            Toast.makeText(activity, "Please Enter Email and Password.", Toast.LENGTH_SHORT).show()
+//        }
+//
+//        //When pressing the registration button sends the user to the profile personalization screen
+//        else{
+//            activity?.let{
+//                auth.createUserWithEmailAndPassword(email, password)
+//                    .addOnCompleteListener { task ->
+//                        if (task.isSuccessful) {
+//                            // Sign in success, update UI with the signed-in user's information
+//                            val user = auth.currentUser
+//                            findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment)
+//
+//                        } else {
+//                            // If sign in fails, display a message to the user.
+//                            Toast.makeText(activity, "Authentication failed.",
+//                                Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//
+//            }
+//        }
+//    }
 }
