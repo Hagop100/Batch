@@ -78,22 +78,38 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 // names matching the unwanted group's name
                 if (filterGroups.isNotEmpty()) {
                     groupsDocRef.whereNotIn("name", filterGroups)
-                }
-                groupsDocRef
-                    .get()
-                    .addOnSuccessListener {
-                        // convert the resulting groups into group object
-                        for (doc in it) {
-                            val group: Group = doc.toObject(Group::class.java)
-                            // add the group to the groups list
-                            groups.add(group)
+                        .get()
+                        .addOnSuccessListener {
+                            // convert the resulting groups into group object
+                            for (doc in it) {
+                                val group: Group = doc.toObject(Group::class.java)
+                                // add the group to the groups list
+                                groups.add(group)
+                            }
+                            // attach adapter and send groups and listener
+                            cardStackView.adapter = CardStackAdapter(groups, this)
                         }
-                        // attach adapter and send groups and listener
-                        cardStackView.adapter = CardStackAdapter(groups, this)
-                    }
-                    .addOnFailureListener { e ->
-                        Log.v(TAG, "error getting documents: ", e)
-                    }
+                        .addOnFailureListener { e ->
+                            Log.v(TAG, "error getting documents: ", e)
+                        }
+                } else {
+                    // should display that user needs to be in a group
+                    groupsDocRef
+                        .get()
+                        .addOnSuccessListener {
+                            // convert the resulting groups into group object
+                            for (doc in it) {
+                                val group: Group = doc.toObject(Group::class.java)
+                                // add the group to the groups list
+                                groups.add(group)
+                            }
+                            // attach adapter and send groups and listener
+                            cardStackView.adapter = CardStackAdapter(groups, this)
+                        }
+                        .addOnFailureListener { e ->
+                            Log.v(TAG, "error getting documents: ", e)
+                        }
+                }
             }
             .addOnFailureListener { e ->
                 Log.v(TAG, "error getting user from documents: ", e)

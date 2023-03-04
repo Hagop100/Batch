@@ -70,31 +70,33 @@ class PendingGroupFragment : Fragment() {
                 val filterGroups: ArrayList<String> = ArrayList()
                 // all groups that are awaiting the voting process will be filtered out
                 filterGroups.addAll(user.pendingGroups!!)
+                val groupsDocRef = db.collection("groups")
                 // fetch all groups from the database filtering out the groups with
-                // names matching the unwanted group's name
-                db.collection("groups").whereIn("name", filterGroups)
-                    .get()
-                    .addOnSuccessListener {
-                        // convert the resulting groups into group object
-                        for (doc in it) {
-                            val group: Group = doc.toObject(Group::class.java)
-                            // add the group to the groups list
-                            pendingGroups.add(group)
+                if (filterGroups.isNotEmpty()) {
+                    // names matching the unwanted group's name
+                    groupsDocRef
+                        .whereIn("name", filterGroups)
+                        .get()
+                        .addOnSuccessListener {
+                            // convert the resulting groups into group object
+                            for (doc in it) {
+                                val group: Group = doc.toObject(Group::class.java)
+                                // add the group to the groups list
+                                pendingGroups.add(group)
+                            }
+                            // attach adapter and send groups and listener
+                            pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
                         }
-                        // attach adapter and send groups and listener
-                        pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
-                    }
-                    .addOnFailureListener { e ->
-                        // error in retrieving filtered group documents
-                        Log.v(TAG, "error getting documents: ", e)
-                    }
+                        .addOnFailureListener { e ->
+                            // error in retrieving filtered group documents
+                            Log.v(TAG, "error getting documents: ", e)
+                        }
+                }
             }
             .addOnFailureListener { e ->
                 // error in retrieving current user document
                 Log.v(TAG, "error getting documents: ", e)
             }
-
-
         return binding.root
     }
 }
