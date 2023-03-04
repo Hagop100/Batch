@@ -16,7 +16,9 @@ import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentLoginBinding
 import com.example.batchtest.databinding.FragmentMatchedGroupBinding
 import com.example.batchtest.myGroupsTab.MyGroupAdapter
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
 class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
@@ -84,6 +86,24 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                     object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
                         override fun onItemClick(position: Int) {
                             Toast.makeText(requireActivity(), "Report" + position, Toast.LENGTH_SHORT).show()
+                            db.collection("groups")
+                                .whereEqualTo("name", matchedGroupArrayList[position].name)
+                                .get()
+                                .addOnSuccessListener { documents ->
+                                    for (document in documents) {
+                                        Log.d(TAG, "${document.id} => ${document.data}")
+                                        val group: Group = document.toObject<Group>()
+                                        group.reportCount += 1
+                                        val currGroup = db.collection("groups").document(document.id)
+                                        currGroup
+                                            .update("reportCount", group.reportCount)
+                                            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
+                                            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
+                                    }
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.w(TAG, "Error getting documents: ", exception)
+                                }
                         }
                     }
                 ))
