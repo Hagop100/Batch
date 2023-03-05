@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.StateSet.TAG
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.example.batchtest.EditGroupProfile.EditGroupInfoFragment
 import com.example.batchtest.EditGroupProfile.GroupProfileAdapter
@@ -42,7 +43,6 @@ class EditGroupProfile : Fragment() {
 
 
 
-
 //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 ////        tabLayout = binding.groupEditTabs
@@ -55,10 +55,19 @@ class EditGroupProfile : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
         _binding = FragmentEditGroupProfileBinding.inflate(layoutInflater, container, false)
 
+        //set up the 2 tab layout: edit and preview
         setUpTabs()
+
+
+
+        //cancel to navigate back to my group page
+        binding.cancelGroupEdit.setOnClickListener{
+            findNavController().navigate(R.id.action_editGroupProfile_to_myGroupFragment)
+        }
 
 
         return binding.root
@@ -67,7 +76,7 @@ class EditGroupProfile : Fragment() {
     }
 
     /**
-     * Set up the 2 edit and preview tab with its name
+     * display the 2 edit and preview tabs
      */
     private fun setUpTabs() {
 

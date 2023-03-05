@@ -11,7 +11,7 @@ package com.example.batchtest
 data class User(
     val firstName: String? = null,
     val lastName: String? = null,
-    val email: String? = null,
+    var email: String? = null,
     val displayName : String = "",
     val gender: String = "N/A",
     val imageUrl: String? = null,

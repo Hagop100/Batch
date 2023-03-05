@@ -277,7 +277,7 @@ class GroupCreationFragment : Fragment() {
 
 //    display the close button to remove tag from the list
         chip.isCloseIconVisible = true
-        chip.setChipBackgroundColorResource(R.color.purple_500)
+        chip.setChipBackgroundColorResource(R.color.purple_200)
         chip.setTextAppearance(R.style.page_text)
 
 
@@ -293,6 +293,10 @@ class GroupCreationFragment : Fragment() {
 
 
     }
+
+    /**
+     * Function: fetch group tags
+     */
 
 
     /**
