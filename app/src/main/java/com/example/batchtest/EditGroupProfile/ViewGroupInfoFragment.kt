@@ -5,7 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import com.example.batchtest.R
+import com.example.batchtest.databinding.FragmentEditGroupInfoBinding
+import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,24 +24,56 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class ViewGroupInfoFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentViewGroupInfoBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_view_group_info, container, false)
+        _binding = FragmentViewGroupInfoBinding.inflate(layoutInflater, container, false)
+
+        // more button on match page opens dialog
+        binding.groupProfileMoreBtn.setOnClickListener {
+            // create a bottom sheet dialog
+            val dialog = BottomSheetDialog(requireContext())
+            // inflate the view with the dialog linear layout
+            val view: LinearLayout = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_layout, binding.root, false) as LinearLayout
+
+            // create block dialog button to add into the dialog layout dynamically
+            // using the dialog button layout
+            // inflate a text view to hold the edit profile dialog
+            val editProfileDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+            editProfileDialogBtn.text = "Edit Group Profile"
+            // perform action on click
+
+            editProfileDialogBtn.setOnClickListener {
+                // navigate to the edit page
+                findNavController().navigate(R.id.action_viewGroupInfoFragment_to_editGroupProfile)
+                dialog.dismiss()
+            }
+
+            // add the block dialog button to the bottom dialog view
+            view.addView(editProfileDialogBtn)
+
+            // set the view of the dialog using the inflated layout
+            dialog.setContentView(view)
+            // show the dialog
+            dialog.show()
+        }
+
+        //Exit to navigate back to the my groups page
+        binding.exitViewBtn.setOnClickListener{
+            findNavController().navigate(R.id.action_viewGroupInfoFragment_to_myGroupFragment)
+        }
+        return binding.root
     }
 
     companion object {

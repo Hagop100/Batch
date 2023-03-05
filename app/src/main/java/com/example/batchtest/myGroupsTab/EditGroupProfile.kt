@@ -9,13 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.StateSet.TAG
 import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import com.example.batchtest.EditGroupProfile.EditGroupInfoFragment
 import com.example.batchtest.EditGroupProfile.GroupProfileAdapter
 import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
+import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentEditGroupProfileBinding
 import com.google.android.material.appbar.AppBarLayout.Behavior
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,52 +30,69 @@ private const val ARG_PARAM2 = "param2"
  * Use the [EditGroupProfile.newInstance] factory method to
  * create an instance of this fragment.
  */
+
+val tabArray = arrayOf(
+    "Edit",
+    "Preview"
+
+)
 class EditGroupProfile : Fragment() {
     private var _binding: FragmentEditGroupProfileBinding? = null
     private val binding get() = _binding!!
+    private lateinit var viewPager: ViewPager
 
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        tabLayout = binding.groupEditTabs
-//        viewPager = binding.groupProfileViewpager
-//        viewPager.adapter = GroupProfileAdapter(this)
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+////        tabLayout = binding.groupEditTabs
+////        viewPager = binding.groupProfileViewpager
+////        viewPager.adapter = GroupProfileAdapter(this)
+//
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
         _binding = FragmentEditGroupProfileBinding.inflate(layoutInflater, container, false)
 
+        //set up the 2 tab layout: edit and preview
         setUpTabs()
+
+
+
+        //cancel to navigate back to my group page
+        binding.cancelGroupEdit.setOnClickListener{
+            findNavController().navigate(R.id.action_editGroupProfile_to_myGroupFragment)
+        }
 
 
         return binding.root
 
 
     }
-    private fun setUpTabs(){
 
-        val adapter = GroupProfileAdapter(childFragmentManager)
+    /**
+     * display the 2 edit and preview tabs
+     */
+    private fun setUpTabs() {
+
         val viewPager = binding.groupProfileViewpager
-        adapter.addFragment(EditGroupInfoFragment(), "Edit")
-        adapter.addFragment(ViewGroupInfoFragment(), "Preview")
-        viewPager.adapter = adapter
-        binding.groupEditTabs.setupWithViewPager(viewPager)
+        val tabLayout = binding.groupEditTabs
 
+        val adapter = GroupProfileAdapter(childFragmentManager, lifecycle)
+        viewPager.adapter = adapter
+
+        TabLayoutMediator(tabLayout, viewPager){ tab, position ->
+            tab.text = tabArray[position]
+
+        }.attach()
 
 
     }
-
 
 
     companion object {
@@ -95,3 +115,4 @@ class EditGroupProfile : Fragment() {
             }
     }
 }
+

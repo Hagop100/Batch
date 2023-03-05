@@ -6,7 +6,8 @@ import kotlin.collections.ArrayList
 
 data class Group(
     val name: String? = null,
-    val users: ArrayList<User>? = null,
+//    val users: ArrayList<User>? = null,
+    val userID: ArrayList<String>? = null,
     val interestTags: ArrayList<String>? = null,
     val aboutUsDescription: String? = null,
     val biscuits: Int = 0,

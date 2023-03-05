@@ -1,14 +1,232 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditGroupProfile.EditGroupInfoFragment">
+    tools:context=".EditGroupProfile.EditGroupInfoFragment"
+    android:theme="@style/page_text"
+    android:background="@color/app_background">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hello edit group info" />
+        android:layout_height="wrap_content"
+        android:background="@color/app_background"
+        android:theme="@style/page_text"
+        >
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/group_profile"
+                android:layout_width="225dp"
+                android:layout_height="199dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="32dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/placeholder"
+                app:civ_border_color="#FF000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0"
+                tools:ignore="MissingConstraints" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/change_profile_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:contentDescription="TODO"
+                app:backgroundTint="@color/purple_200"
+                app:layout_constraintBottom_toBottomOf="@+id/group_profile"
+                app:layout_constraintEnd_toEndOf="@+id/group_profile"
+                app:layout_constraintHorizontal_bias="0.905"
+                app:layout_constraintStart_toStartOf="@+id/group_profile"
+                app:layout_constraintTop_toTopOf="@+id/group_profile"
+                app:layout_constraintVertical_bias="1.0"
+                app:srcCompat="@drawable/change_profile"
+                tools:ignore="MissingConstraints" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:theme="@style/page_margin"
+            >
+
+            <TextView
+                android:id="@+id/group_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="Batch"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:textStyle="bold"
+
+                />
+
+<!--            <EditText-->
+<!--                android:id="@+id/edit_group_name"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:ems="10"-->
+<!--                android:hint="edit group name"-->
+<!--                android:background="@drawable/round_corner"-->
+<!--                android:textColor="@color/gray"-->
+<!--                android:inputType="textPersonName"-->
+<!--                android:minHeight="48dp"-->
+<!--                android:padding="10dp"-->
+<!--                />-->
+
+        </LinearLayout>
+        <View
+            android:id="@+id/horizontal_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/horizontal_line"
+            android:layout_marginTop="30dp"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/group_tags"
+                android:layout_width="357dp"
+                android:layout_height="43dp"
+                android:padding="10dp"
+                android:text="Tags:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <EditText
+                android:id="@+id/editText_add_tag"
+                android:layout_width="265dp"
+                android:layout_height="41dp"
+                android:background="@drawable/round_corner"
+                android:ems="10"
+                android:hint="add tag"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                app:layout_constraintStart_toEndOf="@+id/add_tag"
+                app:layout_constraintTop_toBottomOf="@+id/group_tags" />
+
+            <Button
+                android:id="@+id/add_tag"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:backgroundTint="#4E4035"
+                android:backgroundTintMode="add"
+                app:icon="@drawable/add_icon"
+                app:iconTint="#312B28"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/group_tags"
+                app:layout_constraintTop_toBottomOf="@+id/group_tags" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tag_group_chip"
+                android:layout_width="357dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/group_tags"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/add_tag"
+                app:layout_constraintTop_toBottomOf="@+id/add_tag">
+
+            </com.google.android.material.chip.ChipGroup>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/horizontal_line"
+            android:layout_marginTop="30dp"
+            tools:ignore="MissingConstraints" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:theme="@style/page_margin">
+            <TextView
+                android:id="@+id/group_about_us"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="About us:"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:layout_marginBottom="10sp"
+
+                />
+
+            <EditText
+                android:id="@+id/about_us"
+                android:layout_width="match_parent"
+                android:layout_height="219dp"
+                android:background="@drawable/round_corner"
+                android:ems="10"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                android:minHeight="48dp"
+                android:padding="10dp" />
+
+
+        </LinearLayout>
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/horizontal_line"
+            android:layout_marginTop="30dp"
+            tools:ignore="MissingConstraints" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:theme="@style/page_margin">
+        <TextView
+            android:id="@+id/users"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Users:"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:layout_marginBottom="10sp"
+
+            />
+    </LinearLayout>
+
+
+
+            <!--            <Button-->
+<!--                android:id="@+id/btn_create_group"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Create"-->
+<!--                android:layout_marginTop="30dp"-->
+<!--                android:layout_marginBottom="30dp"/>-->
+        </LinearLayout>
+
+
+</ScrollView>

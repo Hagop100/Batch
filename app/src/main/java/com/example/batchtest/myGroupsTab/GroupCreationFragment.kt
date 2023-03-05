@@ -59,11 +59,12 @@ class GroupCreationFragment : Fragment() {
 //      initialize the values of Group class
         group = Group(
             name = "",
-            users = ArrayList<User>(),
+            userID = ArrayList<String>(),
             interestTags = ArrayList(),
             aboutUsDescription = "",
             biscuits = 0,
-            image = null
+            image = null,
+            reportCount = 0,
         )
     }
 
@@ -97,18 +98,18 @@ class GroupCreationFragment : Fragment() {
          * This function use entry validation by checking for existing values in the database
          */
 
-        binding.btnCreateGroup.setOnClickListener{
+        binding.btnCreateGroup.setOnClickListener {
 
             val db = Firebase.firestore
-            val currentUser = Firebase.auth.currentUser
+            val currentUser = Firebase.auth.currentUser?.uid
+            //     Log.i(TAG, "$currentUser")
             val groupName = binding.editGroupName.text.toString()
             val aboutUs = binding.editGroupAboutUs.text.toString()
-            val users = group.users
+            val users = group.userID
             val tags = group.interestTags
             val biscuit = group.biscuits
             val image = imageURL
 
-            val groupInfo = Group(groupName, users, tags, aboutUs,biscuit, image)
 
                 //Validating group name and tag if empty or not
                 if (groupName.isEmpty() && binding.editTextAddTag.text.isEmpty()){
@@ -141,9 +142,37 @@ class GroupCreationFragment : Fragment() {
                                     }
                                     // if tag is not empty, create a new group
                                     else{
-                                        //set the group name as the document name in firebase
+                                        val groupInfo = Group(groupName, users, tags, aboutUs,biscuit, image)
+
+                                        //add current user to the Group
+                                        groupInfo.userID?.add(currentUser!!)
+
+                                        //update the group information with added user - Group Creation
                                         db.collection("groups").document(groupName).set(groupInfo)
 
+                                        //query User database and update the User to particular Group
+                                        val docRef = db.collection("users").document(currentUser!!)
+                                        docRef.get() .addOnSuccessListener { result ->
+                                            val user: User = result.toObject(User::class.java)!!
+
+                                            //add user to myGroups
+                                            user.myGroups?.add(groupInfo.name!!)
+
+                                            //update User in database
+                                            db.collection("users").document(currentUser).set(user)
+                                        }
+//                                                    docRef.get() .addOnSuccessListener { result ->
+                                        //set the group name as the document name in firebase
+//                                       //fetch user object using their uid
+//                                        val docRef = db.collection("users").document(currentUser!!)
+//                                                    docRef.get() .addOnSuccessListener { result ->
+//                                                    //convert to User object
+//                                                    val user: User = result.toObject(User::class.java)!!
+//                                                        //add current user to the group list
+//                                                        groupInfo.users?.add(user)
+//                                                        user.myGroups?.add(groupInfo.name!!)
+//                                                        db.collection("groups").document(groupName).set(groupInfo)
+//                                                    }
                                         //
                                         Toast.makeText(this.context, "Group Created!", Toast.LENGTH_SHORT).show()
                                         findNavController().navigate(R.id.to_myGroupFragment)
@@ -277,7 +306,7 @@ class GroupCreationFragment : Fragment() {
 
 //    display the close button to remove tag from the list
         chip.isCloseIconVisible = true
-        chip.setChipBackgroundColorResource(R.color.purple_500)
+        chip.setChipBackgroundColorResource(R.color.purple_200)
         chip.setTextAppearance(R.style.page_text)
 
 
@@ -293,6 +322,10 @@ class GroupCreationFragment : Fragment() {
 
 
     }
+
+    /**
+     * Function: fetch group tags
+     */
 
 
     /**

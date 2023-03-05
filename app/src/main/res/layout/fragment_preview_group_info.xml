@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -9,31 +8,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- more button in corner to perform actions for group -->
-        <Button
-            android:id="@+id/exit_view_btn"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="58dp"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/close_icon"
-            app:iconTint="@color/black" />
-
-        <ImageButton
-            android:id="@+id/group_profile_more_btn"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/more_horiz"
-            android:fillColor="@color/black"
-            android:contentDescription="@string/match_group_card_more_button"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="15dp"
-            android:layout_marginVertical="15dp"/>
-        <!-- card view that holds the group info -->
         <androidx.cardview.widget.CardView
             android:id="@+id/group_info_card"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:layout_below="@id/group_profile_more_btn"
             android:layout_marginHorizontal="7dp"
             app:cardCornerRadius="4dp"
             app:cardElevation="13dp"
@@ -52,7 +30,8 @@
                         android:id="@+id/group_name"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:theme="@style/page_title" />
+                        android:theme="@style/page_title"
+                        android:text="Batch"/>
                     <TextView
                         android:id="@+id/biscuit_value"
                         android:layout_width="wrap_content"
@@ -61,14 +40,15 @@
                         android:textColor="@color/black"
                         android:layout_toStartOf="@id/biscuit_icon"
                         android:layout_centerInParent="true"/>
+
                     <ImageView
                         android:id="@+id/biscuit_icon"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:contentDescription="@string/biscuit_icon"
-                        android:src="@drawable/biscuits_icon"
                         android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true"
+                        android:contentDescription="@string/biscuit_icon"
+                        android:src="@drawable/biscuits_icon" />
                 </RelativeLayout>
                 <!-- group photo -->
                 <ImageView
@@ -76,12 +56,12 @@
                     android:layout_height="300dp"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/one_direction_photo"
+                    android:src="@drawable/placeholder"
                     android:contentDescription="matching group card photo"
                     android:layout_below="@id/group_info_container"/>
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
-        <!-- a card view for the interest tags -->
+
         <androidx.cardview.widget.CardView
             android:id="@+id/interest_tag_card"
             android:layout_width="match_parent"
