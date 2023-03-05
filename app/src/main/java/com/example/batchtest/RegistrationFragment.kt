@@ -1,5 +1,6 @@
 package com.example.batchtest
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,13 +11,21 @@ import android.widget.CheckBox
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.databinding.FragmentRegistrationBinding
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.*
+import com.google.firebase.auth.PhoneAuthProvider.ForceResendingToken
+import com.google.firebase.auth.PhoneAuthProvider.OnVerificationStateChangedCallbacks
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import java.util.concurrent.TimeUnit
 
 
 class RegistrationFragment : Fragment() {
+
+
+
 
     //authentication variable
     private lateinit var auth: FirebaseAuth
@@ -31,6 +40,11 @@ class RegistrationFragment : Fragment() {
     private lateinit var phone_number: String //phone number variable
     private lateinit var user: User // user variable for user class
     private lateinit var MFA_opt: String // variable to check for MFA enrollment
+
+    //initializing variables for MFA enrollment
+    private lateinit var credential: PhoneAuthCredential
+    private lateinit var forceResendingToken: PhoneAuthProvider.ForceResendingToken
+    private lateinit var verificationId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,13 +95,12 @@ class RegistrationFragment : Fragment() {
             MFA_opt = ""
             MFA_opt = onCheckboxClicked(binding.fragmentRegistrationMFAEnrollmentBox)
 
-            //user info value to store all user information in registration
-            val userInfo = User(email, MFA_opt, phone_number)
 
 
             val currentUser = Firebase.auth.currentUser?.uid
             // Backend function to complete registration
             registration(email, password, phone_number, MFA_opt)
+
 
 
 
@@ -215,23 +228,95 @@ class RegistrationFragment : Fragment() {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            //val userUID = auth.createUserWithEmailAndPassword(email, password) // Grabs UUID from the
-                                                                                               // createUserwithEmailandPassword function
-                            val userUID = Firebase.auth.currentUser?.uid
-
+                            val userUID = Firebase.auth.currentUser?.uid //Grabs the userUID
                             val userInfo = User("", "", email, "", "", imageUrl = null, imageUri = null, "",
                                 "", phone_number, MFA_opt, user.myGroups, user.matchedGroups, user.pendingGroups) // assigns all info from user class to userInfo
 
-                            if (userUID != null) { //Checks if CurrentUserUID is not NULL
-                                db.collection("users").document(userUID.toString()).set(userInfo) //database adds UUID to document and sets userinfo
-                                    .addOnSuccessListener {
-                                        findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment) //if successful navigate
-                                    }
-                                    .addOnFailureListener{ e->
-                                        Log.i(email, "Error writing document", e) //fails send error to logcat
+                            //Gigantic if block if MFA is not enrolled
+                            if(MFA_opt != "Enrolled") {
+
+                                if (userUID != null) { //Checks if CurrentUserUID is not NULL
+                                    db.collection("users").document(userUID.toString())
+                                        .set(userInfo) //database adds UUID to document and sets userinfo
+                                        .addOnSuccessListener {
+                                            findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment) //if successful navigate
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.i(email, "Error writing document", e) //fails send error to logcat
+                                        }
+                                }
+                                val user = Firebase.auth.currentUser
+
+                                user!!.sendEmailVerification() //sends the user an email verification
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            Log.d("print", "Email sent.")
+                                        }
                                     }
                             }
-                            val user = auth.currentUser
+
+                            //Gigantic else block if MFA is enrolled
+                            else{
+                                if (userUID != null) { //Checks if CurrentUserUID is not NULL
+                                    db.collection("users").document(userUID.toString())
+                                        .set(userInfo) //database adds UUID to document and sets userinfo
+                                        .addOnSuccessListener {
+                                            val user = Firebase.auth.currentUser
+                                            if (user != null) {
+                                                user.multiFactor.session.addOnCompleteListener{ task ->
+                                                    if(task.isSuccessful){
+
+                                                        val multiFactorSession: MultiFactorSession? = task.result
+
+                                                        val callbacks = object : OnVerificationStateChangedCallbacks(){
+                                                            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                                                                this@RegistrationFragment.credential = credential
+                                                            }
+
+                                                            override fun onVerificationFailed(e: FirebaseException) {
+                                                                if (e is FirebaseAuthInvalidCredentialsException){
+                                                                    Log.d("print", "Invalid Request")
+                                                                }
+                                                                else if (e is FirebaseTooManyRequestsException){
+                                                                    Log.d("print", "SMS quota has been exceeded")
+                                                                }
+                                                                Toast.makeText(activity, "Verification Failed", Toast.LENGTH_SHORT).show()
+                                                            }
+
+                                                            override fun onCodeSent( verificationID: String, forceResendingToken: ForceResendingToken){
+                                                                this@RegistrationFragment.verificationId = verificationID
+                                                                this@RegistrationFragment.forceResendingToken = forceResendingToken
+                                                            }
+                                                        }
+
+                                                        val options = PhoneAuthOptions.newBuilder(auth)
+                                                            .setPhoneNumber(phone_number)       // Phone number to verify
+                                                            .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
+                                                            .setActivity(requireActivity())                // Activity (for callback binding)
+                                                            .setCallbacks(callbacks)          // OnVerificationStateChangedCallbacks
+                                                            .build()
+                                                        PhoneAuthProvider.verifyPhoneNumber(options)
+
+
+                                                    }
+                                                }
+                                            }
+                                            findNavController().navigate(R.id.action_registrationFragment_to_initialProfilePersonalizationFragment) //if successful navigate
+
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Log.i(email, "Error writing document", e) //fails send error to logcat
+                                        }
+                                }
+
+                                val user = Firebase.auth.currentUser
+                                user!!.sendEmailVerification() //sends the user an email verification
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            Log.d("print", "Email sent.")
+                                        }
+                                    }
+                            }
 
 
                         } else {
@@ -244,6 +329,8 @@ class RegistrationFragment : Fragment() {
             }
         }
     }
+
+
 
     //Old Registration function for email
 //    private fun registration(email: String, password: String){
