@@ -43,7 +43,7 @@ class EditGroupInfoFragment : Fragment() {
 //      initialize the values of Group class
         group = Group(
             name = "",
-            users = ArrayList<User>(),
+            userID = ArrayList<String>(),
             interestTags = ArrayList(),
             aboutUsDescription = "",
             biscuits = 0,

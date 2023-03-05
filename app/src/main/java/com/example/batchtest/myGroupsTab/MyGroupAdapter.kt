@@ -51,8 +51,8 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
          * clicks on the image at position n to view group profile
          */
         holder.groupPic.setOnClickListener{ view ->
-//            Toast.makeText(this.context, "Testing here $position", Toast.LENGTH_SHORT).show()
-            findNavController(view).navigate(R.id.action_myGroupFragment_to_viewGroupInfoFragment)
+            Toast.makeText(this.context, "Testing here ${info.name}", Toast.LENGTH_SHORT).show()
+          //  findNavController(view).navigate(R.id.action_myGroupFragment_to_viewGroupInfoFragment)
 
         }
 
