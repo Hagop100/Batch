@@ -15,6 +15,7 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<Group>,
     inner class MatchedGroupViewHolder(val binding: MatchedGroupRecyclerViewRowBinding):
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         val groupName: TextView = binding.matchedGroupRecycleViewRowGroupName
+        //This needs to be fixed
         val groupPhoto: ImageView = binding.matchedGroupRecyclerViewRowGroupPhoto
 
         init {
@@ -50,6 +51,9 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<Group>,
         return matchedGroupList.size
     }
 
+    /*
+    Interface used to have buttons in recycler views be clicked
+     */
     interface MatchedGroupRecyclerViewEvent {
         fun onItemClick(position: Int)
     }

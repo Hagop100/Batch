@@ -31,6 +31,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     //ArrayList for groups
     private var matchedGroupArrayList: ArrayList<Group> = arrayListOf<Group>()
 
+    //AlertDialog Builder
     private var alertDialogBuilder: AlertDialog.Builder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +70,10 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                 Log.v(TAG, "error getting documents: ", e)
             }
 
+        /*
+        This portion of the code manages the buttons revealed through the action of swiping.
+        Notice that these buttons use the same interface onItemClick() that the actual recycler view row buttons use
+         */
         val swipe = object: MatchedGroupsSwipeHelper(requireActivity(), matchedGroupRV, 200) {
             override fun instantiateMatchedGroupButton(
                 viewHolder: RecyclerView.ViewHolder,
@@ -103,6 +108,11 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
         return binding.root
     }
 
+    /*
+    Builds the alert dialog required to report a group
+    Furthermore, this handles the database read and write necessary to update the reportCount of the group
+    being reported
+     */
     private fun buildAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
         alertDialogBuilder.setTitle("Confirm Action")
             .setMessage("Are you sure you want to report this group?")
@@ -142,6 +152,10 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
         const val TAG = "MatchedGroupFragment"
     }
 
+    /*
+    This handles what happens when a group is clicked on the Matched page
+    This will eventually be used to implement a group chat feature
+     */
     override fun onItemClick(position: Int) {
         Toast.makeText(activity, matchedGroupArrayList[position].name, Toast.LENGTH_SHORT).show()
     }

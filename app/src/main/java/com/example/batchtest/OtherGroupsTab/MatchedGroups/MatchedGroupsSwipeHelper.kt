@@ -36,6 +36,9 @@ abstract class MatchedGroupsSwipeHelper(context: Context, private val recyclerVi
         }
     }
 
+    /*
+    This code handles the swiping motion
+     */
     @SuppressLint("ClickableViewAccessibility")
     private val onTouchListener = View.OnTouchListener { _, motionEvent ->
         if(swipePosition < 0) return@OnTouchListener false
@@ -180,6 +183,7 @@ abstract class MatchedGroupsSwipeHelper(context: Context, private val recyclerVi
         super.onChildDraw(c, recyclerView, viewHolder, translationX, dY, actionState, isCurrentlyActive)
     }
 
+    //Draws the buttons revealed via swiping
     private fun drawButton(c: Canvas, itemView: View, buffer: MutableList<MatchedGroupButton>, pos: Int, translationX: Float) {
         var right = itemView.right.toFloat()
         val dButtonWidth = -1*translationX/buffer.size

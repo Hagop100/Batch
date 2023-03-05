@@ -10,6 +10,10 @@ import androidx.core.content.ContextCompat
 class MatchedGroupButton(private val context: Context, private val text: String,
                          private val textSize: Int, private val imageResId: Int,
                          private val color: Int, private val listener: MatchedGroupAdapter.MatchedGroupRecyclerViewEvent) {
+
+    /*
+    This file handles the individual buttons that appear when swiping
+     */
     private var pos: Int = 0
     private var clickRegion: RectF? = null
     private val resources: Resources = context.resources
