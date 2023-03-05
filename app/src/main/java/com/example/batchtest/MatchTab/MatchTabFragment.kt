@@ -29,10 +29,11 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
     private lateinit var binding: FragmentMatchTabBinding
     // set layout manager to card stack view to arrange recycler view
     private lateinit var manager: CardStackLayoutManager
-
     private val db = Firebase.firestore
     // get the authenticated logged in user
     private val currentUser = Firebase.auth.currentUser
+    // store groups to fetch
+    val groups = arrayListOf<Group>()
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +56,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         * fetch all possible groups to match based on logged in user
         * and send to adapter which will display the groups in a recycler view
          */
-        val groups = arrayListOf<Group>()
         // fetches a user from firestore using the uid from the authenticated user
         val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
         currentUserDocRef
@@ -75,6 +75,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 filterGroups.addAll(user.pendingGroups!!)
                 // fetch all groups from the database filtering out the groups with
                 val groupsDocRef = db.collection("groups")
+                Log.v(TAG, "fetch group")
                 // names matching the unwanted group's name
                 if (filterGroups.isNotEmpty()) {
                     groupsDocRef.whereNotIn("name", filterGroups)
