@@ -35,7 +35,7 @@ class RegistrationFragment : Fragment() {
     private val binding get() = _binding!!
 
     //email and password
-    private lateinit var email: String//email variable
+    private lateinit var email: String //email variable
     private lateinit var password: String //password variable
     private lateinit var phone_number: String //phone number variable
     private lateinit var user: User // user variable for user class
@@ -83,21 +83,14 @@ class RegistrationFragment : Fragment() {
 
             // Grabs user input for email and password and assigns it to the variables
             email = binding.fragmentRegistrationEmailEt.text.toString()
-            Log.i("print", "$email")
             password = binding.fragmentRegistrationPasswordEt.text.toString()
-            Log.i("print", "$password")
-
             phone_number = binding.fragmentRegistrationPhoneNumberEt.text.toString()
-            Log.i("print", "$phone_number")
-
 
             //Check box to see if user opt in for MFA
             MFA_opt = ""
             MFA_opt = onCheckboxClicked(binding.fragmentRegistrationMFAEnrollmentBox)
 
 
-
-            val currentUser = Firebase.auth.currentUser?.uid
             // Backend function to complete registration
             registration(email, password, phone_number, MFA_opt)
 
@@ -131,43 +124,6 @@ class RegistrationFragment : Fragment() {
 //                .addOnFailureListener{ e ->
 //                    Log.i(email, "Error writing document", e)
 //                }
-            /**
-             * after registration , just create the document with user info
-             */
-            //Adds info to database
-            db.collection("users").whereEqualTo("email", email).get()
-                .addOnSuccessListener { documents ->
-                    Log.i("print", "email $email")
-                    if(documents.isEmpty)
-                    {
-                        //Checks if email is empty
-                        if(binding.fragmentRegistrationEmailEt.text.isEmpty())
-                        {
-                            binding.fragmentRegistrationEmailEt.error = "Missing email"
-                        }
-                        else
-                        {
-
-
-                            if (currentUser != null) {
-                                db.collection("users").document(currentUser).set(userInfo)
-                            }
-                                Log.i("print", "i am here2")
-
-                            Toast.makeText(this.context, "Account Created", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                    else{
-                        for(doc in documents){
-                            if(doc.data.getValue("email") == email){
-                                binding.fragmentRegistrationEmailEt.error = "Email already taken"
-                            }
-                        }
-                    }
-                }
-                .addOnFailureListener{ e ->
-                    Log.i(email, "Error writing document", e)
-                }
 
 
         }
