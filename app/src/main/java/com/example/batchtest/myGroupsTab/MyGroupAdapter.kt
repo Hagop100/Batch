@@ -52,7 +52,8 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
          */
         holder.groupPic.setOnClickListener{ view ->
             Toast.makeText(this.context, "Testing here ${info.name}", Toast.LENGTH_SHORT).show()
-          //  findNavController(view).navigate(R.id.action_myGroupFragment_to_viewGroupInfoFragment)
+
+//            findNavController(view).navigate(R.id.action_myGroupFragment_to_viewGroupInfoFragment)
 
         }
 

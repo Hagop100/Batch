@@ -8,10 +8,14 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
+import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentEditGroupInfoBinding
 import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
+import com.example.batchtest.myGroupsTab.MyGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.util.ArrayList
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,6 +30,9 @@ private const val ARG_PARAM2 = "param2"
 class ViewGroupInfoFragment : Fragment() {
     private var _binding: FragmentViewGroupInfoBinding? = null
     private val binding get() = _binding!!
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var myGroupList: ArrayList<Group>
+    private lateinit var myAdapter: MyGroupAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +46,12 @@ class ViewGroupInfoFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentViewGroupInfoBinding.inflate(layoutInflater, container, false)
+
+        /**
+         * display the user group informatiun that was clicked on from MyGroupFragment
+         */
+
+
 
         // more button on match page opens dialog
         binding.groupProfileMoreBtn.setOnClickListener {

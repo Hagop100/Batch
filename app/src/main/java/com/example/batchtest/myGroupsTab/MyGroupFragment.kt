@@ -68,6 +68,11 @@ class MyGroupFragment : Fragment() {
         EventChangeListener()
 
         /**
+         *
+         */
+
+
+        /**
          *  navigates from My Group view to Create a group view fragment
           */
         binding.btnToGroupCreation.setOnClickListener{
@@ -96,6 +101,7 @@ class MyGroupFragment : Fragment() {
                     Log.e("Firestore Error", error.message.toString())
                     return
                 }
+
                 //loop thru all the groups and add to my group list from the database document
 //                for (doc : DocumentChange in value ?.documentChanges!!){
 //                    if (doc.type == DocumentChange.Type.ADDED){

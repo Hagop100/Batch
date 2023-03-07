@@ -17,6 +17,7 @@ import com.example.batchtest.databinding.FragmentAccountSettingBinding
 import com.example.batchtest.databinding.FragmentUserProfileTabBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -65,26 +66,23 @@ class UserProfileTabFragment : Fragment() {
         /**
          * retrieve user imageUrl from database and display as the user profile image
          */
-        val currentUser = Firebase.auth.currentUser?.uid
         //query the collection of users where the imageUrl is stored
-        Firebase.auth.currentUser?.let { it ->
-            db.collection("users").document(it.uid).get().addOnSuccessListener  {
-                //if the specific user have empty imageUrl, set the default user image to be a placeholder
-
-                //TODO: figure out why this is not populate it correctly when user has no profile pic!!
-                if (it.get("imageUrl").toString().isEmpty()){
+        val database = FirebaseFirestore.getInstance()
+        val docRef = Firebase.auth.currentUser?.let { database.collection("users").document(it.uid) }
+        docRef?.get()?.addOnSuccessListener { document ->
+            if (document != null){
+                val userImg = document.getString("imageUrl")
+                //if user do not have an image set, set the default user profile as placeholder
+                if (userImg.isNullOrEmpty()){
                     binding.userImage.setImageResource(R.drawable.placeholder)
                 }
-                //if the imageUrl is found in the user. set the image to be the imageUrl
+
+                //if user have set a profile image, set the image to the user profile tab
                 else{
-                    Glide.with(this).load(it.get("imageUri")).into(binding.userImage)
+                    Glide.with(this).load(document.getString("imageUrl").toString()).into(binding.userImage)
                 }
-
-
             }
-
         }
-
 
         /**
          * edit profile
