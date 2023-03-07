@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentAccountSettingBinding
@@ -19,6 +20,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 
 
@@ -27,8 +30,9 @@ class AccountSettingFragment : Fragment() {
     private var _binding: FragmentAccountSettingBinding? = null
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
-    private lateinit var userInfo: User
-    val db = Firebase.firestore
+
+    private lateinit var group: Group
+    private val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,11 +99,12 @@ class AccountSettingFragment : Fragment() {
         }
 
         /**
-         * Delete user account
+         * Delete user account by deleting the users that belong in certain groups
+         * and then delete the user in the User collection of db.
          */
         binding.deleteAccountBtn.setOnClickListener{
             val user = Firebase.auth.currentUser!!
-            val userID = auth.currentUser?.uid
+            val userId = auth.currentUser?.uid
 
             this.context?.let { it1 -> MaterialAlertDialogBuilder(it1) }
             ?.setTitle("Are you sure?")
@@ -108,13 +113,47 @@ class AccountSettingFragment : Fragment() {
              //yes to delete user account and navigate back to the registration page
             ?.setPositiveButton("YES")
             { dialog, which ->
+
+                //delete the user with the equivalent userID from User collection and authentication
+                if (userId != null) {
+
+                    db.collection("users").document(userId).get().addOnSuccessListener { result ->
+
+                        val users: User? = result.toObject(User::class.java)
+                        Toast.makeText(this.context, "${users?.myGroups }", Toast.LENGTH_SHORT).show()
+
+                        //retrieve all groups name that include this user
+                        db.collection("groups").whereIn("name", users?.myGroups!!).get().addOnSuccessListener { res ->
+
+                            //doc is the specific group //res.documents is the entire collection of groups document
+                            for (doc in res.documents){
+
+                                //get the field:userID in the specific group in which we know are arraylist
+                                // if user is the only user in the group. delete the group.
+                                if ((doc.get("userID") as? ArrayList<*>)?.size == 1){
+
+                                    //delete the group by retrieving the document (group name)
+                                    db.collection("groups").document(doc.get("name").toString()).delete().addOnSuccessListener {
+
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
                 user.delete().addOnCompleteListener { task ->
                     if (task.isSuccessful){
-                        if (userID != null) {
-                            db.collection("users").document(userID).delete().addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                        if (userId != null) {
+                            //delete the user with the equivalent userID from User collection and authentication
+                            db.collection("users").document(userId).delete()
+                                .addOnSuccessListener {
+
+                                    Log.i(TAG, "DocumentSnapshot successfully deleted!") }
                                 .addOnFailureListener {
-                                        e -> Log.w(TAG, "Error deleting document", e)
+                                        e -> Log.i(TAG, "Error deleting document", e)
                                 }
+
                             Log.i(TAG, "user with account of ${user.email} is deleted")
                         }
 
@@ -127,12 +166,7 @@ class AccountSettingFragment : Fragment() {
                 ?.setNegativeButton("CANCEL"){ dialog, which ->
                     dialog.dismiss()
                 }?.show()
-
-
         }
-
-
-
 
         return binding.root
     }
