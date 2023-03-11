@@ -23,7 +23,9 @@ data class User(
     val myGroups: ArrayList<String>? = null,
     val matchedGroups: ArrayList<String>? = null,
     val pendingGroups: ArrayList<String>? = null,
-    // password ???
+    val notificationPrefs: HashMap<String, Boolean>? = null,
+    val profileComplete: Boolean = false,
+    val userToken: String? = null,
 ) {
     // returns full name of user
     fun getName(): String {
