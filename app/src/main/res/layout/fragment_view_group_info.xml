@@ -76,7 +76,8 @@
                     android:layout_height="300dp"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/one_direction_photo"
+                    android:id="@+id/group_picture"
+
                     android:contentDescription="matching group card photo"
                     android:layout_below="@id/group_info_container"/>
             </RelativeLayout>

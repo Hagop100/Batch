@@ -12,6 +12,8 @@ import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
 import com.example.batchtest.Group
 import com.example.batchtest.MatchTab.CardStackAdapter
 import com.example.batchtest.R
@@ -35,7 +37,7 @@ import java.util.*
  * create an instance of this fragment.
  */
 
-class MyGroupFragment : Fragment() {
+class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
 
     private lateinit var groupInfo: Group
     private var _binding: FragmentMyGroupBinding? = null
@@ -65,16 +67,11 @@ class MyGroupFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.setHasFixedSize(true)
         myGroupList = arrayListOf()
-        myAdapter = context?.let { MyGroupAdapter(it,myGroupList) }!!
+        myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList) }!!
 
 
         // call function to retrieve info from database
         RetrieveGroups()
-
-        /**
-         *
-         */
-
 
         /**
          *  navigates from My Group view to Create a group view fragment
@@ -163,7 +160,28 @@ class MyGroupFragment : Fragment() {
         private const val TAG = "print" //for logcat debugging
 
     }
+
+    /**
+     * click on individual item of the Group pic with the right position
+     * to navigate to the corresponding group
+     */
+    override fun onItemClick(postion: Int) {
+        val groupInfo =  myGroupList[postion]
+        Toast.makeText(this.context, groupInfo.name, Toast.LENGTH_SHORT).show()
+
+        /**
+         * navigate to the ViewGroupInfoFragment using the position of the group using Navigation Component
+         * passing data to ViewGroupInfoFragment
+         */
+        val direction = MyGroupFragmentDirections.actionMyGroupFragmentToViewGroupInfoFragment(
+            groupInfo.name.toString(),
+            groupInfo.aboutUsDescription.toString())
+        findNavController().navigate(direction)
+
+    }
 }
+
+
 
 
 

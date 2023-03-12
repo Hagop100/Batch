@@ -24,7 +24,12 @@ import de.hdodenhof.circleimageview.CircleImageView
  * bridge the communication between MyGroupFragment and GroupCreationFragment.
  * allows information that was generated from Group Creation and set into view in My Group listing.
  */
-class MyGroupAdapter(private val context: Context, private val groupNameList: ArrayList<Group>): RecyclerView.Adapter<MyGroupAdapter.MyViewHolder>() {
+class MyGroupAdapter(
+    private val context: Context,
+    private val listener: GroupProfileViewEvent,
+    private val groupNameList: ArrayList<Group>)
+    : RecyclerView.Adapter<MyGroupAdapter.MyViewHolder>() {
+
     //inflate the content of the card view
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.my_group_list, parent, false)
@@ -50,15 +55,20 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
         /**
          * clicks on the image at position n to view group profile
          */
-        holder.groupPic.setOnClickListener{ view ->
-            Toast.makeText(this.context, "Testing here ${info.name}", Toast.LENGTH_SHORT).show()
 
-//            findNavController(view).navigate(R.id.action_myGroupFragment_to_viewGroupInfoFragment)
-
-        }
+//        holder.groupPic.setOnClickListener{ view ->
+//
+//            Toast.makeText(this.context, "Testing here ${info.name}", Toast.LENGTH_SHORT).show()
+//
+//            findNavController(holder.groupName).navigate(R.id.action_myGroupFragment_to_viewGroupInfoFragment)
+//
+//        }
 
 
     }
+
+
+
 
     //It returns the count of items present in the list.
     override fun getItemCount(): Int {
@@ -67,17 +77,36 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
 
 
     //set the initial values for the view
-    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener{
         val groupName : TextView = itemView.findViewById(R.id.group_list_name)
         val aboutUs: TextView = itemView.findViewById(R.id.group_list_des)
         val groupPic : CircleImageView = itemView.findViewById(R.id.group_profile)
 
+        init {
+            groupPic.setOnClickListener(this)
+        }
+        //extract the position of the group pic
+        override fun onClick(v: View?) {
+            val position = absoluteAdapterPosition
+
+            //check if the current position is valid
+            if (position != RecyclerView.NO_POSITION){
+                listener.onItemClick(position)
+            }
+
+        }
+    }
+
+    //
+    interface GroupProfileViewEvent{
+        fun onItemClick(postion: Int)
     }
 
 
 
 
 }
+
 
 
 
