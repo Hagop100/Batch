@@ -5,6 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.ktx.Firebase
+import org.w3c.dom.Text
 
 import java.util.*
 
@@ -30,7 +34,7 @@ import java.util.*
  * Use the [MyGroupFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-private const val TAG = "GroupsFetchLog"
+
 class MyGroupFragment : Fragment() {
 
     private lateinit var groupInfo: Group
@@ -62,10 +66,10 @@ class MyGroupFragment : Fragment() {
         recyclerView.setHasFixedSize(true)
         myGroupList = arrayListOf()
         myAdapter = context?.let { MyGroupAdapter(it,myGroupList) }!!
-      //  recyclerView.adapter = myAdapter
+
 
         // call function to retrieve info from database
-        EventChangeListener()
+        RetrieveGroups()
 
         /**
          *
@@ -93,19 +97,9 @@ class MyGroupFragment : Fragment() {
      * Query the document database to get the group info include group image, group name and descrption
      * This works with the Adapter class to retrieve info of the group
      */
-    private fun EventChangeListener(){
+    private fun RetrieveGroups(){
         db = FirebaseFirestore.getInstance()
-        db.collection("groups").addSnapshotListener(object: com.google.firebase.firestore.EventListener<QuerySnapshot>{
-            override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
-                if (error != null){
-                    Log.e("Firestore Error", error.message.toString())
-                    return
-                }
 
-                //loop thru all the groups and add to my group list from the database document
-//                for (doc : DocumentChange in value ?.documentChanges!!){
-//                    if (doc.type == DocumentChange.Type.ADDED){
-//                        myGroupList.add(doc.document.toObject(Group::class.java))
                         // fetches a user from firestore using the uid from the authenticated user
                         val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
                         currentUserDocRef
@@ -121,9 +115,10 @@ class MyGroupFragment : Fragment() {
                                 filterGroups.addAll(user.myGroups!!)
                                 // fetch all groups from the database filtering out the groups with
                                 val groupsDocRef = db.collection("groups")
-                                // Log.v(com.example.batchtest.MatchTab.TAG, "fetch group")
-                                // names matching the unwanted group's name
-                                if (filterGroups.isNotEmpty()) {
+                                 Log.i(TAG, "fetch group")
+
+                                // display groups that the users are currently in.
+                                if (filterGroups.size != 0) {
                                     groupsDocRef.whereIn("name", filterGroups)
                                         .get()
                                         .addOnSuccessListener {
@@ -135,47 +130,26 @@ class MyGroupFragment : Fragment() {
                                             }
                                             // attach adapter and send groups and listener
                                             recyclerView.adapter = myAdapter
-                                            Log.i("print", "AM I HER 1")
+                                            Log.i("print", "AM I HERE 1")
                                             //     EventChangeListener()
 
                                         }
                                         .addOnFailureListener { e ->
-                                            //Log.v(com.example.batchtest.MatchTab.TAG, "error getting documents: ", e)
+                                            Log.i(TAG, "error getting documents: ", e)
                                         }
-                                } else {
-                                    // should display that user needs to be in a group
-                                    groupsDocRef
-                                        .get()
-                                        .addOnSuccessListener {
-                                            // convert the resulting groups into group object
-                                            for (doc in it) {
-                                                val group: Group = doc.toObject(Group::class.java)
-                                                // add the group to the groups list
-                                                myGroupList.add(group)
-                                            }
-                                            // attach adapter and send groups and listener
-                                            recyclerView.adapter = myAdapter
-                                            Log.i("print", "AM I HER 2")
-                                            // EventChangeListener()
+                                }
 
-                                        }
-                                        .addOnFailureListener { e ->
-                                            // Log.v(com.example.batchtest.MatchTab.TAG, "error getting documents: ", e)
-                                        }
+                                //if the user have  0 groups. show a message for user to join a group
+                                else{
+                                    binding.noGroupMessage.text = "You have 0 group. \n Join a group to start matching!"
                                 }
                             }
                             .addOnFailureListener { e ->
-                                //  Log.v(com.example.batchtest.MatchTab.TAG, "error getting user from documents: ", e)
+                                  Log.i(TAG, "error getting user from documents: ", e)
                             }
-              //      }
-//                }
 
-                myAdapter.notifyDataSetChanged()
+                //myAdapter.notifyDataSetChanged()
             }
-
-        })
-    }
-
 
     /**
      * free view from memory
@@ -183,6 +157,11 @@ class MyGroupFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private const val TAG = "print" //for logcat debugging
+
     }
 }
 

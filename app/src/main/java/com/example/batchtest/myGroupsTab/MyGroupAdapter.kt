@@ -65,6 +65,7 @@ class MyGroupAdapter(private val context: Context, private val groupNameList: Ar
         return groupNameList.size
     }
 
+
     //set the initial values for the view
     class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val groupName : TextView = itemView.findViewById(R.id.group_list_name)

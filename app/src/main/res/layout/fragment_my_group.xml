@@ -67,6 +67,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp" />
+        <TextView
+            android:id="@+id/no_group_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="70dp"
+            android:textSize="20sp"
+            android:textColor="@color/purple_700"/>
+
 
 
     </LinearLayout>
