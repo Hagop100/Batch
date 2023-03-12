@@ -2,6 +2,8 @@ package com.example.batchtest
 
 import android.Manifest
 import android.app.Activity
+import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -26,6 +28,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.IOException
 import java.net.URI
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashMap
 
 //TODO update the code so it considers when a user skips the initial profile initialization
 class EditProfileFragment : Fragment() {
@@ -45,8 +50,12 @@ class EditProfileFragment : Fragment() {
     private lateinit var imageURL: String
     private lateinit var email: String
     private var tempUri: Uri? = null
+    private lateinit var user: User
+    private lateinit var progressDialog: Dialog
 
     private val userHashMap = HashMap<String, Any>()
+    //variable used to check whether URI has been set
+    private var uriSet = false
 
     //ActivityResultLauncher must be initialized onCreate
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
@@ -65,6 +74,7 @@ class EditProfileFragment : Fragment() {
         const val FIRSTNAME: String = "firstName"
         const val LASTNAME: String ="lastName"
         const val EMAIL: String = "email"
+        const val PROFILECOMPLETE = "profileComplete"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,7 +119,15 @@ class EditProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getUserDataFromDatabase()
+        //Update the screen with the basic configuration
+        updateEmptyProfilePage()
+
+        getUser()
+
+        //On click, will bring up a DatePicker Dialog so the user can set their date of birth
+        binding.btnBirthday.setOnClickListener{
+            birthdayPicker()
+        }
 
         binding.btnImageUpdate.setOnClickListener{
             getUserImage(view)
@@ -128,49 +146,79 @@ class EditProfileFragment : Fragment() {
         _binding = null
     }
     /**
-     * Retrieve the user's data from the database and populate
-     * the edit text views with their current information.
+     * populate the edit text views with the user's current information.
      * */
-    private fun getUserDataFromDatabase()
+    private fun updateProfilePage()
     {
+        //User is allowed to complete profile without entering an image.
+        if(user.imageUrl != null)
+        {
+            val url = user.imageUrl
+            Toast.makeText(context, "$url", Toast.LENGTH_LONG).show()
+            val profileImage = binding.civEditProfileImage
+            //Update imageView with image stored in the database
+            //Use placeholder in case it fails to get the url
+            Glide.with(this).load(url).
+            placeholder(R.drawable.person_icon).into(profileImage)
+        }
 
+        //User will not be able to update their email or birthday.
+        binding.etEmail.setText(user.email)
+        binding.etEmail.isEnabled = false
+        binding.btnBirthday.text = user.birthdate
+        binding.btnBirthday.isEnabled = false
+        binding.etFirstName.setText(user.firstName)
+        binding.etLastName.setText(user.lastName)
+        binding.etDisplayName.setText(user.displayName)
+
+        //check the correct radio button.
+        binding.rgGender.check(when(user.gender){
+            "male" -> binding.maleRadioButton.id
+            "female" -> binding.femaleRadioButton.id
+            else -> binding.nonBinaryRadioButton.id
+        })
+        binding.etBio.setText(user.personalBio)
+        //set the retrieved data as the default values
+        initializeDefaultValues(user)
+    }
+
+    /**
+     * This will populate the views with default hints
+     * */
+    private fun updateEmptyProfilePage()
+    {
+        binding.civEditProfileImage.setImageResource(R.drawable.profile_icon)
+        binding.etEmail.setText(R.string.personalEmail)
+        binding.etEmail.isEnabled = false
+        binding.btnBirthday.setHint(R.string.birthday)
+        binding.etFirstName.setHint(R.string.firstName)
+        binding.etLastName.setHint(R.string.lastName)
+        binding.etDisplayName.setHint(R.string.displayName)
+        binding.etBio.setHint(R.string.personalBio)
+    }
+
+    /**
+     * Retrieve the User Data from Firestore database
+     * Return whether profile is complete or not
+     * */
+    private fun getUser()
+    {
+        showProgressDialog()
         FirebaseFirestore.getInstance().collection("users")
             .document(getCurrentUserID()).get().addOnSuccessListener { document ->
-                val user = document.toObject(User::class.java)!!
-                val url = user.imageUrl
-                Toast.makeText(context, "$url", Toast.LENGTH_LONG).show()
-                val profileImage = binding.civEditProfileImage
-
-                //User will not be able to update their email or birthday.
+                user = document.toObject(User::class.java)!!
+                if (user.profileComplete)
+                {
+                    updateProfilePage()
+                }
+                //Even if profile is not complete email will be set
                 binding.etEmail.setText(user.email)
-                binding.etEmail.isEnabled = false
-                binding.etBirthday.setText(user.birthdate)
-                binding.etBirthday.isEnabled = false
-                binding.etFirstName.setText(user.firstName)
-                binding.etLastName.setText(user.lastName)
-                binding.etDisplayName.setText(user.displayName)
-
-                //check the correct radio button.
-                binding.rgGender.check(when(user.gender){
-                    "male" -> binding.maleRadioButton.id
-                    "female" -> binding.femaleRadioButton.id
-                    else -> binding.nonBinaryRadioButton.id
-                })
-                binding.etBio.setText(user.personalBio)
-
-                //set the retrieved data as the default values
-                initializeDefaultValues(user)
-
-
-                //Update imageView with image stored in the database
-                //Use placeholder in case it fails to get the url
-                Glide.with(this).load(url).
-                placeholder(R.drawable.person_icon).into(profileImage)
-
-            }.addOnFailureListener{ e ->
-                Toast.makeText(context, "Unable to retrieve User Info $e", Toast.LENGTH_SHORT).show()
+                dismissProgressDialog()
+            }.addOnFailureListener {
+                Toast.makeText(context, "Unable to retrieve User Info $it", Toast.LENGTH_SHORT).show()
             }
     }
+
 
     /**
      * Gathers the user's input and places it in a hashmap
@@ -191,17 +239,22 @@ class EditProfileFragment : Fragment() {
             else -> NONBINARY
         }
 
-        birthday = binding.etBirthday.text.toString()
+        birthday = binding.btnBirthday.text.toString()
         personalBio = binding.etBio.text.toString()
         userHashMap[FIRSTNAME] = firstName
         userHashMap[LASTNAME] = lastName
-        userHashMap[EMAIL] = email
         userHashMap[DISPLAYNAME] = displayName
         userHashMap[GENDER] = gender
         userHashMap[BIRTHDATE] = birthday
         userHashMap[PERSONALBIO] = personalBio
-        userHashMap[IMAGEURI] = imageUri
-        userHashMap[IMAGEURL] = imageURL
+        userHashMap[PROFILECOMPLETE] = true
+
+        if (uriSet)
+        {
+            userHashMap[IMAGEURI] = imageUri
+            userHashMap[IMAGEURL] = imageURL
+        }
+
 
         //Get a instance of the Firebase Firestore database and update the user's information
         FirebaseFirestore.getInstance().collection("users")
@@ -215,6 +268,9 @@ class EditProfileFragment : Fragment() {
             }
     }
 
+    /**
+     * Initialize the variables to those passed in from the database
+     * */
     private fun initializeDefaultValues(user: User)
     {
 
@@ -248,7 +304,7 @@ class EditProfileFragment : Fragment() {
     /**Function Returns whether any User input is empty
      * Displays a toast to the user to fill in property*/
     private fun validateEntries(view: View):Boolean{
-        return when{
+         when{
             TextUtils.isEmpty(binding.etFirstName.text.toString().trim{it <= ' '})-> {
                 Toast.makeText(view.context,"Please Enter Your First Name", Toast.LENGTH_LONG).show()
                 return false
@@ -264,10 +320,6 @@ class EditProfileFragment : Fragment() {
             }
             TextUtils.isEmpty(binding.etBio.text.toString().trim{it <= ' '})->{
                 Toast.makeText(view.context,"Please Enter a short Bio", Toast.LENGTH_LONG).show()
-                return false
-            }
-            TextUtils.isEmpty(imageURL)  -> {
-                Toast.makeText(view.context,"Please Enter a profile image", Toast.LENGTH_LONG).show()
                 return false
             }
             else->{return true}
@@ -325,11 +377,16 @@ class EditProfileFragment : Fragment() {
                 try {
                     Toast.makeText(context,"Got URI",Toast.LENGTH_LONG).show()
                     tempUri = data.data!!
+                    uriSet = true
                     Glide.with(this).load(tempUri).into(userPic)
                     //Not necessarily the best location for this
                     //However, since it takes time to receive the URL
                     //Placing it here has led to successful results.
                     //Still must determine if there is a better solution
+                    //Progress Dialog giving time to get the storage locations URL
+                    //This might not be the best location, however, it is the
+                    //only location that it works since uploadUserImage is an asynchronous listener.
+                    showProgressDialog()
                     uploadUserImageToCloud(activity,tempUri)
                 }catch (e: IOException){
                     e.printStackTrace()
@@ -350,20 +407,23 @@ class EditProfileFragment : Fragment() {
      * The SuccessListener returns the URL of the image.
      * imageURL is updated with the returned URl
      * */
-    private fun uploadUserImageToCloud(activity: Activity?, imageUri: Uri?)
+    private fun uploadUserImageToCloud(activity: Activity?, imaUri: Uri?)
     {
         val storageReference: StorageReference = getStorageReference()
 
-        storageReference.putFile(imageUri!!)
+        storageReference.putFile(imaUri!!)
             .addOnSuccessListener { taskSnapshot ->
                 // Get the downloadable url from the task snapshot
                 // The Success Listener is Asynchronous, and any following code will run
                 // Getting the TaskSnapshot takes a bit of time,
                 taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
                     imageURL = uri.toString()
+                    imageUri = imaUri.toString()
+                    dismissProgressDialog()
                 }
 
             }.addOnFailureListener {
+                dismissProgressDialog()
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
             }
     }
@@ -381,5 +441,56 @@ class EditProfileFragment : Fragment() {
             //Launch the permission launcher
             requestPermissionLauncher.launch(arrayOf(Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE))
         }
+    }
+
+    /**
+     * Function Will Display a progress dialog window.
+     * that can only be dismissed by calling dismissProgressDialog()
+     * */
+    private fun showProgressDialog()
+    {
+        progressDialog = Dialog(requireContext())
+
+        progressDialog.setContentView(R.layout.dialog_progress)
+
+        progressDialog.setCancelable(false)
+        progressDialog.setCanceledOnTouchOutside(false)
+
+        progressDialog.show()
+    }
+
+    /**
+     * Called to dismiss the progress dialog
+     * */
+    private fun dismissProgressDialog()
+    {
+        progressDialog.dismiss()
+    }
+
+    /**Opens a Date picker dialog that allows the user to show their birthday
+     * A Calender window will pop up and they can choose the date. */
+    private fun birthdayPicker()
+    {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePicker = DatePickerDialog(this.requireContext(),
+            DatePickerDialog.OnDateSetListener { view, yearSelected, monthSelected, daySelected ->
+                //Create a String with mm/dd/yyyy format
+                val dateSelected = "${monthSelected+1}/$daySelected/$yearSelected"
+                //set the text of the birthdayPicker button
+                binding.btnBirthday.text = dateSelected
+
+                //Create a simple date format, format the date string
+                val sdf = SimpleDateFormat("mm/dd/yyyy", Locale.US)
+                birthday = sdf.toString()
+
+            }
+            ,year,month,day)
+
+        datePicker.datePicker.maxDate = System.currentTimeMillis()
+        datePicker.show()
     }
 }
