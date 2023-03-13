@@ -103,12 +103,16 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
 
                 // fetches a user from firestore using the uid from the authenticated user
                 val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
-                currentUserDocRef.addSnapshotListener{ snapshot, exception ->
+
+        // Listen for changes in the groups collection
+        currentUserDocRef.addSnapshotListener{ snapshot, exception ->
                     if (exception != null){
                         // handle the error
                         Log.w(TAG, "Listen failed.", exception)
                         return@addSnapshotListener
                     }
+
+                    //check for null, whether there is any changes in the current user collection on firebase
                     if (snapshot != null && snapshot.exists()){
                         currentUserDocRef
                             // reads the document reference
@@ -139,6 +143,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                                                 // add the group to the groups list
                                                 myGroupList.add(group)
                                             }
+
+                                            // Update the adapter with the new list of groups
                                             myAdapter.notifyDataSetChanged()
                                             // attach adapter and send groups and listener
                                             recyclerView.adapter = myAdapter
