@@ -84,6 +84,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
         const val USER_PROFILE_IMAGE: String = "User_Profile_Image"
         const val FIRSTNAME: String = "firstName"
         const val LASTNAME: String ="lastName"
+        const val PROFILECOMPLETE = "profileComplete"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,6 +138,8 @@ class InitialProfilePersonalizationFragment : Fragment() {
             birthdayPicker()
         }
 
+        //User Profile will be updated in the firestore database and navigation will transition to group
+        //creation fragment.
         binding.btnUpdate.setOnClickListener {
 
             //Verify that no entry is empty and populate the hashMap with the User inputs.
@@ -145,6 +148,11 @@ class InitialProfilePersonalizationFragment : Fragment() {
 
                 updateUserProfileDatabase()
             }
+        }
+
+        //User profile will skip the intial profile setup and move to group creation fragment.
+        binding.btnSkip.setOnClickListener {
+            findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_groupCreationFragment)
         }
     }
 
@@ -191,8 +199,13 @@ class InitialProfilePersonalizationFragment : Fragment() {
         userHasMap[GENDER] = gender
         userHasMap[BIRTHDATE] = birthday
         userHasMap[PERSONALBIO] = personalBio
-        userHasMap[IMAGEURI] = imageUri!!
-        userHasMap[IMAGEURL] = imageURL
+        userHasMap[PROFILECOMPLETE] = true
+        if(uriSet)
+        {
+            userHasMap[IMAGEURI] = imageUri!!
+            userHasMap[IMAGEURL] = imageURL
+        }
+
 
         //Get a instance of the Firebase Firestore database and update the user's information
         FirebaseFirestore.getInstance().collection("users")
@@ -317,6 +330,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
                 }
 
             }.addOnFailureListener {
+                dismissProgressDialog()
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
             }
     }
@@ -325,11 +339,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
     /**Function Returns whether any User input is empty
      * Displays a toast to the user to fill in property*/
     private fun validateEntries(view: View):Boolean{
-        return when{
-            !uriSet -> {
-                Toast.makeText(context, "Please Select an image", Toast.LENGTH_SHORT).show()
-                return false
-            }
+         when{
             TextUtils.isEmpty(binding.etFirstName.text.toString().trim{it <= ' '})-> {
                 Toast.makeText(view.context,"Please Enter Your First Name", Toast.LENGTH_LONG).show()
                 return false

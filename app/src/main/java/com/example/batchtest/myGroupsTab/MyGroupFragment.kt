@@ -1,5 +1,6 @@
 package com.example.batchtest.myGroupsTab
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,10 +9,13 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.StateSet.TAG
 import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
 import com.example.batchtest.Group
 import com.example.batchtest.MatchTab.CardStackAdapter
 import com.example.batchtest.R
@@ -23,6 +27,7 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import org.w3c.dom.Text
 
@@ -35,7 +40,7 @@ import java.util.*
  * create an instance of this fragment.
  */
 
-class MyGroupFragment : Fragment() {
+class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end of RetrieveGroups()
 
     private lateinit var groupInfo: Group
     private var _binding: FragmentMyGroupBinding? = null
@@ -46,7 +51,7 @@ class MyGroupFragment : Fragment() {
     private lateinit var myAdapter: MyGroupAdapter
     private lateinit var db: FirebaseFirestore
     private val currentUser = Firebase.auth.currentUser
-
+    private lateinit var progressDialog: Dialog
     private val binding get() = _binding!!
 
 
@@ -65,16 +70,12 @@ class MyGroupFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.setHasFixedSize(true)
         myGroupList = arrayListOf()
-        myAdapter = context?.let { MyGroupAdapter(it,myGroupList) }!!
+        myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList) }!!
+
 
 
         // call function to retrieve info from database
         RetrieveGroups()
-
-        /**
-         *
-         */
-
 
         /**
          *  navigates from My Group view to Create a group view fragment
@@ -100,8 +101,19 @@ class MyGroupFragment : Fragment() {
     private fun RetrieveGroups(){
         db = FirebaseFirestore.getInstance()
 
-                        // fetches a user from firestore using the uid from the authenticated user
-                        val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
+                // fetches a user from firestore using the uid from the authenticated user
+                val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
+
+        // Listen for changes in the groups collection
+        currentUserDocRef.addSnapshotListener{ snapshot, exception ->
+                    if (exception != null){
+                        // handle the error
+                        Log.w(TAG, "Listen failed.", exception)
+                        return@addSnapshotListener
+                    }
+
+                    //check for null, whether there is any changes in the current user collection on firebase
+                    if (snapshot != null && snapshot.exists()){
                         currentUserDocRef
                             // reads the document reference
                             .get()
@@ -115,21 +127,28 @@ class MyGroupFragment : Fragment() {
                                 filterGroups.addAll(user.myGroups!!)
                                 // fetch all groups from the database filtering out the groups with
                                 val groupsDocRef = db.collection("groups")
-                                 Log.i(TAG, "fetch group")
+                                Log.i(TAG, "fetch group")
 
                                 // display groups that the users are currently in.
                                 if (filterGroups.size != 0) {
                                     groupsDocRef.whereIn("name", filterGroups)
                                         .get()
                                         .addOnSuccessListener {
+
+                                            //clear all the groups before adding them into display list
+                                            myGroupList.clear()
                                             // convert the resulting groups into group object
                                             for (doc in it) {
                                                 val group: Group = doc.toObject(Group::class.java)
                                                 // add the group to the groups list
                                                 myGroupList.add(group)
                                             }
+
+                                            // Update the adapter with the new list of groups
+                                            myAdapter.notifyDataSetChanged()
                                             // attach adapter and send groups and listener
                                             recyclerView.adapter = myAdapter
+
                                             Log.i("print", "AM I HERE 1")
                                             //     EventChangeListener()
 
@@ -137,21 +156,30 @@ class MyGroupFragment : Fragment() {
                                         .addOnFailureListener { e ->
                                             Log.i(TAG, "error getting documents: ", e)
                                         }
+
                                 }
 
                                 //if the user have  0 groups. show a message for user to join a group
-                                else{
-                                    binding.noGroupMessage.text = "You have 0 group. \n Join a group to start matching!"
+                                else {
+                                    binding.noGroupMessage.text =
+                                        "You have 0 group. \n Join a group to start matching!"
                                 }
                             }
                             .addOnFailureListener { e ->
-                                  Log.i(TAG, "error getting user from documents: ", e)
+                                Log.i(TAG, "error getting user from documents: ", e)
                             }
 
-                //myAdapter.notifyDataSetChanged()
-            }
+                    }
 
-    /**
+
+                }
+
+
+    }
+
+
+
+/**
      * free view from memory
      */
     override fun onDestroyView() {
@@ -163,7 +191,28 @@ class MyGroupFragment : Fragment() {
         private const val TAG = "print" //for logcat debugging
 
     }
+
+    /**
+     * click on individual item of the Group pic with the right position
+     * to navigate to the corresponding group
+     */
+    override fun onItemClick(postion: Int) {
+        val groupInfo =  myGroupList[postion]
+        Toast.makeText(this.context, groupInfo.name, Toast.LENGTH_SHORT).show()
+
+        /**
+         * navigate to the ViewGroupInfoFragment using the position of the group using Navigation Component
+         * passing data to ViewGroupInfoFragment
+         */
+        val direction = MyGroupFragmentDirections.actionMyGroupFragmentToViewGroupInfoFragment(
+            groupInfo.name.toString(),
+            groupInfo.aboutUsDescription.toString())
+        findNavController().navigate(direction)
+
+    }
 }
+
+
 
 
 

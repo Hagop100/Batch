@@ -1,6 +1,7 @@
 package com.example.batchtest.EditGroupProfile
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -8,14 +9,23 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.batchtest.Group
 import com.example.batchtest.R
+import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentEditGroupInfoBinding
 import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
 import com.example.batchtest.myGroupsTab.MyGroupAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 import java.util.ArrayList
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,9 +40,11 @@ private const val ARG_PARAM2 = "param2"
 class ViewGroupInfoFragment : Fragment() {
     private var _binding: FragmentViewGroupInfoBinding? = null
     private val binding get() = _binding!!
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var myGroupList: ArrayList<Group>
+    var db = Firebase.firestore
     private lateinit var myAdapter: MyGroupAdapter
+
+    private val args: ViewGroupInfoFragmentArgs by navArgs()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +60,47 @@ class ViewGroupInfoFragment : Fragment() {
         _binding = FragmentViewGroupInfoBinding.inflate(layoutInflater, container, false)
 
         /**
-         * display the user group informatiun that was clicked on from MyGroupFragment
+         * Retrieve data from MyGroupFragment using arguments
+         * display the user group information including:
+         * group name, profile picture, tags, and about us
          */
+        binding.groupName.text = args.groupName
+        binding.aboutUsDescription.text = args.groupDesc
+
+        val groupName = binding.groupName.text
+        //get info from the group collection in firebase
+        db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
+
+            Log.i("print", "view group info here")
+            //set info about group pic
+            val groupPic = document.getString("image")
+            if (groupPic.isNullOrEmpty()){
+                binding.groupPicture.setImageResource(R.drawable.placeholder)
+            }
+            else{
+                Glide.with(this).load(document.getString("image").toString()).into(binding.groupPicture)
+
+            }
+
+            //retrieve info of interest tags
+            val interestTags: ArrayList<*> = document.get("interestTags") as ArrayList<*>
+            var interestTag: TextView
+            // set the layout parameter and margins for interest tag
+            val params: LinearLayout.LayoutParams =
+                LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+            params.setMargins(10, 10, 10, 10)
+            // dynamically add group tags
+
+
+
+        }
+
+
+
+
+
+
+
 
 
 
