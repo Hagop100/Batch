@@ -1,5 +1,6 @@
 package com.example.batchtest.myGroupsTab
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.StateSet.TAG
 import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +27,7 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import org.w3c.dom.Text
 
@@ -37,7 +40,7 @@ import java.util.*
  * create an instance of this fragment.
  */
 
-class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
+class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end of RetrieveGroups()
 
     private lateinit var groupInfo: Group
     private var _binding: FragmentMyGroupBinding? = null
@@ -48,7 +51,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
     private lateinit var myAdapter: MyGroupAdapter
     private lateinit var db: FirebaseFirestore
     private val currentUser = Firebase.auth.currentUser
-
+    private lateinit var progressDialog: Dialog
     private val binding get() = _binding!!
 
 
@@ -68,6 +71,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
         recyclerView.setHasFixedSize(true)
         myGroupList = arrayListOf()
         myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList) }!!
+
 
 
         // call function to retrieve info from database
@@ -97,8 +101,15 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
     private fun RetrieveGroups(){
         db = FirebaseFirestore.getInstance()
 
-                        // fetches a user from firestore using the uid from the authenticated user
-                        val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
+                // fetches a user from firestore using the uid from the authenticated user
+                val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
+                currentUserDocRef.addSnapshotListener{ snapshot, exception ->
+                    if (exception != null){
+                        // handle the error
+                        Log.w(TAG, "Listen failed.", exception)
+                        return@addSnapshotListener
+                    }
+                    if (snapshot != null && snapshot.exists()){
                         currentUserDocRef
                             // reads the document reference
                             .get()
@@ -112,21 +123,26 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                 filterGroups.addAll(user.myGroups!!)
                                 // fetch all groups from the database filtering out the groups with
                                 val groupsDocRef = db.collection("groups")
-                                 Log.i(TAG, "fetch group")
+                                Log.i(TAG, "fetch group")
 
                                 // display groups that the users are currently in.
                                 if (filterGroups.size != 0) {
                                     groupsDocRef.whereIn("name", filterGroups)
                                         .get()
                                         .addOnSuccessListener {
+
+                                            //clear all the groups before adding them into display list
+                                            myGroupList.clear()
                                             // convert the resulting groups into group object
                                             for (doc in it) {
                                                 val group: Group = doc.toObject(Group::class.java)
                                                 // add the group to the groups list
                                                 myGroupList.add(group)
                                             }
+                                            myAdapter.notifyDataSetChanged()
                                             // attach adapter and send groups and listener
                                             recyclerView.adapter = myAdapter
+
                                             Log.i("print", "AM I HERE 1")
                                             //     EventChangeListener()
 
@@ -134,21 +150,30 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                         .addOnFailureListener { e ->
                                             Log.i(TAG, "error getting documents: ", e)
                                         }
+
                                 }
 
                                 //if the user have  0 groups. show a message for user to join a group
-                                else{
-                                    binding.noGroupMessage.text = "You have 0 group. \n Join a group to start matching!"
+                                else {
+                                    binding.noGroupMessage.text =
+                                        "You have 0 group. \n Join a group to start matching!"
                                 }
                             }
                             .addOnFailureListener { e ->
-                                  Log.i(TAG, "error getting user from documents: ", e)
+                                Log.i(TAG, "error getting user from documents: ", e)
                             }
 
-                //myAdapter.notifyDataSetChanged()
-            }
+                    }
 
-    /**
+
+                }
+
+
+    }
+
+
+
+/**
      * free view from memory
      */
     override fun onDestroyView() {
