@@ -26,6 +26,7 @@ data class User(
     val notificationPrefs: HashMap<String, Boolean>? = null,
     val profileComplete: Boolean = false,
     val userToken: String? = null,
+    val undoState: Boolean = false
 ) {
     // returns full name of user
     fun getName(): String {

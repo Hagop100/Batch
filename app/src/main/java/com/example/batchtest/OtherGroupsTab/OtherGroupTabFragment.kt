@@ -12,6 +12,7 @@ import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupFragment
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupFragment
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentOtherGroupTabBinding
+import com.example.batchtest.databinding.FragmentPendingGroupBinding
 
 
 /**
@@ -23,7 +24,8 @@ import com.example.batchtest.databinding.FragmentOtherGroupTabBinding
 private var TAG = "OtherGroupsTab"
 
 class OtherGroupTabFragment : Fragment() {
-    private lateinit var binding: FragmentOtherGroupTabBinding
+    private var _binding: FragmentOtherGroupTabBinding? = null
+    private val binding get() = _binding!!
     // initially set to matched fragment
     private var isMatched: Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +73,7 @@ class OtherGroupTabFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         // bind to other group tab layout
-        binding = FragmentOtherGroupTabBinding.inflate(inflater, container, false)
+        _binding = FragmentOtherGroupTabBinding.inflate(inflater, container, false)
 
         // request focus on focusBtn
         // while removing focus from unfocusBtn
@@ -148,5 +150,11 @@ class OtherGroupTabFragment : Fragment() {
         super.onSaveInstanceState(outState)
         // save the latest isMatched value
         outState.putBoolean("isMatched", isMatched)
+    }
+
+    // free from memory
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

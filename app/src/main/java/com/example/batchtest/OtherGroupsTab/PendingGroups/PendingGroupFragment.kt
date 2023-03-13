@@ -12,6 +12,7 @@ import com.example.batchtest.Group
 import com.example.batchtest.MatchTab.CardStackAdapter
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupAdapter
 import com.example.batchtest.User
+import com.example.batchtest.databinding.FragmentMatchTabBinding
 import com.example.batchtest.databinding.FragmentPendingGroupBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
@@ -25,7 +26,8 @@ private const val TAG = "PendingGroupsLog"
  * create an instance of this fragment.
  */
 class PendingGroupFragment : Fragment() {
-    private lateinit var binding: FragmentPendingGroupBinding
+    private var _binding: FragmentPendingGroupBinding? = null
+    private val binding get() = _binding!!
     private val db = Firebase.firestore
     // get the authenticated logged in user
     private val currentUser = Firebase.auth.currentUser
@@ -35,7 +37,7 @@ class PendingGroupFragment : Fragment() {
     ): View? {
 
         // inflate the layout for pending group fragment
-        binding = FragmentPendingGroupBinding.inflate(inflater, container, false)
+        _binding = FragmentPendingGroupBinding.inflate(inflater, container, false)
 
         // get recycler view from pending group fragment layout binding
         val pendingGroupRV = binding.pendingGroupRecyclerView
@@ -98,5 +100,10 @@ class PendingGroupFragment : Fragment() {
                 Log.v(TAG, "error getting documents: ", e)
             }
         return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
