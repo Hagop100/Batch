@@ -57,6 +57,9 @@
         <action
             android:id="@+id/action_myGroupFragment_to_viewGroupInfoFragment"
             app:destination="@id/viewGroupInfoFragment" />
+        <action
+            android:id="@+id/action_myGroupFragment_to_joinGroupFragment"
+            app:destination="@id/joinGroupFragment" />
     </fragment>
     <!-- other group tab fragment -->
     <fragment
@@ -148,6 +151,15 @@
         <argument
             android:name="groupDesc"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/joinGroupFragment"
+        android:name="com.example.batchtest.myGroupsTab.JoinGroupFragment"
+        android:label="fragment_join_group"
+        tools:layout="@layout/fragment_join_group" >
+        <action
+            android:id="@+id/action_joinGroupFragment_to_myGroupFragment"
+            app:destination="@id/myGroupFragment" />
     </fragment>
 
 </navigation>

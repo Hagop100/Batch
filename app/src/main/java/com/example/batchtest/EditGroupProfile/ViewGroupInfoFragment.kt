@@ -1,5 +1,6 @@
 package com.example.batchtest.EditGroupProfile
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
@@ -18,12 +21,14 @@ import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentEditGroupInfoBinding
 import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
 import com.example.batchtest.myGroupsTab.MyGroupAdapter
+import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import org.w3c.dom.Text
 import java.util.ArrayList
 
 
@@ -52,6 +57,7 @@ class ViewGroupInfoFragment : Fragment() {
 
         }
     }
+    @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,6 +74,7 @@ class ViewGroupInfoFragment : Fragment() {
         binding.aboutUsDescription.text = args.groupDesc
 
         val groupName = binding.groupName.text
+
         //get info from the group collection in firebase
         db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
 
@@ -84,24 +91,28 @@ class ViewGroupInfoFragment : Fragment() {
 
             //retrieve info of interest tags
             val interestTags: ArrayList<*> = document.get("interestTags") as ArrayList<*>
-            var interestTag: TextView
-            // set the layout parameter and margins for interest tag
-            val params: LinearLayout.LayoutParams =
-                LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            params.setMargins(10, 10, 10, 10)
-            // dynamically add group tags
+
+            //get the interest tags layout
+
+            val flexboxLayout: FlexboxLayout = binding.interestTags
+            for (tag in interestTags){
+                val textView = TextView(activity) //create new TextView
+                textView.text = tag as String? //set the text of the TextView to current tag
+                textView.layoutParams = FlexboxLayout.LayoutParams(
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT, //set the width
+                    FlexboxLayout.LayoutParams.WRAP_CONTENT, //set the height
+                )
+
+                textView.background = this.context?.let { ContextCompat.getDrawable(it,R.drawable.round_corner ) }
+
+                flexboxLayout.addView(textView) //add the TextView to Flexbox
+
+            }
+
 
 
 
         }
-
-
-
-
-
-
-
-
 
 
         // more button on match page opens dialog
