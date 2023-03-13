@@ -80,6 +80,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             binding.matchTabMessage.text = "Set a primary group to start matching!"
             return binding.root
         }
+
         // get all potential groups of current user to match with
         currentUserDocRef
             // reads the document reference
@@ -98,19 +99,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                     // all groups the user has already matched in will be filtered out
                     filterGroups.addAll(user.matchedGroups)
                     // all groups that are awaiting the voting process will be filtered out
-                    db.collection("pendingGroups")
-                        .whereEqualTo("group", primaryGroup)
-                        .get()
-                        .addOnSuccessListener { docs ->
-                            for (doc in docs) {
-                                filterGroups.add(doc.data["pendingGroup"].toString())
-                            }
-                            Log.v(TAG, "with pending:" + filterGroups.toString())
-                        }
-                        .addOnFailureListener { e ->
-                            Log.v(TAG, "error getting pending groups from documents: ", e)
-                        }
-                    Log.v(TAG, filterGroups.toString())
+                    filterGroups.addAll(user.pendingGroups)
                     // fetch all groups from the database filtering out the groups with
                     val groupsDocRef = db.collection("groups")
                     // names matching the unwanted group's name
@@ -162,6 +151,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             .addOnFailureListener { e ->
                 Log.v(TAG, "error getting user from documents: ", e)
             }
+
+
+
 
 //        db.collection("users").get().addOnSuccessListener { usersResult ->
 //            for (doc in usersResult) {
@@ -216,7 +208,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             .build()
         manager.setSwipeAnimationSetting(setting)
         // add the group to the list of pending groups for the user
-        //db.collection("users").document(currentUser!!.uid).update("pendingGroups", FieldValue.arrayUnion(group.name))
+        db.collection("users").document(currentUser?.uid.toString()).update("pendingGroups", FieldValue.arrayUnion(group.name))
+        //
         db.collection("groups").document(primaryGroup)
             .get()
             .addOnSuccessListener { result ->
@@ -234,12 +227,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 )
                 // add pending group to firestore pendingGroups collection
                 db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString()).set(pendingGroup)
-//                // add to pending groups of all users
-//                for (user in matchingGroup.users!!) {
-//                    votes[user] = user == currentUser!!.uid
-//                }
-//                // add pending group to user
-//                db.collection("users").document(currentUser!!.uid).update("pendingGroups", FieldValue.arrayUnion(pendingGroup.pendingGroupId.toString()))
             }
 
         removeGroups.add(group)

@@ -49,8 +49,7 @@
             android:layout_above="@id/votingPersonIcons"
             android:paddingTop="10dp"
             android:paddingBottom="4dp"
-            android:textSize="15sp"
-            android:text="lulz"/>
+            android:textSize="15sp"/>
         <!-- container for the person icons during voting -->
         <LinearLayout
             android:id="@+id/votingPersonIcons"
