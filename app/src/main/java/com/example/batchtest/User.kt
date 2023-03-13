@@ -20,14 +20,16 @@ data class User(
     val personalBio: String = "",
     val phoneNumber: String? = null,
     val MFA_Opt: String = "",
-    val myGroups: ArrayList<String>? = null,
-    val matchedGroups: ArrayList<String>? = null,
-    val pendingGroups: ArrayList<String>? = null,
+    val myGroups: ArrayList<String> = ArrayList(),
+    val matchedGroups: ArrayList<String> = ArrayList(),
+    val pendingGroups: ArrayList<String> = ArrayList(),
     val notificationPrefs: HashMap<String, Boolean>? = null,
     val profileComplete: Boolean = false,
     val userToken: String? = null,
-    val undoState: Boolean = false
+    val undoState: Boolean = false,
+    val primaryGroup: String? = null
 ) {
+
     // returns full name of user
     fun getName(): String {
         return "$firstName $lastName"

@@ -19,6 +19,7 @@ import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.Group
+import com.example.batchtest.PendingGroup
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
@@ -59,7 +60,7 @@ class GroupCreationFragment : Fragment() {
 //      initialize the values of Group class
         group = Group(
             name = "",
-            userID = ArrayList<String>(),
+            users = ArrayList<String>(),
             interestTags = ArrayList(),
             aboutUsDescription = "",
             biscuits = 0,
@@ -105,7 +106,7 @@ class GroupCreationFragment : Fragment() {
             //     Log.i(TAG, "$currentUser")
             val groupName = binding.editGroupName.text.toString()
             val aboutUs = binding.editGroupAboutUs.text.toString()
-            val users = group.userID
+            val users = group.users
             val tags = group.interestTags
             val biscuit = group.biscuits
             val image = imageURL
@@ -145,7 +146,7 @@ class GroupCreationFragment : Fragment() {
                                         val groupInfo = Group(groupName, users, tags, aboutUs,biscuit, image)
 
                                         //add current user to the Group
-                                        groupInfo.userID?.add(currentUser!!)
+                                        groupInfo.users?.add(currentUser!!)
 
                                         //update the group information with added user - Group Creation
                                         db.collection("groups").document(groupName).set(groupInfo)

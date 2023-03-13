@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
-import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import com.example.batchtest.Group
+import com.example.batchtest.PendingGroup
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMatchTabBinding
 import com.google.firebase.auth.ktx.auth
@@ -16,6 +16,10 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
+import java.lang.reflect.Field
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 private const val TAG = "MatchTabFragmentLog"
@@ -41,7 +45,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
     private val currentUser = Firebase.auth.currentUser
     // fetches a user from firestore using the uid from the authenticated user
     private val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
-
+    // primary group that user will be matching as
+    private var primaryGroup = ""
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +72,14 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         if (prevGroup == null) {
             currentUserDocRef.update("undoState", false)
         }
+
+        // set primary group of user
+        setPrimaryGroup("cats")
+
+        if (primaryGroup.isEmpty()) {
+            binding.matchTabMessage.text = "Set a primary group to start matching!"
+            return binding.root
+        }
         // get all potential groups of current user to match with
         currentUserDocRef
             // reads the document reference
@@ -81,11 +94,23 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                     // filter groups will store all group to remove from the match group pool
                     val filterGroups: ArrayList<String> = ArrayList()
                     // all groups the user is will be filtered out so the user cannot match with their own groups
-                    filterGroups.addAll(user.myGroups!!)
+                    filterGroups.addAll(user.myGroups)
                     // all groups the user has already matched in will be filtered out
-                    filterGroups.addAll(user.matchedGroups!!)
+                    filterGroups.addAll(user.matchedGroups)
                     // all groups that are awaiting the voting process will be filtered out
-                    filterGroups.addAll(user.pendingGroups!!)
+                    db.collection("pendingGroups")
+                        .whereEqualTo("group", primaryGroup)
+                        .get()
+                        .addOnSuccessListener { docs ->
+                            for (doc in docs) {
+                                filterGroups.add(doc.data["pendingGroup"].toString())
+                            }
+                            Log.v(TAG, "with pending:" + filterGroups.toString())
+                        }
+                        .addOnFailureListener { e ->
+                            Log.v(TAG, "error getting pending groups from documents: ", e)
+                        }
+                    Log.v(TAG, filterGroups.toString())
                     // fetch all groups from the database filtering out the groups with
                     val groupsDocRef = db.collection("groups")
                     // names matching the unwanted group's name
@@ -99,7 +124,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                                     // add the group to the groups list
                                     groups.add(group)
                                 }
-                                Log.v(TAG, "----")
                                 // attach adapter and send groups and listener
                                 cardStackView.adapter =
                                     CardStackAdapter(currentUser!!.uid, groups, this)
@@ -139,7 +163,23 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 Log.v(TAG, "error getting user from documents: ", e)
             }
 
-
+//        db.collection("users").get().addOnSuccessListener { usersResult ->
+//            for (doc in usersResult) {
+//                if (doc.data["myGroups"] != null) {
+//                    for (myGroup in doc.data["myGroups"] as ArrayList<*>) {
+//                        db.collection("groups").document(myGroup.toString()).update("users", FieldValue.arrayUnion(doc.data["userId"]))
+//                    }
+//                }
+//
+//            }
+//        }
+//        db.collection("groups")
+//            .get()
+//            .addOnSuccessListener {
+//                for (doc in it) {
+//                    db.collection("groups").document(doc.id).update("users", ArrayList<String>())
+//                }
+//            }
 //        val newField = "undoState"
 //        db.collection("users")
 //            .get()
@@ -149,7 +189,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
 //
 //                }
 //            }
-
         return binding.root
     }
 
@@ -177,7 +216,32 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             .build()
         manager.setSwipeAnimationSetting(setting)
         // add the group to the list of pending groups for the user
-        db.collection("users").document(currentUser!!.uid).update("pendingGroups", FieldValue.arrayUnion(group.name))
+        //db.collection("users").document(currentUser!!.uid).update("pendingGroups", FieldValue.arrayUnion(group.name))
+        db.collection("groups").document(primaryGroup)
+            .get()
+            .addOnSuccessListener { result ->
+                var votes: HashMap<String, Boolean> = hashMapOf()
+                for (user in result.data?.get("users") as ArrayList<*>) {
+                    votes[user as String] = user == currentUser?.uid
+                }
+                var pendingGroup = PendingGroup(
+                    pendingGroupId = UUID.randomUUID().toString(),
+                    group = primaryGroup,
+                    pendingGroup = group.name,
+                    votes = votes,
+                    isPending= true,
+                    isMatched = false
+                )
+                // add pending group to firestore pendingGroups collection
+                db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString()).set(pendingGroup)
+//                // add to pending groups of all users
+//                for (user in matchingGroup.users!!) {
+//                    votes[user] = user == currentUser!!.uid
+//                }
+//                // add pending group to user
+//                db.collection("users").document(currentUser!!.uid).update("pendingGroups", FieldValue.arrayUnion(pendingGroup.pendingGroupId.toString()))
+            }
+
         removeGroups.add(group)
         prevGroup = null
         // update undo state of current user
@@ -203,6 +267,19 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         currentUserDocRef.update("undoState", true)
         // swipe the card
         binding.cardStackView.swipe()
+    }
+
+    private fun setPrimaryGroup(groupName: String) {
+        // primary group that user will be matching as
+        this.primaryGroup = groupName
+        currentUserDocRef.get()
+            .addOnSuccessListener { result ->
+                val myGroups = result.data?.get("myGroups") as ArrayList<*>
+                if (!myGroups.contains("groupName")) {
+                    currentUserDocRef.update("myGroups", FieldValue.arrayUnion(groupName))
+                }
+            }
+        currentUserDocRef.update("primaryGroup", groupName)
     }
 
     // free from memory

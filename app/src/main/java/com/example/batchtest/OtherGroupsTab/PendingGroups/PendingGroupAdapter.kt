@@ -5,15 +5,21 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import android.content.Context
+import android.graphics.Color
+import android.graphics.PorterDuff
 import android.util.Log
 import android.widget.ImageButton
 import com.example.batchtest.Group
+import com.example.batchtest.PendingGroup
 import com.example.batchtest.databinding.VoteGroupCardBinding
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
 
 private const val TAG = "PendingGroupAdapter"
 
-class PendingGroupAdapter(private val context: Context?, private val groups: ArrayList<Group>) : RecyclerView.Adapter<PendingGroupAdapter.PendingGroupHolder>() {
+class PendingGroupAdapter(private val context: Context?, private val groups: ArrayList<PendingGroup>) : RecyclerView.Adapter<PendingGroupAdapter.PendingGroupHolder>() {
+    private val db = Firebase.firestore
     // holder class for each pending group
     class PendingGroupHolder(val binding: VoteGroupCardBinding) : RecyclerView.ViewHolder(binding.root) {
         // get the views of card
@@ -27,6 +33,8 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
         val acceptBtn: ImageButton = binding.acceptBtn
         // reject button
         val rejectBtn: ImageButton = binding.rejectBtn
+        // members
+        val members = binding.member1
     }
 
     // inflate parent fragment with card item layout when ViewHolder is created
@@ -44,11 +52,32 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
     // set the group information for each pending group that will be displayed
     override fun onBindViewHolder(holder: PendingGroupHolder, position: Int) {
         val group = groups[position]
-        holder.pendingGroupName.text = group.name
+        var matchingGroup: Group = Group()
+        var pendingGroup: Group = Group()
+        db.collection("groups")
+            .document(group.group.toString())
+            .get()
+            .addOnSuccessListener { result ->
+                matchingGroup = result.toObject(Group::class.java)!!
+            }
+            .addOnFailureListener { e ->
+                Log.v(TAG, "error getting matching group:", e)
+            }
+        db.collection("groups")
+            .document(group.pendingGroup.toString())
+            .get()
+            .addOnSuccessListener { result ->
+                pendingGroup = result.toObject(Group::class.java)!!
+                holder.pendingGroupName.text = pendingGroup.name
+            }
+            .addOnFailureListener { e ->
+                Log.v(TAG, "error getting pending group:", e)
+            }
+
         holder.rejectBtn.setOnClickListener {
             Log.v(TAG, "group removed:$group")
-            groups.remove(group)
         }
+        holder.members.setColorFilter(Color.GREEN)
 //        if (context != null) {
 //            Glide.with(context).load(group.image).into(holder.pendingGroupImg)
 //        }

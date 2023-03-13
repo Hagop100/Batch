@@ -68,6 +68,7 @@ class RegistrationFragment : Fragment() {
             matchedGroups = ArrayList(),
             pendingGroups = ArrayList(),
             undoState = false,
+            primaryGroup = null
         )
     }
 
