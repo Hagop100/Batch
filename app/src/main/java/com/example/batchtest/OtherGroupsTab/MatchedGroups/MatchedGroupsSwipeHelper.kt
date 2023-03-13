@@ -192,13 +192,16 @@ abstract class MatchedGroupsSwipeHelper(context: Context, private val recyclerVi
     private fun drawButton(c: Canvas, itemView: View, buffer: MutableList<MatchedGroupButton>, pos: Int, translationX: Float) {
         var right = itemView.right.toFloat()
         val dButtonWidth = -1*translationX/buffer.size
+        //get cardView item because we will need its margin values to adjust the top and bottom of the rectangle
         val cardView: CardView = itemView.findViewById(R.id.matched_group_recycler_view_row_card_view)
-        /*val top = itemView.top.toFloat() - cardView.marginTop.toFloat()
-        val bottom = itemView.bottom.toFloat() - cardView.marginBottom.toFloat()*/
-        Log.i("SwipeHelper", itemView.top.toString())
+        //Top must be added with the margin
+        //Remember that on a computer the y-axis becomes more positive moving downwards
+        //This adjusts the rectangle to match the cardview size
+        val top = itemView.top.toFloat() + cardView.marginTop.toFloat()
+        val bottom = itemView.bottom.toFloat() - cardView.marginBottom.toFloat()
         for(button in buffer) {
             val left = right - dButtonWidth
-            button.onDraw(c, RectF(left, itemView.top.toFloat(), right, itemView.bottom.toFloat()), pos)
+            button.onDraw(c, RectF(left, top, right, bottom), pos)
             right = left
         }
     }

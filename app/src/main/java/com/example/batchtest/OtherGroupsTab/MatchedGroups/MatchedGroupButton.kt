@@ -50,8 +50,8 @@ class MatchedGroupButton(private val context: Context, private val text: String,
         else {
             val d = ContextCompat.getDrawable(context, imageResId)
             val bitmap = drawableToBitMap(d)
-            val left = ((rectF.left + rectF.right) / 2) - (bitmap.width / 2)
-            val top = ((rectF.top + rectF.bottom) / 2) - (bitmap.height / 2)
+            val left = ((rectF.left + rectF.right) / 2) - (bitmap.width / 2).toFloat()
+            val top = ((rectF.top + rectF.bottom) / 2) - (bitmap.height / 2).toFloat()
             /*
             This is the moment where we actually draw the icon into the button
             Note that to properly center the buttons we cannot simply take the left and right side of the rectangle
