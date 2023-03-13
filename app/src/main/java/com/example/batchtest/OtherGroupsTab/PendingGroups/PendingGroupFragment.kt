@@ -57,40 +57,45 @@ class PendingGroupFragment : Fragment() {
         * will display the groups in a recycler view
          */
         // fetch groups of user from database using firebase's firestore
-        val myGroups = arrayListOf<String>()
-//        db.collection("pendingGroups")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                for (doc in result) {
-//                    Log.v(TAG, doc.toString())
-//                }
-//            }
-        db.collection("groups")
-            .whereArrayContains("users", currentUser.uid)
+
+        db.collection("pendingGroups")
+            .whereArrayContains("matchingGroup.users", currentUser.uid.toString())
             .get()
             .addOnSuccessListener { result ->
                 for (doc in result) {
-                    myGroups.add(doc.data["name"] as String)
+                    pendingGroups.add(doc.toObject(PendingGroup::class.java))
                 }
-                if (myGroups.isNotEmpty()) {
-                    Log.v(TAG, "myGroups" + myGroups.toString())
-                    db.collection("pendingGroups")
-                        .whereIn("group", myGroups)
-                        .get()
-                        .addOnSuccessListener { result ->
-                            for (doc in result) {
-                                pendingGroups.add(doc.toObject(PendingGroup::class.java))
-                            }
-                            Log.v(TAG, "pending groups" + pendingGroups.toString())
-                            pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
-                        }
-                } else {
-                    binding.pendingTabMessage.text = "No pending groups"
-                }
+                pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
             }
             .addOnFailureListener { e ->
-                Log.v(TAG, "error getting documents: ", e)
+                Log.v(TAG, "error fetching pending groups:", e)
             }
+//        db.collection("pendingGroups")
+//            .where("matchingGroup.", currentUser.uid)
+//            .get()
+//            .addOnSuccessListener { result ->
+//                for (doc in result) {
+//                    myGroups.add(doc.data["name"] as String)
+//                }
+//                if (myGroups.isNotEmpty()) {
+//                    Log.v(TAG, "myGroups" + myGroups.toString())
+//                    db.collection("pendingGroups")
+//                        .whereIn("group", myGroups)
+//                        .get()
+//                        .addOnSuccessListener { result ->
+//                            for (doc in result) {
+//                                pendingGroups.add(doc.toObject(PendingGroup::class.java))
+//                            }
+//                            Log.v(TAG, "pending groups" + pendingGroups.toString())
+//                            pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
+//                        }
+//                } else {
+//                    binding.pendingTabMessage.text = "No pending groups"
+//                }
+//            }
+//            .addOnFailureListener { e ->
+//                Log.v(TAG, "error getting documents: ", e)
+//            }
 
 //        currentUserDocRef
 //            // reads the document reference

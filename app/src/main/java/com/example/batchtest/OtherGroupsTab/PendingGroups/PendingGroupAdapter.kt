@@ -52,27 +52,11 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
     // set the group information for each pending group that will be displayed
     override fun onBindViewHolder(holder: PendingGroupHolder, position: Int) {
         val group = groups[position]
-        var matchingGroup: Group = Group()
-        var pendingGroup: Group = Group()
-        db.collection("groups")
-            .document(group.group.toString())
-            .get()
-            .addOnSuccessListener { result ->
-                matchingGroup = result.toObject(Group::class.java)!!
-            }
-            .addOnFailureListener { e ->
-                Log.v(TAG, "error getting matching group:", e)
-            }
-        db.collection("groups")
-            .document(group.pendingGroup.toString())
-            .get()
-            .addOnSuccessListener { result ->
-                pendingGroup = result.toObject(Group::class.java)!!
-                holder.pendingGroupName.text = pendingGroup.name
-            }
-            .addOnFailureListener { e ->
-                Log.v(TAG, "error getting pending group:", e)
-            }
+        var matchingGroup: Group? = group.matchingGroup
+        var pendingGroup: Group? = group.pendingGroup
+        if (pendingGroup != null) {
+            holder.pendingGroupName.text = pendingGroup.name
+        }
 
         holder.rejectBtn.setOnClickListener {
             Log.v(TAG, "group removed:$group")
