@@ -126,8 +126,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
     private fun RetrieveGroups(){
         db = FirebaseFirestore.getInstance()
 
-                // fetches a user from firestore using the uid from the authenticated user
-                val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
+        // fetches a user from firestore using the uid from the authenticated user
+        val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
 
         // Listen for changes in the groups collection
         currentUserDocRef.addSnapshotListener{ snapshot, exception ->
@@ -149,7 +149,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                                 // filter groups will store all group to remove from the match group pool
                                 val filterGroups: ArrayList<String> = ArrayList()
                                 // all groups the user is will be filtered out so the user cannot match with their own groups
-                                filterGroups.addAll(user.myGroups!!)
+                                filterGroups.addAll(user.myGroups)
                                 // fetch all groups from the database filtering out the groups with
                                 val groupsDocRef = db.collection("groups")
                                 Log.i(TAG, "fetch group")
@@ -191,11 +191,9 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                             .addOnFailureListener { e ->
                                 Log.i(TAG, "error getting user from documents: ", e)
                             }
-
+                        // Update the adapter by notify changes
+                        myAdapter.notifyDataSetChanged()
                     }
-
-            // Update the adapter with the new list of groups
-            myAdapter.notifyDataSetChanged()
 
 
                 }
