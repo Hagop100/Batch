@@ -11,6 +11,7 @@ import com.example.batchtest.Group
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMatchTabBinding
+import com.example.batchtest.myGroupsTab.MyGroupFragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
@@ -73,21 +74,24 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             currentUserDocRef.update("undoState", false)
         }
 
-        // set primary group of user
-        setPrimaryGroup("cats")
-
-//        if (primaryGroup == null) {
-//            binding.matchTabMessage.text = "Set a primary group to start matching!"
-//        }
-
         // get all potential groups of current user to match with
         currentUserDocRef
-            // reads the document reference
-            .get()
             // if successful filter out certain groups for matching
-            .addOnSuccessListener { result ->
+            .addSnapshotListener { result, exception ->
+                if (exception != null){
+                    // handle the error
+                    Log.w(TAG, "listen failed.", exception)
+                    return@addSnapshotListener
+                }
                 // convert the fetched user into a User object
-                val user: User = result.toObject(User::class.java)!!
+                val user: User = result?.toObject(User::class.java)!!
+                if (user.primaryGroup != null) {
+                    primaryGroup = user.primaryGroup
+                    binding.matchTabMessage.text = ""
+                } else {
+                    binding.matchTabMessage.text = "Set a primary group to start matching!"
+                    return@addSnapshotListener
+                }
                 // if the groups has not been populated, fetch the groups from firebase
                 // else reuse the fetched groups
                 if (groups.isEmpty()) {
@@ -147,39 +151,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                         }
                     }
                 }
-            .addOnFailureListener { e ->
-                Log.v(TAG, "error getting user from documents: ", e)
-            }
-
-
-
-
-//        db.collection("users").get().addOnSuccessListener { usersResult ->
-//            for (doc in usersResult) {
-//                if (doc.data["myGroups"] != null) {
-//                    for (myGroup in doc.data["myGroups"] as ArrayList<*>) {
-//                        db.collection("groups").document(myGroup.toString()).update("users", FieldValue.arrayUnion(doc.data["userId"]))
-//                    }
-//                }
-//
-//            }
-//        }
-//        db.collection("groups")
-//            .get()
-//            .addOnSuccessListener {
-//                for (doc in it) {
-//                    db.collection("groups").document(doc.id).update("users", ArrayList<String>())
-//                }
-//            }
-//        val newField = "undoState"
-//        db.collection("users")
-//            .get()
-//            .addOnSuccessListener {
-//                for (doc in it) {
-//                    db.collection("users").document(doc.id).update(newField, false)
-//
-//                }
-//            }
         return binding.root
     }
 
@@ -252,23 +223,24 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         binding.cardStackView.swipe()
     }
 
-    private fun setPrimaryGroup(groupName: String) {
-        // primary group that user will be matching as
-        db.collection("groups").document(groupName)
-            .get()
-            .addOnSuccessListener { result ->
-                this.primaryGroup = result.toObject(Group::class.java)
-            }
-
-        currentUserDocRef.get()
-            .addOnSuccessListener { result ->
-                val myGroups = result.data?.get("myGroups") as ArrayList<*>
-                if (!myGroups.contains("groupName")) {
-                    currentUserDocRef.update("myGroups", FieldValue.arrayUnion(groupName))
-                }
-            }
-        currentUserDocRef.update("primaryGroup", groupName)
-    }
+//    private fun setPrimaryGroup(groupName: String) {
+//        // primary group that user will be matching as
+//        db.collection("groups").document(groupName)
+//            .get()
+//            .addOnSuccessListener { result ->
+//                this.primaryGroup = result.toObject(Group::class.java)
+//            }
+//
+//        currentUserDocRef.get()
+//            .addOnSuccessListener { result ->
+//                val myGroups = result.data?.get("myGroups") as ArrayList<*>
+//                if (!myGroups.contains("groupName")) {
+//                    currentUserDocRef.update("myGroups", FieldValue.arrayUnion(groupName))
+//                }
+//            }
+//        db.collection("groups").document(groupName).update("users", FieldValue.arrayUnion(currentUser?.uid))
+//        currentUserDocRef.update("primaryGroup", groupName)
+//    }
 
     // free from memory
     override fun onDestroyView() {

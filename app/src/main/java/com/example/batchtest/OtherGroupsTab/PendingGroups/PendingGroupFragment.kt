@@ -59,7 +59,7 @@ class PendingGroupFragment : Fragment() {
         // fetch groups of user from database using firebase's firestore
 
         db.collection("pendingGroups")
-            .whereArrayContains("matchingGroup.users", currentUser.uid.toString())
+            .whereArrayContains("matchingGroup.users", currentUser.uid)
             .get()
             .addOnSuccessListener { result ->
                 for (doc in result) {
