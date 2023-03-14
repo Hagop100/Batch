@@ -60,15 +60,22 @@ class PendingGroupFragment : Fragment() {
 
         db.collection("pendingGroups")
             .whereArrayContains("matchingGroup.users", currentUser.uid)
-            .get()
-            .addOnSuccessListener { result ->
-                for (doc in result) {
-                    pendingGroups.add(doc.toObject(PendingGroup::class.java))
+            .addSnapshotListener { result, exception ->
+                if (exception != null){
+                    // handle the error
+                    Log.w(TAG, "listen failed.", exception)
+                    return@addSnapshotListener
+                }
+                if (result != null) {
+                    for (doc in result) {
+                        pendingGroups.add(doc.toObject(PendingGroup::class.java))
+                    }
+                }
+                if (pendingGroups.isEmpty()) {
+                    binding.pendingTabMessage.text = "No pending groups"
+                    return@addSnapshotListener
                 }
                 pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
-            }
-            .addOnFailureListener { e ->
-                Log.v(TAG, "error fetching pending groups:", e)
             }
 //        db.collection("pendingGroups")
 //            .where("matchingGroup.", currentUser.uid)

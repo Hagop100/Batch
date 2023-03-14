@@ -76,21 +76,17 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
 
         // get all potential groups of current user to match with
         currentUserDocRef
+            .get()
             // if successful filter out certain groups for matching
-            .addSnapshotListener { result, exception ->
-                if (exception != null){
-                    // handle the error
-                    Log.w(TAG, "listen failed.", exception)
-                    return@addSnapshotListener
-                }
+            .addOnSuccessListener { result ->
                 // convert the fetched user into a User object
                 val user: User = result?.toObject(User::class.java)!!
                 if (user.primaryGroup != null) {
                     primaryGroup = user.primaryGroup
-                    binding.matchTabMessage.text = ""
+                    //binding.matchTabMessage.text = ""
                 } else {
                     binding.matchTabMessage.text = "Set a primary group to start matching!"
-                    return@addSnapshotListener
+                    return@addOnSuccessListener
                 }
                 // if the groups has not been populated, fetch the groups from firebase
                 // else reuse the fetched groups
@@ -180,16 +176,29 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         // add the group to the list of pending groups for the user
         db.collection("users").document(currentUser?.uid.toString()).update("pendingGroups", FieldValue.arrayUnion(acceptedGroup.name))
         //
-        var votes: HashMap<String, Boolean> = hashMapOf()
+        var users: ArrayList<HashMap<String, Any>> = ArrayList()
 
+        var index = 1
         for (user in primaryGroup?.users!!) {
-            votes[user] = user == currentUser?.uid
+            var userMap = hashMapOf<String, Any>()
+            userMap["user"] = user
+            if (user == currentUser?.uid) {
+                userMap["acceptor"] = true
+                userMap["vote"] = "accept"
+                userMap["index"] = 0
+            } else {
+                userMap["acceptor"] = false
+                userMap["vote"] = "pending"
+                userMap["index"] = index
+                index++
+            }
+            users.add(userMap)
         }
         var pendingGroup = PendingGroup(
             pendingGroupId = UUID.randomUUID().toString(),
             matchingGroup = primaryGroup,
             pendingGroup = acceptedGroup,
-            votes = votes,
+            users = users,
             isPending= true,
             isMatched = false
         )

@@ -57,10 +57,15 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
             <ImageView
-                android:id="@+id/member_1"
+                android:id="@+id/member_0"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/person_icon"/>
+            <ImageView
+                android:id="@+id/member_1"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/person_icon"/>
             <ImageView
                 android:id="@+id/member_2"
                 android:layout_width="20dp"
@@ -68,11 +73,6 @@
                 android:background="@drawable/person_icon"/>
             <ImageView
                 android:id="@+id/member_3"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/person_icon"/>
-            <ImageView
-                android:id="@+id/member_4"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:background="@drawable/person_icon"/>

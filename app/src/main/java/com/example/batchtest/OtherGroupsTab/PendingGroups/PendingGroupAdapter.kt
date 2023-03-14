@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.util.Log
 import android.widget.ImageButton
+import android.widget.ImageView
 import com.example.batchtest.Group
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.databinding.VoteGroupCardBinding
@@ -34,7 +35,7 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
         // reject button
         val rejectBtn: ImageButton = binding.rejectBtn
         // members
-        val members = binding.member1
+        val members = hashMapOf(0 to binding.member0, 1 to binding.member1, 2 to binding.member2, 3 to binding.member3)
     }
 
     // inflate parent fragment with card item layout when ViewHolder is created
@@ -58,10 +59,37 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
             holder.pendingGroupName.text = pendingGroup.name
         }
 
+        for (user in group.users!!) {
+            holder.members[user["index"]]?.setColorFilter(Color.GREEN)
+            if (user["vote"] == "accept") {
+
+            }
+//            if (user["index"] == 0) {
+//                holder.member0.setColorFilter(Color.GREEN)
+//            } else if (user["index"] == 1) {
+//                val member = holder.member1
+//                member.setColorFilter(Color.GREEN)
+//            }
+//            user["index"]
+        }
+
+//        for (user in group.users!!) {
+//            if (user["vote"] == "accept") {
+//                holder.member
+//            }
+//            if (user["acceptor"] == true) {
+//
+//                holder.member1.setColorFilter()
+//            }
+//        }
+//        group.votes?.forEach { (user, vote) ->
+//            if (vote) {
+//
+//            }
+//        }
         holder.rejectBtn.setOnClickListener {
             Log.v(TAG, "group removed:$group")
         }
-        holder.members.setColorFilter(Color.GREEN)
 //        if (context != null) {
 //            Glide.with(context).load(group.image).into(holder.pendingGroupImg)
 //        }
