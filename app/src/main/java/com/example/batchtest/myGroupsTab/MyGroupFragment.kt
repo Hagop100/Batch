@@ -169,8 +169,6 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                                                 myGroupList.add(group)
                                             }
 
-                                            // Update the adapter with the new list of groups
-                                            myAdapter.notifyDataSetChanged()
                                             // attach adapter and send groups and listener
                                             recyclerView.adapter = myAdapter
 
@@ -195,6 +193,9 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                             }
 
                     }
+
+            // Update the adapter with the new list of groups
+            myAdapter.notifyDataSetChanged()
 
 
                 }

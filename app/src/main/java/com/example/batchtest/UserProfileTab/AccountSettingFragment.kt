@@ -162,13 +162,21 @@ class AccountSettingFragment : Fragment() {
 
                                         //delete the group by retrieving the document (group name)
                                         db.collection("groups").document(doc.get("name").toString()).delete().addOnSuccessListener {
-                                            Log.i(TAG, "I am here2")
+
 
                                         }
+                                    }
+                                    //if the group contains more than 1 user. delete yourself from the group
+                                    else{
+                                       db.collection("groups").document(doc.get("$userId").toString()).delete().addOnSuccessListener{
+                                           Log.i(TAG, "$userId is deleted from the group")
+                                       }
+
                                     }
                                 }
                             }
                         }
+
 
                     }
 

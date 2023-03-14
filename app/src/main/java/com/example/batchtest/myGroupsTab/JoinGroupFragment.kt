@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.navigation.fragment.findNavController
+import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.example.batchtest.databinding.FragmentJoinGroupBinding
@@ -38,6 +40,23 @@ class JoinGroupFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentJoinGroupBinding.inflate(layoutInflater, container, false)
 
+
+        /**
+         * search for an existing group
+         */
+//        binding.searchGroup.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+//            override fun onQueryTextSubmit(query: String?): Boolean {
+//                return false
+//            }
+//
+//            override fun onQueryTextChange(newText: String?): Boolean {
+//                if (newText != null) {
+//                    filter(newText)
+//                }
+//                return true
+//            }
+//
+//        })
         /**
          * user exits back to myGroupFragment
          */
@@ -46,6 +65,17 @@ class JoinGroupFragment : Fragment() {
         }
         return binding.root
     }
+//    private fun filter(query: String){
+//        val filteredList = ArrayList<Group>()
+//        for (group in availableGroupsList) {
+//            if (group.name.toLowerCase().contains(query.toLowerCase())) {
+//                filteredList.add(group)
+//            }
+//        }
+//        JoinGroupAdapter.filterList(filteredList)
+//
+//
+//    }
 
     companion object {
         /**
