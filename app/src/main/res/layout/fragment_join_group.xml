@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".myGroupsTab.JoinGroupFragment"
+    android:background="@color/app_background">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/page_text"
+        >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="10dp">
+
+        <TextView
+            android:id="@+id/group_creation_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Join a group"
+            android:theme="@style/page_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/exit_join_group"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <Button
+            android:id="@+id/exit_join_group"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="58dp"
+            android:layout_height="46dp"
+            app:icon="@drawable/close_icon"
+            app:iconTint="#312B28"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.996"
+            app:layout_constraintStart_toEndOf="@+id/group_creation_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteY="0dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/horizontal_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/horizontal_line"
+        />
+
+    <SearchView
+        android:id="@+id/search_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="Search for groups"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+
+        android:background="@drawable/round_corner"
+
+        />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_marginStart="30dp"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/selected_group"
+            android:text="Batch besties"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textColor="@color/gray"/>
+
+        <Button
+            android:id="@+id/join_group_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/purple_500"
+            android:fontFamily="@font/karla"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:padding="15dp"
+            android:layout_marginTop="50dp"
+            android:text="Join"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:cornerRadius="10dp"
+            android:stateListAnimator="@null"/>
+
+
+    </LinearLayout>
+
+</ScrollView>

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.StateSet.TAG
 import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
@@ -78,16 +79,40 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
         RetrieveGroups()
 
         /**
-         *  navigates from My Group view to Create a group view fragment
+         * onclick dialog
           */
         binding.btnToGroupCreation.setOnClickListener{
+            val builder = AlertDialog.Builder(requireActivity())
+            builder.setTitle("Choose an option")
 
-//            hides the bottom nav when navigate to the group creation page
-            val navBar: BottomNavigationView? = activity?.findViewById(R.id.nav_bar)
-            navBar?.visibility = View.GONE
+            // Set the choices for the dialog
+            val choices = arrayOf("Create a group", "Join a group")
+            builder.setItems(choices) { dialog, which ->
+                // Handle the click event for each choice
+                when (which) {
+                    0 -> {
+                        // Option 1 clicked - create a group
+                        //navigate to the group creation page
+                        findNavController().navigate(R.id.to_groupCreationFragment)
+                    }
+                    1 -> {
+                        // Option 2 clicked - join a group
+                        //navigate to join a group fragment
+                        findNavController().navigate(R.id.action_myGroupFragment_to_joinGroupFragment)
 
-            //navigate to the group creation page
-            findNavController().navigate(R.id.to_groupCreationFragment)
+                    }
+                }
+            }
+
+            // Add a cancel button to the dialog
+            builder.setNegativeButton("Cancel") { dialog, which ->
+                // Handle cancel button click event
+                dialog.dismiss()
+            }
+
+            // Create and show the dialog
+            val dialog = builder.create()
+            dialog.show()
         }
 
         return binding.root
@@ -101,8 +126,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
     private fun RetrieveGroups(){
         db = FirebaseFirestore.getInstance()
 
-                // fetches a user from firestore using the uid from the authenticated user
-                val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
+        // fetches a user from firestore using the uid from the authenticated user
+        val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
 
         // Listen for changes in the groups collection
         currentUserDocRef.addSnapshotListener{ snapshot, exception ->
@@ -124,7 +149,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                                 // filter groups will store all group to remove from the match group pool
                                 val filterGroups: ArrayList<String> = ArrayList()
                                 // all groups the user is will be filtered out so the user cannot match with their own groups
-                                filterGroups.addAll(user.myGroups!!)
+                                filterGroups.addAll(user.myGroups)
                                 // fetch all groups from the database filtering out the groups with
                                 val groupsDocRef = db.collection("groups")
                                 Log.i(TAG, "fetch group")
@@ -144,8 +169,6 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                                                 myGroupList.add(group)
                                             }
 
-                                            // Update the adapter with the new list of groups
-                                            myAdapter.notifyDataSetChanged()
                                             // attach adapter and send groups and listener
                                             recyclerView.adapter = myAdapter
 
@@ -162,13 +185,14 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                                 //if the user have  0 groups. show a message for user to join a group
                                 else {
                                     binding.noGroupMessage.text =
-                                        "You have 0 group. \n Join a group to start matching!"
+                                        "You have 0 group. \n Create or join a group to start matching!"
                                 }
                             }
                             .addOnFailureListener { e ->
                                 Log.i(TAG, "error getting user from documents: ", e)
                             }
-
+                        // Update the adapter by notify changes
+                        myAdapter.notifyDataSetChanged()
                     }
 
 

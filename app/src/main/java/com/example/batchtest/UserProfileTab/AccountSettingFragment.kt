@@ -118,59 +118,43 @@ class AccountSettingFragment : Fragment() {
 
                 //delete the user with the equivalent userID from User collection and authentication
                 if (userId != null) {
-
                     db.collection("users").document(userId).get().addOnSuccessListener { result ->
 
                         val users: User? = result.toObject(User::class.java)
 
                         Toast.makeText(this.context, "${users?.myGroups }", Toast.LENGTH_SHORT).show()
 
-                        //if the user does not have any group. delete the userid document and user authentication
-                        if (users?.myGroups?.size == 0){
-                            user.delete().addOnCompleteListener { task ->
-                                if (task.isSuccessful){
-                                    if (userId != null) {
-                                        //delete the user with the equivalent userID from User collection and authentication
-                                        db.collection("users").document(userId).delete()
-                                            .addOnSuccessListener {
 
-                                                Log.i(TAG, "$userId successfully deleted!") }
-                                            .addOnFailureListener {
-                                                    e -> Log.i(TAG, "Error deleting document", e)
-                                            }
-
-                                        Log.i(TAG, "user with account of ${user.email} is deleted")
-                                    }
-
-                                    findNavController().navigate(R.id.registrationFragment)
-                                }
-
-                            }
-                        }
-
-                        //if user belong in at least 1 group
-                        else{
-                            //retrieve all groups name that include this user
-                            db.collection("groups").whereIn("name", users?.myGroups!!).get().addOnSuccessListener { res ->
+                            //retrieve all groups name that include this user. this case ALSO handles the user with 0 group.
+                            db.collection("groups").whereIn("name", users?.myGroups!!).get().addOnSuccessListener{ res ->
 
                                 //doc is the specific group //res.documents is the entire collection of groups document
                                 for (doc in res.documents){
 
                                     //get the field:userID in the specific group in which we know are arraylist
                                     // if user is the only user in the group. delete the group.
-                                    if ((doc.get("userID") as? ArrayList<*>)?.size == 1){
+                                    if ((doc.get("users") as? ArrayList<*>)?.size == 1){
 
                                         //delete the group by retrieving the document (group name)
                                         db.collection("groups").document(doc.get("name").toString()).delete().addOnSuccessListener {
-                                            Log.i(TAG, "I am here2")
+
+                                            Log.i(TAG, "groups are deleted!")
 
                                         }
+                                    }
+                                    //if the group contains more than 1 user. remove the user from the userId arraylist and then update arraylist
+                                    else{
+                                       db.collection("groups").document(doc.get("name").toString()).get().addOnSuccessListener { result ->
+                                            val group: Group = result.toObject(Group::class.java)!!
+
+                                            //go to the group, remove user from myGroups
+                                            group.users?.remove(userId)
+                                       }
+
                                     }
                                 }
                             }
                         }
-
-                    }
 
                 }
                 //delete the user after deleting the group
