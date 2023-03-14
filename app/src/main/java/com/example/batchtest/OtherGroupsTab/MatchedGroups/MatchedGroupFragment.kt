@@ -14,9 +14,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Group
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupAdapter
 import com.example.batchtest.R
+import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentLoginBinding
 import com.example.batchtest.databinding.FragmentMatchedGroupBinding
 import com.example.batchtest.myGroupsTab.MyGroupAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -28,6 +32,10 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     private var _binding: FragmentMatchedGroupBinding? = null
     private val binding get() = _binding!!
 
+    //authentication variable
+    private lateinit var auth: FirebaseAuth
+    private var currUser: FirebaseUser? = null
+
     //ArrayList for groups
     private var matchedGroupArrayList: ArrayList<Group> = arrayListOf<Group>()
 
@@ -37,6 +45,8 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         alertDialogBuilder = AlertDialog.Builder(requireActivity())
+        auth = Firebase.auth //Firebase.auth initialization
+        currUser = auth.currentUser
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,6 +80,8 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                 Log.v(TAG, "error getting documents: ", e)
             }
 
+        //selectMatchedGroups(db, matchedGroupRV)
+
         /*
         This portion of the code manages the buttons revealed through the action of swiping.
         Notice that these buttons use the same interface onItemClick() that the actual recycler view row buttons use
@@ -98,7 +110,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                     Color.parseColor("#FF9502"),
                     object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
                         override fun onItemClick(position: Int) {
-                            buildAlertDialog(alertDialogBuilder!!, db, position)
+                            buildReportAlertDialog(alertDialogBuilder!!, db, position)
                         }
                     }
                 ))
@@ -113,7 +125,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     Furthermore, this handles the database read and write necessary to update the reportCount of the group
     being reported
      */
-    private fun buildAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
+    private fun buildReportAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
         alertDialogBuilder.setTitle("Confirm Action")
             .setMessage("Are you sure you want to report this group?")
             .setCancelable(true)
@@ -141,6 +153,39 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                 dialogInterface.cancel()
             }
             .show()
+    }
+
+    private fun selectMatchedGroups(db: FirebaseFirestore, matchedGroupRV: RecyclerView) {
+        var user: User? = null
+        db.collection("users")
+            .get()
+            .addOnSuccessListener { result ->
+                for(document in result) {
+                    Log.i(TAG, currUser?.email.toString())
+                    user = document.toObject<User>()
+                    if(user?.email == currUser?.email.toString()) {
+                        break
+                    }
+                }
+            }
+        for(groups in user?.matchedGroups!!) {
+            db.collection("groups")
+                .whereEqualTo("name", groups)
+                .get()
+                .addOnSuccessListener { result ->
+                    for(doc in result) {
+                        val group: Group = doc.toObject<Group>()
+                        matchedGroupArrayList.add(group)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.v(TAG, "error getting documents: ", e)
+                }
+        }
+        // attach adapter and send groups
+        val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
+        matchedGroupRV.adapter = matchedGroupAdapter
+
     }
 
     override fun onDestroyView() {
