@@ -10,9 +10,12 @@ import android.graphics.PorterDuff
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.core.view.isVisible
 import com.example.batchtest.Group
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.databinding.VoteGroupCardBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
@@ -21,6 +24,13 @@ private const val TAG = "PendingGroupAdapter"
 
 class PendingGroupAdapter(private val context: Context?, private val groups: ArrayList<PendingGroup>) : RecyclerView.Adapter<PendingGroupAdapter.PendingGroupHolder>() {
     private val db = Firebase.firestore
+    // get the authenticated logged in user
+    private val currentUser = Firebase.auth.currentUser
+    private val green = "#5BC368"
+    private val red = "#C35B5B"
+    private val darkRed = "#994646"
+    private val grey = "#dbdbdb"
+
     // holder class for each pending group
     class PendingGroupHolder(val binding: VoteGroupCardBinding) : RecyclerView.ViewHolder(binding.root) {
         // get the views of card
@@ -31,11 +41,11 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
         // profile picture of pending group
         val pendingGroupImg: CircleImageView = binding.pendingGroupImg
         // accept button
-        val acceptBtn: ImageButton = binding.acceptBtn
+        val acceptBtn: ImageView = binding.acceptBtn
         // reject button
-        val rejectBtn: ImageButton = binding.rejectBtn
+        val rejectBtn: ImageView = binding.rejectBtn
         // members
-        val members = hashMapOf(0 to binding.member0, 1 to binding.member1, 2 to binding.member2, 3 to binding.member3)
+        val members = hashMapOf("0" to binding.member0, "1" to binding.member1, "2" to binding.member2, "3" to binding.member3)
     }
 
     // inflate parent fragment with card item layout when ViewHolder is created
@@ -59,36 +69,31 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
             holder.pendingGroupName.text = pendingGroup.name
         }
 
-        for (user in group.users!!) {
-            holder.members[user["index"]]?.setColorFilter(Color.GREEN)
-            if (user["vote"] == "accept") {
-
+        group.users?.forEach { (user, map) ->
+            var index = map["index"]
+            if (map["vote"] == "accept") {
+                holder.members[index]?.setColorFilter(Color.parseColor(green))
+                holder.acceptBtn.setColorFilter(Color.parseColor(green))
+                holder.rejectBtn.setColorFilter(Color.parseColor(grey))
+                holder.acceptBtn.isEnabled = false
+                holder.rejectBtn.isEnabled = false
+            } else if (map["vote"] == "reject") {
+                holder.members[index]?.setColorFilter(Color.parseColor(red))
+                holder.acceptBtn.setColorFilter(Color.parseColor(grey))
+                holder.rejectBtn.setColorFilter(Color.parseColor(darkRed))
+                holder.acceptBtn.isEnabled = false
+                holder.rejectBtn.isEnabled = false
             }
-//            if (user["index"] == 0) {
-//                holder.member0.setColorFilter(Color.GREEN)
-//            } else if (user["index"] == 1) {
-//                val member = holder.member1
-//                member.setColorFilter(Color.GREEN)
-//            }
-//            user["index"]
         }
 
-//        for (user in group.users!!) {
-//            if (user["vote"] == "accept") {
-//                holder.member
-//            }
-//            if (user["acceptor"] == true) {
-//
-//                holder.member1.setColorFilter()
-//            }
-//        }
-//        group.votes?.forEach { (user, vote) ->
-//            if (vote) {
-//
-//            }
-//        }
         holder.rejectBtn.setOnClickListener {
-            Log.v(TAG, "group removed:$group")
+            Log.v(TAG, "group rejected:$group")
+        }
+        holder.acceptBtn.setOnClickListener {
+//            var usersMap = group.users
+//            usersMap[currentUser.uid]
+//            db.collection("pendingGroups").document(group.pendingGroupId.toString()).update("users", FieldValue.arrayUnion())
+            Log.v(TAG, "group accepted:$group")
         }
 //        if (context != null) {
 //            Glide.with(context).load(group.image).into(holder.pendingGroupImg)

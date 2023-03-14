@@ -11,13 +11,11 @@ import com.example.batchtest.Group
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMatchTabBinding
-import com.example.batchtest.myGroupsTab.MyGroupFragment
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
-import java.lang.reflect.Field
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -73,6 +71,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         if (prevGroup == null) {
             currentUserDocRef.update("undoState", false)
         }
+
 
         // get all potential groups of current user to match with
         currentUserDocRef
@@ -176,30 +175,29 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         // add the group to the list of pending groups for the user
         db.collection("users").document(currentUser?.uid.toString()).update("pendingGroups", FieldValue.arrayUnion(acceptedGroup.name))
         //
-        var users: ArrayList<HashMap<String, Any>> = ArrayList()
+        var users: HashMap<String, HashMap<String, String>> = hashMapOf()
 
         var index = 1
         for (user in primaryGroup?.users!!) {
-            var userMap = hashMapOf<String, Any>()
-            userMap["user"] = user
+            var userMap = hashMapOf<String, String>()
             if (user == currentUser?.uid) {
-                userMap["acceptor"] = true
+                userMap["acceptor"] = "true"
                 userMap["vote"] = "accept"
-                userMap["index"] = 0
+                userMap["index"] = "0"
             } else {
-                userMap["acceptor"] = false
+                userMap["acceptor"] = "false"
                 userMap["vote"] = "pending"
-                userMap["index"] = index
+                userMap["index"] = index.toString()
                 index++
             }
-            users.add(userMap)
+            users["user"] = userMap
         }
         var pendingGroup = PendingGroup(
             pendingGroupId = UUID.randomUUID().toString(),
             matchingGroup = primaryGroup,
             pendingGroup = acceptedGroup,
             users = users,
-            isPending= true,
+            isPending = true,
             isMatched = false
         )
         // add pending group to firestore pendingGroups collection
@@ -232,24 +230,25 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         binding.cardStackView.swipe()
     }
 
-//    private fun setPrimaryGroup(groupName: String) {
-//        // primary group that user will be matching as
-//        db.collection("groups").document(groupName)
-//            .get()
-//            .addOnSuccessListener { result ->
-//                this.primaryGroup = result.toObject(Group::class.java)
-//            }
-//
-//        currentUserDocRef.get()
-//            .addOnSuccessListener { result ->
-//                val myGroups = result.data?.get("myGroups") as ArrayList<*>
-//                if (!myGroups.contains("groupName")) {
-//                    currentUserDocRef.update("myGroups", FieldValue.arrayUnion(groupName))
-//                }
-//            }
-//        db.collection("groups").document(groupName).update("users", FieldValue.arrayUnion(currentUser?.uid))
-//        currentUserDocRef.update("primaryGroup", groupName)
-//    }
+    private fun setPrimaryGroup(groupName: String) {
+        // primary group that user will be matching as
+        db.collection("groups").document(groupName)
+            .get()
+            .addOnSuccessListener { result ->
+                this.primaryGroup = result.toObject(Group::class.java)
+            }
+
+
+        currentUserDocRef.get()
+            .addOnSuccessListener { result ->
+                val myGroups = result.data?.get("myGroups") as ArrayList<*>
+                if (!myGroups.contains("groupName")) {
+                    currentUserDocRef.update("myGroups", FieldValue.arrayUnion(groupName))
+                }
+            }
+        db.collection("groups").document(groupName).update("users", FieldValue.arrayUnion(currentUser?.uid))
+        currentUserDocRef.update("primaryGroup", groupName)
+    }
 
     // free from memory
     override fun onDestroyView() {
