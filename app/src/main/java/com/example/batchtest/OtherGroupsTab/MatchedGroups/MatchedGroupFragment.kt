@@ -142,7 +142,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     }
 
     private fun selectMatchedGroups(db: FirebaseFirestore, matchedGroupRV: RecyclerView) {
-        db.collection("users").document(currUser.uid)
+        /*db.collection("users").document(currUser.uid)
             .get()
             .addOnSuccessListener { doc ->
                 user = doc.toObject<User>()!!
@@ -166,7 +166,36 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
 
                     }
                 }
+            }*/
+
+        val userDoc = db.collection("users").document(currUser.uid)
+        userDoc.addSnapshotListener { snapshot, e ->
+            //group arrayList must be cleared otherwise anytime data is changed in the database
+            //groups will be added on top of the old groups and create duplicates
+            matchedGroupArrayList.clear()
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                return@addSnapshotListener
             }
+
+            snapshot?.let {
+                val tempUser = snapshot.toObject<User>()!!
+                for(g in tempUser.matchedGroups) {
+                    db.collection("groups")
+                        .whereEqualTo("name", g)
+                        .get()
+                        .addOnSuccessListener { groupDoc ->
+                            for(d in groupDoc) {
+                                val group = d.toObject<Group>()
+                                matchedGroupArrayList.add(group)
+                                // attach adapter and send groups
+                                val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
+                                matchedGroupRV.adapter = matchedGroupAdapter
+                            }
+                        }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
