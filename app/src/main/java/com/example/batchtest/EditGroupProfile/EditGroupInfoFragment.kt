@@ -8,12 +8,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentEditGroupInfoBinding
 import com.example.batchtest.databinding.FragmentEditGroupProfileBinding
 import com.google.android.material.chip.Chip
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.ArrayList
@@ -33,6 +35,7 @@ class EditGroupInfoFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var group: Group
     private lateinit var tagsArray: ArrayList<String>
+    private val sharedViewModel: GroupInfoViewModel by activityViewModels()
 
     /**
      * initialize the values of Group class when the app is starting up
@@ -58,40 +61,12 @@ class EditGroupInfoFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentEditGroupInfoBinding.inflate(layoutInflater, container, false)
 
-        /**
-         * display text change as user edit group name
-         */
-//        binding.editGroupName.addTextChangedListener(object: TextWatcher{
-//            override fun afterTextChanged(s: Editable?) {
-//            }
-//
-//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//            }
-//
-//            //text is changing while user enters the group name
-//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//
-//                //if user deleted the entire sequence of text. alert user to enter at least 1 character.
-//                if (s.isNullOrEmpty()){
-//                    binding.editGroupName.error = "must enter at least 1 character"
-//                }
-//                binding.groupName.text = s
-//            }
-//
-//        })
+        val db = FirebaseFirestore.getInstance()
 
         /**
-         * get info from database
+         * display by retrieve group info using sharedviewmodel
          */
-//        val db = Firebase.firestore
-//        val gName = binding.groupName.text.toString()
-//        db.collection("groups").whereEqualTo("name", gName).get()
-//            .addOnSuccessListener { document ->
-//            if (document != null){
-//
-//
-//            }
-//        }
+        binding.groupName.text = sharedViewModel.getGName().value
 
 
         /**

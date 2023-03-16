@@ -8,11 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.batchtest.Group
@@ -21,6 +25,7 @@ import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentEditGroupInfoBinding
 import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
 import com.example.batchtest.myGroupsTab.MyGroupAdapter
+import com.example.batchtest.myGroupsTab.MyGroupFragment
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.ktx.auth
@@ -32,11 +37,6 @@ import org.w3c.dom.Text
 import java.util.ArrayList
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 /**
  * A simple [Fragment] subclass.
  * Use the [ViewGroupInfoFragment.newInstance] factory method to
@@ -46,16 +46,15 @@ class ViewGroupInfoFragment : Fragment() {
     private var _binding: FragmentViewGroupInfoBinding? = null
     private val binding get() = _binding!!
     var db = Firebase.firestore
-    private lateinit var myAdapter: MyGroupAdapter
-
+    private lateinit var userRecyclerView: RecyclerView
     private val args: ViewGroupInfoFragmentArgs by navArgs()
-
+    private val sharedViewModel: GroupInfoViewModel by activityViewModels()
+    private lateinit var userList: ArrayList<User>
+    private lateinit var userAdapter: UserInfoAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
 
-        }
     }
     @SuppressLint("ResourceType")
     override fun onCreateView(
@@ -89,30 +88,58 @@ class ViewGroupInfoFragment : Fragment() {
 
             }
 
-            //retrieve info of interest tags
+            /**
+             * retrieve info of interest tags
+             */
+            //retrieve arraylist of interest tags from the current group in firebase
             val interestTags: ArrayList<*> = document.get("interestTags") as ArrayList<*>
-
             //get the interest tags layout
-
             val flexboxLayout: FlexboxLayout = binding.interestTags
             for (tag in interestTags){
-                val textView = TextView(activity) //create new TextView
+                //inflate the interest_tags.xml layout
+                val textView = inflater.inflate(R.layout.interest_tag, flexboxLayout, false) as TextView
                 textView.text = tag as String? //set the text of the TextView to current tag
-                textView.layoutParams = FlexboxLayout.LayoutParams(
-                    FlexboxLayout.LayoutParams.WRAP_CONTENT, //set the width
-                    FlexboxLayout.LayoutParams.WRAP_CONTENT, //set the height
-                )
-
-                textView.background = this.context?.let { ContextCompat.getDrawable(it,R.drawable.round_corner ) }
-
                 flexboxLayout.addView(textView) //add the TextView to Flexbox
+
+            }
+
+            /**
+             * retrieve list of users in the group to show all the team members
+             */
+            //retrieve arraylist of users from the current group in firebase
+            val users: ArrayList<*> = document.get("users") as ArrayList<*>
+
+            //set recyclerview
+            userRecyclerView = binding.userRecyclerView
+            userRecyclerView.layoutManager = LinearLayoutManager(this.context)
+            userRecyclerView.setHasFixedSize(true)
+            // Initialize arraylist of all users
+            userList = arrayListOf()
+
+
+            // Loop through the user IDs in the list
+            for (userId in users){
+                //access the user document based on the list
+                db.collection("users").document(userId as String).get().addOnSuccessListener { document ->
+                    //add the user into the userList
+                    val userInfo: User? = document.toObject(User::class.java)
+                    userList.add(userInfo!!)
+                    userAdapter = UserInfoAdapter(requireActivity(),userList)
+                    userRecyclerView.adapter = userAdapter
+                }
+                    .addOnFailureListener { e->
+                        Log.i("print", "error getting user from documents: ", e)
+                    }
 
             }
 
 
 
 
-        }
+
+
+        }//end of firebase collection retrieve
+
 
 
         // more button on match page opens dialog
@@ -132,6 +159,8 @@ class ViewGroupInfoFragment : Fragment() {
             editProfileDialogBtn.setOnClickListener {
                 // navigate to the edit page
                 findNavController().navigate(R.id.action_viewGroupInfoFragment_to_editGroupProfile)
+                //send data using shared view model
+                sendData()
                 dialog.dismiss()
             }
 
@@ -151,23 +180,16 @@ class ViewGroupInfoFragment : Fragment() {
         return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ViewGroupInfoFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ViewGroupInfoFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    /**
+     * send data through shared view model so other fragments can receive the data
+     */
+    private fun sendData() {
+        sharedViewModel.groupName.value = args.groupName
+        sharedViewModel.groupDesc.value = args.groupDesc
     }
+
+
 }
+
+
+
