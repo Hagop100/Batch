@@ -2,6 +2,7 @@ package com.example.batchtest.EditGroupProfile
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -116,7 +117,6 @@ class ViewGroupInfoFragment : Fragment() {
             // Initialize arraylist of all users
             userList = arrayListOf()
 
-
             // Loop through the user IDs in the list
             for (userId in users){
                 //access the user document based on the list
@@ -133,13 +133,7 @@ class ViewGroupInfoFragment : Fragment() {
 
             }
 
-
-
-
-
-
         }//end of firebase collection retrieve
-
 
 
         // more button on match page opens dialog
@@ -188,6 +182,13 @@ class ViewGroupInfoFragment : Fragment() {
         sharedViewModel.groupDesc.value = args.groupDesc
     }
 
+    /**
+     * Free view from memory
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
 }
 

@@ -6,7 +6,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/group_info_card"
@@ -54,9 +55,9 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
+                    android:id="@+id/group_picture"
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/placeholder"
                     android:contentDescription="matching group card photo"
                     android:layout_below="@id/group_info_container"/>
             </RelativeLayout>
