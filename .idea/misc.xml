@@ -37,8 +37,10 @@
         <entry key="app/src/main/res/font/karla.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/layout/activity_group_creation.xml" value="0.1578125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/custom_dialog.xml" value="0.2296195652173913" />
         <entry key="app/src/main/res/layout/dialog_button.xml" value="0.14990942028985507" />
         <entry key="app/src/main/res/layout/dialog_layout.xml" value="0.22055385423743207" />
+        <entry key="app/src/main/res/layout/dialog_progress.xml" value="0.2296195652173913" />
         <entry key="app/src/main/res/layout/fragment_account_setting.xml" value="0.22418478260869565" />
         <entry key="app/src/main/res/layout/fragment_edit_profile.xml" value="0.22418478260869565" />
         <entry key="app/src/main/res/layout/fragment_forgot_password_dialog.xml" value="0.12454710144927536" />
@@ -46,6 +48,7 @@
         <entry key="app/src/main/res/layout/fragment_initial_profile_personalization.xml" value="0.12092391304347826" />
         <entry key="app/src/main/res/layout/fragment_input.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_m_f_authentication_verification_dialog.xml" value="0.2140625" />
         <entry key="app/src/main/res/layout/fragment_match_tab.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_matched_group.xml" value="0.23731884057971014" />
         <entry key="app/src/main/res/layout/fragment_my_group.xml" value="0.1" />

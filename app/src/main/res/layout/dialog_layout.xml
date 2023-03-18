@@ -5,7 +5,7 @@
     android:id="@+id/dialog_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/off_white"
+    android:background="@color/app_background"
     android:orientation="vertical">
 <!--    add dialog buttons dynamically using dialog_button.xml-->
 </LinearLayout>
