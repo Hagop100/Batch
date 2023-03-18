@@ -77,7 +77,6 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop"
                     android:id="@+id/group_picture"
-
                     android:contentDescription="matching group card photo"
                     android:layout_below="@id/group_info_container"/>
             </RelativeLayout>
@@ -136,6 +135,43 @@
                     android:paddingTop="20dp"
                     android:paddingBottom="200dp"/>
             </LinearLayout>
+
+
         </androidx.cardview.widget.CardView>
+
+        <!-- card view for team members-->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/users_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="7dp"
+            android:layout_marginTop="600dp"
+            android:layout_marginBottom="117dp"
+            app:cardBackgroundColor="@color/app_background"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="15dp"
+                android:paddingVertical="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Team Members"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+                <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/user_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
     </RelativeLayout>
 </ScrollView>

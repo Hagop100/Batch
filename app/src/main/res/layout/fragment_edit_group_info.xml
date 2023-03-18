@@ -180,7 +180,7 @@
                 />
 
             <EditText
-                android:id="@+id/about_us"
+                android:id="@+id/edit_about_us"
                 android:layout_width="match_parent"
                 android:layout_height="219dp"
                 android:background="@drawable/round_corner"
@@ -188,7 +188,8 @@
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
                 android:minHeight="48dp"
-                android:padding="10dp" />
+                android:padding="10dp"
+                android:autofillHints="" />
 
 
         </LinearLayout>
