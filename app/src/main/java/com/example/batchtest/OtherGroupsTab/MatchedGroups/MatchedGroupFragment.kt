@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Group
@@ -212,7 +213,8 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     This will eventually be used to implement a group chat feature
      */
     override fun onItemClick(position: Int) {
-        Toast.makeText(activity, matchedGroupArrayList[position].name, Toast.LENGTH_SHORT).show()
+        findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment)
+        //Toast.makeText(activity, matchedGroupArrayList[position].name, Toast.LENGTH_SHORT).show()
     }
 
 }
