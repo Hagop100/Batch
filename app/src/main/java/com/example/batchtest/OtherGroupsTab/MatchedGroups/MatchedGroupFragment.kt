@@ -22,6 +22,7 @@ import com.example.batchtest.myGroupsTab.MyGroupAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -78,13 +79,13 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                 buffer: MutableList<MatchedGroupButton>
             ) {
                 buffer.add(MatchedGroupButton(requireActivity(),
-                    "UnMatch",
+                    "Delete",
                     30,
                     R.drawable.ic_baseline_delete_24,
-                    Color.parseColor("#FF3C30"),
+                    Color.parseColor("#FF000000"),
                     object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
                         override fun onItemClick(position: Int) {
-                            Toast.makeText(requireActivity(), "UnMatch " + matchedGroupArrayList[position].name, Toast.LENGTH_SHORT).show()
+                            buildDeleteAlertDialog(alertDialogBuilder!!, db, position)
                         }
                     }
                 ))
@@ -93,7 +94,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                     "Report",
                     30,
                     R.drawable.ic_baseline_report_24,
-                    Color.parseColor("#FF9502"),
+                    Color.parseColor("#4E4035"),
                     object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
                         override fun onItemClick(position: Int) {
                             buildReportAlertDialog(alertDialogBuilder!!, db, position)
@@ -112,7 +113,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     being reported
      */
     private fun buildReportAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
-        alertDialogBuilder.setTitle("Confirm Action")
+        alertDialogBuilder.setTitle("Confirm Action: Report")
             .setMessage("Are you sure you want to report this group?")
             .setCancelable(true)
             .setPositiveButton("Report") { _, _ ->
@@ -141,33 +142,31 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
             .show()
     }
 
+    /*
+    Builds the Delete Alert Dialog in order to unMatch a group from your matched group list
+     */
+    private fun buildDeleteAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
+        alertDialogBuilder.setTitle("Confirm Action: Delete")
+            .setMessage("Are you sure you want to delete this group?")
+            .setCancelable(true)
+            .setPositiveButton("Delete") { _, _ ->
+                db.collection("users")
+                    .document(currUser.uid)
+                    .update(
+                        "matchedGroups",
+                        FieldValue.arrayRemove(matchedGroupArrayList[position].name)
+                    )
+            }
+            .setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }
+            .show()
+    }
+
+    /*
+    Responsible for filling up the recycler view with the current matched groups
+     */
     private fun selectMatchedGroups(db: FirebaseFirestore, matchedGroupRV: RecyclerView) {
-        /*db.collection("users").document(currUser.uid)
-            .get()
-            .addOnSuccessListener { doc ->
-                user = doc.toObject<User>()!!
-                val docRef = db.collection("groups")
-                docRef.addSnapshotListener { snapshot, e ->
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e)
-                        return@addSnapshotListener
-                    }
-
-                    snapshot?.let {
-                        for(d in it) {
-                            val groups = d.toObject<Group>()
-                            if(user.matchedGroups.contains(groups.name)) {
-                                matchedGroupArrayList.add(groups)
-                                // attach adapter and send groups
-                                val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
-                                matchedGroupRV.adapter = matchedGroupAdapter
-                            }
-                        }
-
-                    }
-                }
-            }*/
-
         val userDoc = db.collection("users").document(currUser.uid)
         userDoc.addSnapshotListener { snapshot, e ->
             //group arrayList must be cleared otherwise anytime data is changed in the database
@@ -188,10 +187,11 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                             for(d in groupDoc) {
                                 val group = d.toObject<Group>()
                                 matchedGroupArrayList.add(group)
-                                // attach adapter and send groups
-                                val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
-                                matchedGroupRV.adapter = matchedGroupAdapter
                             }
+                            Log.i(TAG, "Data has been changed!")
+                            // attach adapter and send groups
+                            val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
+                            matchedGroupRV.adapter = matchedGroupAdapter
                         }
                 }
             }
