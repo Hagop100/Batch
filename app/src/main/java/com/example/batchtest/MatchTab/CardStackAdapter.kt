@@ -54,6 +54,7 @@ class CardStackAdapter(
             binding.matchMoreBtn.setOnClickListener {
                 // create a bottom sheet dialog
                 val dialog = BottomSheetDialog(parent.context)
+
                 // inflate the view with the dialog linear layout
                 val view:LinearLayout = LayoutInflater.from(parent.context).inflate(R.layout.dialog_layout, binding.root, false) as LinearLayout
 

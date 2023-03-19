@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.databinding.FragmentPendingGroupBinding
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -27,6 +28,7 @@ class PendingGroupFragment : Fragment() {
     private val db = Firebase.firestore
     // get the authenticated logged in user
     private val currentUser = Firebase.auth.currentUser
+    private lateinit var listener: ListenerRegistration
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,7 +60,7 @@ class PendingGroupFragment : Fragment() {
          */
         // fetch groups of user from database using firebase's firestore
 
-        db.collection("pendingGroups")
+        listener = db.collection("pendingGroups")
             .whereArrayContains("matchingGroup.users", currentUser.uid)
             .addSnapshotListener { result, exception ->
                 if (exception != null){
@@ -148,6 +150,7 @@ class PendingGroupFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        listener.remove()
         _binding = null
     }
 }

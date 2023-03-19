@@ -8,7 +8,7 @@
     android:layout_margin="7dp"
     app:cardCornerRadius="5dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="@color/background_text">
+    app:cardBackgroundColor="@color/off_white">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -65,17 +65,17 @@
                 android:id="@+id/member_1"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"/>
             <ImageView
                 android:id="@+id/member_2"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"/>
             <ImageView
                 android:id="@+id/member_3"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"/>
         </LinearLayout>
         <!-- container for the accept and reject button -->
         <RelativeLayout
@@ -86,20 +86,20 @@
             android:layout_centerInParent="true"
             android:paddingHorizontal="20dp"
             android:paddingTop="10dp">
-            <ImageButton
+            <ImageView
                 android:id="@+id/reject_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:contentDescription="@string/reject_button"
-                android:background="@drawable/reject_btn" />
+                android:src="@drawable/reject_btn" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/accept_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:contentDescription="@string/accept_button"
-                android:background="@drawable/accept_btn"/>
+                android:src="@drawable/accept_btn"/>
         </RelativeLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
