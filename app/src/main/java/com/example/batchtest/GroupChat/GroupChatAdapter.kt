@@ -28,7 +28,7 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
         fun bind(message: Message) {
             messageContent.text = message.content
             timeText.text = message.createdDate.toString()
-            nameText.text = message.user.email
+            nameText.text = message.username
             //profileImage.setImageURI(message.user.imageUri)
         }
     }
@@ -47,7 +47,7 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
     override fun getItemViewType(position: Int): Int {
         val message = mMessageList[position]
 
-        if(message.user.email == Firebase.auth.currentUser?.email) {
+        if(message.username == Firebase.auth.currentUser?.email) {
             return 0
         }
         else {

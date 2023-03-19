@@ -5,10 +5,9 @@ import java.util.*
 
 data class Chat (
     var count: Int,
-    var messages: Message,
-    var cid: UUID,
-    var group1: Group,
-    var group2: Group,
+    var messages: ArrayList<Message>,
+    var group1Name: String,
+    var group2Name: String,
     @ServerTimestamp
     var createdDate: Date? = Date()
 )

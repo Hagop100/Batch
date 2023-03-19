@@ -5,7 +5,7 @@ import java.util.*
 
 data class Message(
     var content: String,
-    var user: User,
+    var username: String,
     @ServerTimestamp
     var createdDate: Date? = Date()
 )

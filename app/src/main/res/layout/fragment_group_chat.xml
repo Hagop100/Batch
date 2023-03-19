@@ -57,12 +57,12 @@
 
 
         <EditText
-            android:id="@+id/edit_gchat_message"
+            android:id="@+id/fragmet_group_chat_message_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
-            android:layout_toStartOf="@+id/button_gchat_send"
+            android:layout_toStartOf="@+id/fragment_group_chat_send_btn"
             android:background="@android:color/transparent"
             android:hint="Enter Message"
             android:inputType="text"
@@ -71,7 +71,7 @@
             tools:ignore="Autofill" />
 
         <Button
-            android:id="@+id/button_gchat_send"
+            android:id="@+id/fragment_group_chat_send_btn"
             android:layout_width="78dp"
             android:layout_height="48dp"
             android:layout_alignParentEnd="true"
