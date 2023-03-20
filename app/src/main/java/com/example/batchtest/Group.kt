@@ -13,6 +13,7 @@ data class Group(
     val biscuits: Int = 0,
     val image: String? = null,
     var reportCount: Int = 0,
+    var matchedGroups: ArrayList<String> = ArrayList(),
     @ServerTimestamp
     var createdDate: Date? = Date(),
 
