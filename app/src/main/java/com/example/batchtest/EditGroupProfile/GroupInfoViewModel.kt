@@ -1,8 +1,13 @@
 package com.example.batchtest.EditGroupProfile
 
+import android.app.Application
+import android.content.Context
 import android.text.Editable
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.widget.Toast
+import androidx.lifecycle.*
+
+import kotlinx.coroutines.launch
+
 
 /**
  * share data between fragments
@@ -11,8 +16,13 @@ class GroupInfoViewModel: ViewModel() {
     //share data between fragments - using group name
     val groupName: MutableLiveData<String> = MutableLiveData()
     val groupDesc: MutableLiveData<String> = MutableLiveData()
-    val groupTags = MutableLiveData<ArrayList<*>>()
-    val groupPic: MutableLiveData<String> = MutableLiveData<String>()
+    val groupTags: MutableLiveData<ArrayList<String>> = MutableLiveData()
+    val groupPic: MutableLiveData<String> = MutableLiveData()
+
+
+    init{
+        groupTags.value = ArrayList()
+    }
 
 
     fun setGName(text: String){
@@ -30,11 +40,9 @@ class GroupInfoViewModel: ViewModel() {
         return groupDesc
     }
 
-    fun setTags(tags: ArrayList<*>){
-        groupTags.value = tags
-    }
-    fun getTags(): MutableLiveData<ArrayList<*>> {
-        return groupTags
+    //setter
+    fun updateTags(newTags: ArrayList<String>){
+        groupTags.value = newTags
     }
 
     fun setGroupPicture(pic: String){

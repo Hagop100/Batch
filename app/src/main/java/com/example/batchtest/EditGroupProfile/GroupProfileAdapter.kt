@@ -1,16 +1,16 @@
 package com.example.batchtest.EditGroupProfile
 
-import android.content.Context
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.batchtest.myGroupsTab.EditGroupProfile
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 
-class GroupProfileAdapter (fragmentManager: FragmentManager, lifecycle: Lifecycle) :
-FragmentStateAdapter(fragmentManager, lifecycle) {
+class GroupProfileAdapter(
+    fragment: Fragment)
+    : FragmentStateAdapter(fragment) {
+
+
+
     override fun getItemCount(): Int {
        return 2
     }
@@ -19,7 +19,7 @@ FragmentStateAdapter(fragmentManager, lifecycle) {
         return when (position){
             0 -> EditGroupInfoFragment()
             1 -> PreviewGroupInfoFragment()
-            else -> EditGroupInfoFragment()
+            else -> throw IllegalArgumentException("Invalid position")
         }
 
     }
