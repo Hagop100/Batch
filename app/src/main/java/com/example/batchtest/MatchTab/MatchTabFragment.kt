@@ -75,7 +75,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             currentUserDocRef.update("undoState", false)
         }
 
-
         // get all potential groups of current user to match with
         currentUserDocRef
             .get()
@@ -167,7 +166,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                         }
                     }
                 }
-        //setPrimaryGroup("cats")
+        setPrimaryGroup("cats")
         return binding.root
     }
 

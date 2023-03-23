@@ -5,6 +5,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 data class Group(
+    val groupId: String? = null,
     val name: String? = null,
 //    val users: ArrayList<User>? = null,
     val users: ArrayList<String>? = null,

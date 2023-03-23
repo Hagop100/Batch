@@ -50,6 +50,7 @@
         <entry key="app/src/main/res/layout/fragment_group_creation.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_initial_profile_personalization.xml" value="0.12092391304347826" />
         <entry key="app/src/main/res/layout/fragment_input.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_join_group.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_match_tab.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_matched_group.xml" value="0.23731884057971014" />

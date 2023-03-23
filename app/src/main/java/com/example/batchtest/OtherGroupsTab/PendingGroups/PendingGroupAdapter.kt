@@ -68,21 +68,32 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
         if (pendingGroup != null) {
             holder.pendingGroupName.text = pendingGroup.name
         }
-
         group.users?.forEach { (user, map) ->
-            var index = map["index"]
+            // set color for the buttons for the current user
+            if (user == currentUser?.uid) {
+                if (map["vote"] == "accept") {
+                    Log.v(TAG, "${map["vote"]} = accept")
+                    holder.acceptBtn.setColorFilter(Color.parseColor(green))
+                    holder.rejectBtn.setColorFilter(Color.parseColor(grey))
+                    holder.acceptBtn.isEnabled = false
+                    holder.rejectBtn.isEnabled = false
+                } else if (map["vote"] == "reject"){
+                    Log.v(TAG, "${map["vote"]} != accept")
+                    holder.acceptBtn.setColorFilter(Color.parseColor(grey))
+                    holder.rejectBtn.setColorFilter(Color.parseColor(darkRed))
+                    holder.acceptBtn.isEnabled = false
+                    holder.rejectBtn.isEnabled = false
+                }
+            }
+            // set color of vote icon
             if (map["vote"] == "accept") {
-                holder.members[index]?.setColorFilter(Color.parseColor(green))
-                holder.acceptBtn.setColorFilter(Color.parseColor(green))
-                holder.rejectBtn.setColorFilter(Color.parseColor(grey))
-                holder.acceptBtn.isEnabled = false
-                holder.rejectBtn.isEnabled = false
+                Log.v(TAG, map["index"].toString())
+                Log.v(TAG, holder.members[map["index"]].toString())
+                holder.members[map["index"]]?.setColorFilter(Color.parseColor(green))
             } else if (map["vote"] == "reject") {
-                holder.members[index]?.setColorFilter(Color.parseColor(red))
-                holder.acceptBtn.setColorFilter(Color.parseColor(grey))
-                holder.rejectBtn.setColorFilter(Color.parseColor(darkRed))
-                holder.acceptBtn.isEnabled = false
-                holder.rejectBtn.isEnabled = false
+                Log.v(TAG, map["index"].toString())
+                Log.v(TAG, holder.members[map["index"]].toString())
+                holder.members[map["index"]]?.setColorFilter(Color.parseColor(red))
             }
         }
 

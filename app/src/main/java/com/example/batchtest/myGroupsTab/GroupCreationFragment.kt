@@ -56,15 +56,15 @@ class GroupCreationFragment : Fragment() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 //      initialize the values of Group class
         group = Group(
+            groupId = UUID.randomUUID().toString(),
             name = "",
             users = ArrayList<String>(),
             interestTags = ArrayList(),
             aboutUsDescription = "",
             biscuits = 0,
-            image = null,
+            image = "@drawable/placeholder",
             reportCount = 0,
         )
     }
@@ -100,7 +100,6 @@ class GroupCreationFragment : Fragment() {
          */
 
         binding.btnCreateGroup.setOnClickListener {
-
             val db = Firebase.firestore
             val currentUser = Firebase.auth.currentUser?.uid
             //     Log.i(TAG, "$currentUser")
@@ -143,7 +142,7 @@ class GroupCreationFragment : Fragment() {
                                     }
                                     // if tag is not empty, create a new group
                                     else{
-                                        val groupInfo = Group(groupName, users, tags, aboutUs,biscuit, image)
+                                        val groupInfo = Group(UUID.randomUUID().toString(), groupName, users, tags, aboutUs,biscuit, image)
 
                                         //add current user to the Group
                                         groupInfo.users?.add(currentUser!!)
