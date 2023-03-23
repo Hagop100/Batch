@@ -16,8 +16,11 @@ import com.example.batchtest.Group
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.R
 import com.example.batchtest.databinding.VoteGroupCardBinding
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
@@ -65,39 +68,47 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
     // set the group information for each pending group that will be displayed
     override fun onBindViewHolder(holder: PendingGroupHolder, position: Int) {
         val group = groups[position]
-        var matchingGroup: Group? = group.matchingGroup
-        var pendingGroup: Group? = group.pendingGroup
-        if (pendingGroup != null) {
-            holder.pendingGroupName.text = pendingGroup.name
-            if (group.pendingGroup?.image == null) {
-                holder.pendingGroupImg.setImageResource(R.drawable.placeholder)
-            } else {
-                if (context != null) {
-                    Glide.with(context).load(pendingGroup.image).into(holder.pendingGroupImg)
-                }
-            }
-        }
-        if (matchingGroup != null) {
-            if (group.matchingGroup?.image == null) {
+
+        val matchingGroupObj = group.matchingGroupObj
+        val pendingGroupObj = group.pendingGroupObj
+
+        if (matchingGroupObj != null) {
+            if (matchingGroupObj.image == null || matchingGroupObj.image == "") {
                 holder.matchingGroupImg.setImageResource(R.drawable.placeholder)
             } else {
                 if (context != null) {
-                    Glide.with(context).load(matchingGroup.image).into(holder.matchingGroupImg)
+                    Glide.with(context).load(matchingGroupObj.image)
+                        .into(holder.matchingGroupImg)
                 }
             }
+        } else {
+            Log.v(TAG, "null")
+        }
+
+        Log.v(TAG, pendingGroupObj.toString())
+        // set pending group information
+        if (pendingGroupObj != null) {
+            holder.pendingGroupName.text = pendingGroupObj.name
+            if (pendingGroupObj.image == null || pendingGroupObj.image == "") {
+                holder.pendingGroupImg.setImageResource(R.drawable.placeholder)
+            } else {
+                if (context != null) {
+                    Glide.with(context).load(pendingGroupObj.image)
+                        .into(holder.pendingGroupImg)
+                }
+            }
+        } else {
         }
 
         group.users?.forEach { (user, map) ->
             // set color for the buttons for the current user
             if (user == currentUser?.uid) {
                 if (map["vote"] == "accept") {
-                    Log.v(TAG, "${map["vote"]} = accept")
                     holder.acceptBtn.setColorFilter(Color.parseColor(green))
                     holder.rejectBtn.setColorFilter(Color.parseColor(grey))
                     holder.acceptBtn.isEnabled = false
                     holder.rejectBtn.isEnabled = false
                 } else if (map["vote"] == "reject"){
-                    Log.v(TAG, "${map["vote"]} != accept")
                     holder.acceptBtn.setColorFilter(Color.parseColor(grey))
                     holder.rejectBtn.setColorFilter(Color.parseColor(darkRed))
                     holder.acceptBtn.isEnabled = false
@@ -106,24 +117,20 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
             }
             // set color of vote icon
             if (map["vote"] == "accept") {
-                Log.v(TAG, map["index"].toString())
-                Log.v(TAG, holder.members[map["index"]].toString())
                 holder.members[map["index"]]?.setColorFilter(Color.parseColor(green))
             } else if (map["vote"] == "reject") {
-                Log.v(TAG, map["index"].toString())
-                Log.v(TAG, holder.members[map["index"]].toString())
                 holder.members[map["index"]]?.setColorFilter(Color.parseColor(red))
             }
         }
 
         holder.rejectBtn.setOnClickListener {
-            Log.v(TAG, "group rejected:$group")
+//            Log.v(TAG, "group rejected:$group")
         }
         holder.acceptBtn.setOnClickListener {
 //            var usersMap = group.users
 //            usersMap[currentUser.uid]
 //            db.collection("pendingGroups").document(group.pendingGroupId.toString()).update("users", FieldValue.arrayUnion())
-            Log.v(TAG, "group accepted:$group")
+//            Log.v(TAG, "group accepted:$group")
         }
 //        if (context != null) {
 //            Glide.with(context).load(group.image).into(holder.pendingGroupImg)
