@@ -52,10 +52,18 @@ class GroupChatFragment : Fragment() {
         val db = Firebase.firestore
 
         val groupChatRV = binding.fragmentGroupChatRecyclerView
-        groupChatRV.layoutManager = LinearLayoutManager(context)
+        //This will set the recyclerview layout to be like a chat
+        //Starting bottom moving up
+        groupChatRV.apply {
+            layoutManager = LinearLayoutManager(context).apply {
+                stackFromEnd = true
+                reverseLayout = false
+            }
+        }
+        //groupChatRV.layoutManager = LinearLayoutManager(context)
         groupChatRV.setHasFixedSize(true)
 
-        // We use a String here, but any type that can be put in a Bundle is supported
+        //This will receive the information of which group you clicked on from the matchedGroupFragment
         val result = arguments?.getString("groupName")
         theirGroupName = result!!
         Log.i(TAG, theirGroupName)
