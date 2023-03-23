@@ -59,26 +59,12 @@ class GroupChatFragment : Fragment() {
         val result = arguments?.getString("groupName")
         theirGroupName = result!!
         Log.i(TAG, theirGroupName)
-        // Do something with the result
-        getPossibleMyGroupsNames(db, groupChatRV)
 
-        /*val group1 = "Big Chungus"
-        val group2 = "Batch test"
-
-        val message1 = Message("Hello", "kylebatch491b@gmail.com", Date())
-        val message2 = Message("Welcome", "goofy", Date())
-        messagesArrayList.add(message1)
-        messagesArrayList.add(message2)
-        val chat = Chat(0, messagesArrayList, group1, group2, Date())
-
-        db.collection("chats").add(chat)
-            .addOnSuccessListener { doc ->
-
-            }
-            .addOnFailureListener {e ->
-
-            }*/
-
+        //--------------------------------------------------
+        //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
+        queryChatFromFirestore(db, groupChatRV)
+        //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
+        //--------------------------------------------------
 
         return binding.root
     }
@@ -88,7 +74,7 @@ class GroupChatFragment : Fragment() {
         _binding = null
     }
 
-    private fun getPossibleMyGroupsNames(db: FirebaseFirestore, groupChatRV: RecyclerView) {
+    private fun queryChatFromFirestore(db: FirebaseFirestore, groupChatRV: RecyclerView) {
         var user: User? = null
         val userDocRef = currUser?.let { db.collection("users").document(it.uid) }
         userDocRef?.get()?.addOnSuccessListener { doc ->
@@ -101,6 +87,8 @@ class GroupChatFragment : Fragment() {
                         group = doc.toObject<Group>()
                         if(group?.matchedGroups?.contains(theirGroupName) == true) {
                             myGroupNames.add(group?.name!!)
+                        }
+                        if(myGroupNames.size > 0) {
                             //Decision must happen here which groupChat they want to open!
                             //For now we will select the first index
                             Log.i(TAG, myGroupNames[0])
