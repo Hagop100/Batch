@@ -45,7 +45,6 @@ class EditGroupInfoFragment : Fragment() {
     private var _binding: FragmentEditGroupInfoBinding? = null
     private val binding get() = _binding!!
     private lateinit var group: Group
-    private lateinit var tagsArray: ArrayList<String>
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
 
     //variables for group picture
@@ -69,7 +68,11 @@ class EditGroupInfoFragment : Fragment() {
             biscuits = 0,
             image = null
         )
+
+        Log.i("print", "editmode")
+
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -89,10 +92,13 @@ class EditGroupInfoFragment : Fragment() {
 
         //set group name to shared view model
         sharedViewModel.setGName(groupName as String)
+
+        //initialize an empty arraylist
+        sharedViewModel.groupTags.value = ArrayList()
+        var updatedList = sharedViewModel.groupTags.value //copy the arraylist to use globally, but  needs to update this list!!
         //get info from the group collection in firebase
         db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
 
-            Log.i("print", "view group info here")
 
             //set info about group pic
             val groupPic = document.getString("image")
@@ -106,13 +112,16 @@ class EditGroupInfoFragment : Fragment() {
 
             //retrieve arraylist of interest tags from the current group in firebase
             val interestTags: ArrayList<*> = document.get("interestTags") as ArrayList<*>
+
             //bind the chip group
             val chipGroup: ChipGroup = binding.tagGroupChip
             for (tag in interestTags){
+                updatedList?.add(tag as String)
                 //inflate the interest tags in chip group
                 val chip = layoutInflater.inflate(R.layout.chip_item, chipGroup, false) as Chip
-                chip.text = tag as String? //set the text of the chip to current tag
+                chip.text = tag as String //set the text of the chip to current tag
                 chip.setChipBackgroundColorResource(R.color.purple_200) //set the chip background
+                chip.isCloseIconVisible = true
                 chip.setTextAppearance(R.style.page_text) //set the chip text
                 chipGroup.addView(chip) //add the individual chip to chip group
 
@@ -120,15 +129,34 @@ class EditGroupInfoFragment : Fragment() {
                 chip.setOnCloseIconClickListener{
                     chipGroup.removeView(chip) //remove the chip from the view
                     interestTags.remove(chip.text) //remove the chip from the arraylist
+                    updatedList?.remove(chip.text)
+                    //update the list
+                    sharedViewModel.groupTags.value = updatedList
+                    Toast.makeText(this.context, "$updatedList", Toast.LENGTH_SHORT).show()
                 }
-
             }
-            //set group tags to shared view model
-            sharedViewModel.setTags(interestTags)
 
+        }//end of firebase document
+
+        /**
+         * user hits the add button to add tag to the list
+         * Validating text fields if empty or not
+         */
+        binding.addTag.setOnClickListener{
+            if (binding.editTextAddTag.text.isNotEmpty()) {
+                updatedList = addChip(binding.editTextAddTag.text.toString(), updatedList)
+
+                //updatedList is pass by value. must update this to update the arraylist
+//                sharedViewModel.groupTags.value = updatedList
+                updatedList?.let { it1 -> sharedViewModel.updateTags(it1) }
+            }
+            //validate tags if empty or not
+            else if (binding.editTextAddTag.text.isEmpty()) {
+                binding.editTextAddTag.error = "Missing Tag"
+            }
+            Toast.makeText(this.context, "$updatedList", Toast.LENGTH_SHORT).show()
 
         }
-
 
         /**
          * user picks an image from the image gallery in their phone
@@ -137,8 +165,11 @@ class EditGroupInfoFragment : Fragment() {
             //view gallery by accessing the internal contents from mobile media
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             startActivityForResult(gallery, pickImage)
-            sharedViewModel.setGroupPicture(imageURL!!)
+
+            //TODO:FIX THIS ON CHANGES
+            imageURL?.let { it1 -> sharedViewModel.setGroupPicture(it1) }
         }
+
 
         //clear all the text from added tag
         clearTagText()
@@ -147,28 +178,14 @@ class EditGroupInfoFragment : Fragment() {
         binding.editAboutUs.text = Editable.Factory.getInstance().newEditable(sharedViewModel.getGDesc().value)
         val groupDesc = binding.editAboutUs.text
         //set group description to shared view model
+        //TODO: FIX THIS ON CHANGES
         sharedViewModel.setGDesc(groupDesc)
 
 
 
-
-        /**
-         * user hits the add button to add tag to the list
-         * Validating text fields if empty or not
-         */
-        binding.addTag.setOnClickListener{
-            if (binding.editTextAddTag.text.isNotEmpty()) {
-                addChip(binding.editTextAddTag.text.toString())
-            }
-            //validate tags if empty or not
-            else if (binding.editTextAddTag.text.isEmpty()) {
-                binding.editTextAddTag.error = "Missing Tag"
-            }
-
-        }
-
         return binding.root
     }
+
 
     /**
      * Function: to clear the text in the tag
@@ -198,27 +215,33 @@ class EditGroupInfoFragment : Fragment() {
     /**
     * Function: add individual tag to group profile
      */
-    private fun addChip(text: String){
-        val tags = group.interestTags
+    private fun addChip(text: String, updatedList: ArrayList<String>?): ArrayList<String>? {
+
         val chip = Chip(this.context)
         chip.text = text
 
 
 //    display the close button to remove tag from the list
         chip.isCloseIconVisible = true
-        chip.setChipBackgroundColorResource(R.color.purple_500)
+        chip.setChipBackgroundColorResource(R.color.purple_200)
         chip.setTextAppearance(R.style.page_text)
 
 
 //    remove chip from the interest tag as user removes it from view
         chip.setOnCloseIconClickListener{
             binding.tagGroupChip.removeView(chip)
-            tags?.remove(chip.text as String)
-        }
+            updatedList?.remove(chip.text as String)
+            sharedViewModel.groupTags.value = updatedList
 
+//
+//            Toast.makeText(this.context, "remove here", Toast.LENGTH_SHORT).show()
+        }
+        Toast.makeText(this.context, "remove here", Toast.LENGTH_SHORT).show()
 //   add chip to the arraylist of interest tags
         binding.tagGroupChip.addView(chip)
-        tags?.add(chip.text.toString())
+        updatedList?.add(chip.text.toString())
+
+        return updatedList
 
     }
     /**Function will get the extension of type of the profile image */
@@ -293,4 +316,8 @@ class EditGroupInfoFragment : Fragment() {
         private const val TAG = "print" //for logcat debugging
     }
 }
+
+
+
+
 

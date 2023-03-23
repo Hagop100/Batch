@@ -1,22 +1,20 @@
 package com.example.batchtest.myGroupsTab
 
-import android.app.Activity
+import android.location.GnssAntennaInfo.Listener
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.StateSet.TAG
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
-import com.example.batchtest.EditGroupProfile.EditGroupInfoFragment
+import androidx.viewpager2.widget.ViewPager2
+import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.EditGroupProfile.GroupProfileAdapter
-import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
+import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentEditGroupProfileBinding
-import com.google.android.material.appbar.AppBarLayout.Behavior
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -39,25 +37,44 @@ val tabArray = arrayOf(
 class EditGroupProfile : Fragment() {
     private var _binding: FragmentEditGroupProfileBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: ViewPager2
+    private lateinit var tabLayout: TabLayout
+    private val sharedViewModel: GroupInfoViewModel by activityViewModels()
+    private lateinit var groupInfo: Group
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        tabLayout = binding.groupEditTabs
+//        viewPager = binding.groupProfileViewpager
+//        viewPager.adapter = GroupProfileAdapter(this)
+//        sharedViewModel = ViewModelProvider(requireActivity())[GroupInfoViewModel::class.java]
 
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-////        tabLayout = binding.groupEditTabs
-////        viewPager = binding.groupProfileViewpager
-////        viewPager.adapter = GroupProfileAdapter(this)
-//
-//    }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
 
+
         // Inflate the layout for this fragment
         _binding = FragmentEditGroupProfileBinding.inflate(layoutInflater, container, false)
+
+//        val sharedViewModel = ViewModelProvider(this).get(GroupInfoViewModel::class.java)
+
+
+        //save info to database
+        binding.saveBtn.setOnClickListener{
+
+
+
+        }
 
         //set up the 2 tab layout: edit and preview
         setUpTabs()
@@ -70,29 +87,35 @@ class EditGroupProfile : Fragment() {
         }
 
 
+
         return binding.root
 
 
     }
+
+
+
 
     /**
      * display the 2 edit and preview tabs
      */
     private fun setUpTabs() {
 
-        val viewPager = binding.groupProfileViewpager
-        val tabLayout = binding.groupEditTabs
+        viewPager = binding.groupProfileViewpager
+        tabLayout = binding.groupEditTabs
 
-        val adapter = GroupProfileAdapter(childFragmentManager, lifecycle)
+        val adapter = GroupProfileAdapter(this)
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager){ tab, position ->
-            tab.text = tabArray[position]
 
+            tab.text = tabArray[position]
         }.attach()
 
 
     }
+
+
 
 
     /**
@@ -100,6 +123,17 @@ class EditGroupProfile : Fragment() {
      */
     override fun onDestroyView() {
         super.onDestroyView()
+        super.onDestroyView()
+        viewPager.let {
+            (viewPager.parent as? ViewGroup)?.removeView(viewPager)
+            viewPager.adapter = null
+//            viewPager = null
+        }
+        tabLayout.let {
+            (tabLayout.parent as? ViewGroup)?.removeView(tabLayout)
+            tabLayout.clearOnTabSelectedListeners()
+//            tabLayout = null
+        }
         _binding = null
     }
 }

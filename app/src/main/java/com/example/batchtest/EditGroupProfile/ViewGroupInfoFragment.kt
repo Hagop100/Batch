@@ -1,6 +1,10 @@
 package com.example.batchtest.EditGroupProfile
 
 import android.annotation.SuppressLint
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -13,6 +17,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -147,7 +152,7 @@ class ViewGroupInfoFragment : Fragment() {
             // using the dialog button layout
             // inflate a text view to hold the edit profile dialog
             val editProfileDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
-            editProfileDialogBtn.text = "Edit Group Profile"
+            editProfileDialogBtn.text = "Edit group profile"
             // perform action on click
 
             editProfileDialogBtn.setOnClickListener {
@@ -158,8 +163,34 @@ class ViewGroupInfoFragment : Fragment() {
                 dialog.dismiss()
             }
 
-            // add the block dialog button to the bottom dialog view
+            // inflate a text view to hold the edit profile dialog
+            val groupInviteBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+            groupInviteBtn.text = "Invite a user"
+
+            // perform action on click
+            groupInviteBtn.setOnClickListener {
+                // fetch group ID from firebase using groupName
+                db.collection("groups").document(groupName)
+                    .get()
+                    .addOnSuccessListener { result ->
+                        // start an intent to send group id using different actions
+                        // such as copying to clipboard, email, messaging
+                        activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, result.data?.get("groupId").toString())
+                            type = "text/plain"
+                        }
+                        // user chooses which method to share
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        // starts intent
+                        activity?.startActivity(shareIntent)
+                    }
+            }
+            // add the edit profile dialog button to the bottom dialog view
             view.addView(editProfileDialogBtn)
+            // add the group invite dialog button to the bottom dialog view
+            view.addView(groupInviteBtn)
 
             // set the view of the dialog using the inflated layout
             dialog.setContentView(view)

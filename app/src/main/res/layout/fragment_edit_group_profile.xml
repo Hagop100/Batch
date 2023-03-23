@@ -36,14 +36,14 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/exit_group_edit"
+                app:layout_constraintEnd_toStartOf="@+id/save_btn"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
             <Button
-                android:id="@+id/exit_group_edit"
+                android:id="@+id/save_btn"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="76dp"
                 android:layout_height="48dp"

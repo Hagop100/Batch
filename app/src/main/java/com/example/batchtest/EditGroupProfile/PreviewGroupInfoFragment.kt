@@ -7,14 +7,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentPreviewGroupInfoBinding
-import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
 import com.google.android.flexbox.FlexboxLayout
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,9 +36,9 @@ class PreviewGroupInfoFragment : Fragment() {
     var db = Firebase.firestore
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate( savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        Log.i("print", "preview")
     }
 
     override fun onCreateView(
@@ -44,6 +47,8 @@ class PreviewGroupInfoFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentPreviewGroupInfoBinding.inflate(layoutInflater, container, false)
+
+
 
         //get group name
         binding.groupName.text = sharedViewModel.getGName().value
@@ -62,24 +67,21 @@ class PreviewGroupInfoFragment : Fragment() {
 
 
 
-        //get arraylist of tags
-        val tags: ArrayList<*>? = sharedViewModel.getTags().value
-        //get the interest tags layout
-        val flexboxLayout: FlexboxLayout = binding.interestTags
-        if (tags != null) {
-            for (tag in tags){
+        //observe the changes in tag arraylist from edit
+        //get the updated arraylist of tags
+        sharedViewModel.groupTags.observe(viewLifecycleOwner, Observer<ArrayList<String>>{ newTags: ArrayList<String> ->
+            val flexboxLayout: FlexboxLayout = binding.interestTags
+
+            //observer append to the view. must remove the previous view to display new arraylist view
+            flexboxLayout.removeAllViews()
+            for (tag in newTags) {
                 //inflate the interest_tags.xml layout
-                val textView = inflater.inflate(R.layout.interest_tag, flexboxLayout, false) as TextView
+                val textView =
+                    inflater.inflate(R.layout.interest_tag, flexboxLayout, false) as TextView
                 textView.text = tag as String? //set the text of the TextView to current tag
                 flexboxLayout.addView(textView) //add the TextView to Flexbox
-
             }
-        }
-
-
-
-
-
+        })
 
 
         return binding.root

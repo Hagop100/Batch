@@ -155,6 +155,9 @@
         <argument
             android:name="groupDesc"
             app:argType="string" />
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_previewGroupInfoFragment"
+            app:destination="@id/previewGroupInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/joinGroupFragment"
@@ -169,5 +172,9 @@
         android:id="@+id/groupChatFragment"
         android:name="com.example.batchtest.GroupChat.GroupChatFragment"
         android:label="GroupChatFragment" />
+    <fragment
+        android:id="@+id/previewGroupInfoFragment"
+        android:name="com.example.batchtest.EditGroupProfile.PreviewGroupInfoFragment"
+        android:label="PreviewGroupInfoFragment" />
 
 </navigation>

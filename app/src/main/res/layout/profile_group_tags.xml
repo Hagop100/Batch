@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        >
+
+
+        <Button
+            android:id="@+id/close_edit_tags"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="92dp"
+            android:layout_height="48dp"
+            android:text="Close"
+            android:textColor="@color/purple_700"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/save_btn"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:textColor="@color/purple_700"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Edit Tags"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/save_btn"
+            app:layout_constraintHorizontal_bias="0.438"
+            app:layout_constraintStart_toEndOf="@+id/close_edit_tags"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/save_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="76dp"
+            android:layout_height="48dp"
+            android:text="Save"
+            android:textColor="@color/purple_700"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+    <View
+        android:id="@+id/horizontal_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/horizontal_line"
+
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                android:id="@+id/group_tags"
+                android:layout_width="360dp"
+                android:layout_height="41dp"
+                android:layout_marginStart="25dp"
+                android:padding="10dp"
+                android:text="Tags:"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteY="0dp" />
+
+            <EditText
+                android:id="@+id/editText_add_tag"
+                android:layout_width="211dp"
+                android:layout_height="40dp"
+                android:background="@drawable/round_corner"
+                android:ems="10"
+                android:hint="add tag"
+                android:inputType="textPersonName"
+                android:padding="10dp"
+                app:layout_constraintStart_toEndOf="@+id/add_tag"
+                app:layout_constraintTop_toBottomOf="@+id/group_tags" />
+
+            <Button
+                android:id="@+id/add_tag"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:backgroundTint="#4E4035"
+                android:backgroundTintMode="add"
+                app:icon="@drawable/add_icon"
+                app:iconTint="#312B28"
+                app:layout_constraintStart_toStartOf="@+id/group_tags"
+                app:layout_constraintTop_toBottomOf="@+id/group_tags" />
+
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/tag_group_chip"
+                android:layout_width="357dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="@+id/group_tags"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/add_tag"
+                app:layout_constraintTop_toBottomOf="@+id/add_tag">
+
+            </com.google.android.material.chip.ChipGroup>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

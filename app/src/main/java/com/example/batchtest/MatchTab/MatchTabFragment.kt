@@ -75,7 +75,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             currentUserDocRef.update("undoState", false)
         }
 
-
         // get all potential groups of current user to match with
         currentUserDocRef
             .get()
@@ -116,8 +115,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                             for (query1Docs in results[0]) {
                                 // convert the query document snapshot into a pending group object to access variables
                                 val pendingGroupObj = query1Docs.toObject(PendingGroup::class.java)
-                                // add the name of the pending grouop
-                                pendingGroupNames.add(pendingGroupObj.pendingGroup?.name)
+                                // add the name of the pending group
+                                pendingGroupNames.add(pendingGroupObj.pendingGroup)
                             }
                             // loop thru groups query and check if the group is a pending group of the user
                             for (query2Docs in results[1]) {
@@ -167,7 +166,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                         }
                     }
                 }
-        //setPrimaryGroup("cats")
+//        setPrimaryGroup("steven's group")
         return binding.root
     }
 
@@ -218,15 +217,14 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         }
         var pendingGroup = PendingGroup(
             pendingGroupId = UUID.randomUUID().toString(),
-            matchingGroup = primaryGroup,
-            pendingGroup = acceptedGroup,
+            matchingGroup = primaryGroup?.name,
+            pendingGroup = acceptedGroup.name,
             users = users,
             isPending = true,
             isMatched = false
         )
         // add pending group to firestore pendingGroups collection
         db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString()).set(pendingGroup)
-        db.collection("groups")
         removeGroups.add(acceptedGroup)
         prevGroup = null
         // update undo state of current user
