@@ -166,7 +166,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                         }
                     }
                 }
-        setPrimaryGroup("cats")
+//        setPrimaryGroup("steven's group")
         return binding.root
     }
 
