@@ -33,7 +33,7 @@ class GroupChatFragment : Fragment() {
     private var messagesArrayList: ArrayList<Message> = ArrayList()
 
     //groups that are a part of this chat
-    private lateinit var myGroupNames: ArrayList<String>
+    private var myGroupNames: ArrayList<String> = ArrayList()
     private lateinit var theirGroupName: String
 
     //Firebase auth
@@ -55,14 +55,12 @@ class GroupChatFragment : Fragment() {
         groupChatRV.layoutManager = LinearLayoutManager(context)
         groupChatRV.setHasFixedSize(true)
 
-        setFragmentResultListener("groupNameKey") { _, bundle ->
-            // We use a String here, but any type that can be put in a Bundle is supported
-            val result = bundle.getString("groupNameValue")
-            theirGroupName = result!!
-            Log.i(TAG, theirGroupName)
-            // Do something with the result
-            getPossibleMyGroupsNames(db, groupChatRV)
-        }
+        // We use a String here, but any type that can be put in a Bundle is supported
+        val result = arguments?.getString("groupName")
+        theirGroupName = result!!
+        Log.i(TAG, theirGroupName)
+        // Do something with the result
+        getPossibleMyGroupsNames(db, groupChatRV)
 
         /*val group1 = "Big Chungus"
         val group2 = "Batch test"
@@ -103,11 +101,11 @@ class GroupChatFragment : Fragment() {
                         group = doc.toObject<Group>()
                         if(group?.matchedGroups?.contains(theirGroupName) == true) {
                             myGroupNames.add(group?.name!!)
+                            //Decision must happen here which groupChat they want to open!
+                            //For now we will select the first index
+                            Log.i(TAG, myGroupNames[0])
+                            getChat(db, myGroupNames[0], groupChatRV)
                         }
-                        //Decision must happen here which groupChat they want to open!
-                        //For now we will select the first index
-                        Log.i(TAG, myGroupNames[0])
-                        getChat(db, myGroupNames[0], groupChatRV)
                     }
                 }
             } else {
@@ -120,7 +118,7 @@ class GroupChatFragment : Fragment() {
     }
 
     private fun getChat(db: FirebaseFirestore, myGroupName: String, groupChatRV: RecyclerView) {
-        var chat: Chat? = null
+        var chat = Chat()
         val chatsRef = db.collection("chats")
         chatsRef.whereIn("group1Name", listOf(myGroupName, theirGroupName))
             .whereIn("group2Name", listOf(myGroupName, theirGroupName))
@@ -130,7 +128,7 @@ class GroupChatFragment : Fragment() {
                     chat = d.toObject<Chat>()
                 }
                 // attach adapter and send groups
-                val groupChatAdapter = GroupChatAdapter(chat?.messages!!, requireActivity())
+                val groupChatAdapter = GroupChatAdapter(chat.messages, requireActivity())
                 groupChatRV.adapter = groupChatAdapter
             }
     }

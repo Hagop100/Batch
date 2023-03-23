@@ -215,8 +215,8 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     This will eventually be used to implement a group chat feature
      */
     override fun onItemClick(position: Int) {
-        setFragmentResult("groupNameKey", bundleOf("groupNameValue" to matchedGroupArrayList[position].name))
-        findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment)
+        val bundle = bundleOf("groupName" to matchedGroupArrayList[position].name)
+        findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment, bundle)
         //Toast.makeText(activity, matchedGroupArrayList[position].name, Toast.LENGTH_SHORT).show()
     }
 
