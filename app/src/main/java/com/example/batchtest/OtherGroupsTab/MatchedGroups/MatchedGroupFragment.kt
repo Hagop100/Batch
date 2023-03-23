@@ -1,5 +1,6 @@
 package com.example.batchtest.OtherGroupsTab.MatchedGroups
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -169,6 +170,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     /*
     Responsible for filling up the recycler view with the current matched groups
      */
+    @SuppressLint("NotifyDataSetChanged")
     private fun selectMatchedGroups(db: FirebaseFirestore, matchedGroupRV: RecyclerView) {
         val userDoc = db.collection("users").document(currUser.uid)
         userDoc.addSnapshotListener { snapshot, e ->
@@ -192,9 +194,15 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                                 matchedGroupArrayList.add(group)
                             }
                             Log.i(TAG, "Data has been changed!")
-                            // attach adapter and send groups
-                            val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
-                            matchedGroupRV.adapter = matchedGroupAdapter
+                            if(matchedGroupRV.adapter == null) {
+                                // attach adapter and send groups
+                                val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
+                                matchedGroupRV.adapter = matchedGroupAdapter
+                            }
+                            else {
+                                matchedGroupRV.adapter?.notifyDataSetChanged()
+                                Log.i(TAG, "adapter is already set")
+                            }
                         }
                 }
             }
@@ -215,9 +223,9 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     This will eventually be used to implement a group chat feature
      */
     override fun onItemClick(position: Int) {
+        //This will communicate to the next fragment which group we click on
         val bundle = bundleOf("groupName" to matchedGroupArrayList[position].name)
         findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment, bundle)
-        //Toast.makeText(activity, matchedGroupArrayList[position].name, Toast.LENGTH_SHORT).show()
     }
 
 }
