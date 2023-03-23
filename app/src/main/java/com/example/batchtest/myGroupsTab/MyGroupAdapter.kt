@@ -45,7 +45,7 @@ class MyGroupAdapter(
         holder.aboutUs.text = info.aboutUsDescription
 
         //if user does not change the default picture. then set the default as group pic
-        if (groupNameList[position].image == null){
+        if (groupNameList[position].image.isNullOrEmpty()){
             holder.groupPic.setImageResource(R.drawable.placeholder)
         }
         else{

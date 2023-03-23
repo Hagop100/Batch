@@ -1,6 +1,7 @@
 package com.example.batchtest.EditGroupProfile
 
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -54,8 +55,11 @@ class PreviewGroupInfoFragment : Fragment() {
         binding.groupName.text = sharedViewModel.getGName().value
         val groupName = binding.groupName.text
 
-        //get about us
-        binding.aboutUsDescription.text = sharedViewModel.getGDesc().value
+        //get about us in string from editable text
+        sharedViewModel.groupDesc.observe(viewLifecycleOwner, Observer{ newDesc ->
+            val newVal = newDesc.toString() //cast newDesc to String from Editable
+            binding.aboutUsDescription.text = newVal //display the text in string format
+        })
 
         //get group profile
         if (sharedViewModel.getGroupPicture().value.isNullOrEmpty()){

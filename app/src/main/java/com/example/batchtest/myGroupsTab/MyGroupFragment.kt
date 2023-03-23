@@ -229,8 +229,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
          * passing data to ViewGroupInfoFragment
          */
         val direction = MyGroupFragmentDirections.actionMyGroupFragmentToViewGroupInfoFragment(
-            groupInfo.name.toString(),
-            groupInfo.aboutUsDescription.toString())
+            groupInfo.name.toString())
+//            groupInfo.aboutUsDescription.toString())
         findNavController().navigate(direction)
 
     }

@@ -76,7 +76,7 @@ class ViewGroupInfoFragment : Fragment() {
          * group name, profile picture, tags, and about us
          */
         binding.groupName.text = args.groupName
-        binding.aboutUsDescription.text = args.groupDesc
+//        binding.aboutUsDescription.text = args.groupDesc
 
         val groupName = binding.groupName.text
 
@@ -93,6 +93,10 @@ class ViewGroupInfoFragment : Fragment() {
                 Glide.with(this).load(document.getString("image").toString()).into(binding.groupPicture)
 
             }
+
+            //retrieve group description
+            val aboutUs = document.getString("aboutUsDescription")
+            binding.aboutUsDescription.text = aboutUs
 
             /**
              * retrieve info of interest tags
@@ -210,7 +214,8 @@ class ViewGroupInfoFragment : Fragment() {
      */
     private fun sendData() {
         sharedViewModel.groupName.value = args.groupName
-        sharedViewModel.groupDesc.value = args.groupDesc
+
+//        sharedViewModel.groupDesc.value = args.groupDesc
     }
 
     /**

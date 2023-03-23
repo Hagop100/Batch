@@ -152,9 +152,6 @@
         <argument
             android:name="groupName"
             app:argType="string" />
-        <argument
-            android:name="groupDesc"
-            app:argType="string" />
         <action
             android:id="@+id/action_viewGroupInfoFragment_to_previewGroupInfoFragment"
             app:destination="@id/previewGroupInfoFragment" />

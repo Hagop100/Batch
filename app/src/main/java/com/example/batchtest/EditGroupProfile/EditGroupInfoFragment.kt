@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -96,10 +97,9 @@ class EditGroupInfoFragment : Fragment() {
         //initialize an empty arraylist
         sharedViewModel.groupTags.value = ArrayList()
         var updatedList = sharedViewModel.groupTags.value //copy the arraylist to use globally, but  needs to update this list!!
+
         //get info from the group collection in firebase
         db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
-
-
             //set info about group pic
             val groupPic = document.getString("image")
             if (groupPic.isNullOrEmpty()) {
@@ -109,6 +109,11 @@ class EditGroupInfoFragment : Fragment() {
                 Glide.with(this).load(document.getString("image").toString())
                     .into(binding.groupProfile)
             }
+
+            //retrieve about us as editable text
+            val aboutUs = document.getString("aboutUsDescription")
+            val editableText = Editable.Factory.getInstance().newEditable(aboutUs)
+            binding.editAboutUs.text = editableText
 
             //retrieve arraylist of interest tags from the current group in firebase
             val interestTags: ArrayList<*> = document.get("interestTags") as ArrayList<*>
@@ -170,17 +175,25 @@ class EditGroupInfoFragment : Fragment() {
             imageURL?.let { it1 -> sharedViewModel.setGroupPicture(it1) }
         }
 
-
         //clear all the text from added tag
         clearTagText()
 
-        //convert a string to editable object and display group about us
-        binding.editAboutUs.text = Editable.Factory.getInstance().newEditable(sharedViewModel.getGDesc().value)
-        val groupDesc = binding.editAboutUs.text
-        //set group description to shared view model
-        //TODO: FIX THIS ON CHANGES
-        sharedViewModel.setGDesc(groupDesc)
+        // Retrieve the group about us as a String using ValueEventListener
+        binding.editAboutUs.addTextChangedListener(object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                //do nothing
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+              //do nothing
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                //set the value of group description to the text being changed
+                sharedViewModel.groupDesc.postValue(s)
+            }
+
+        })
 
 
         return binding.root
@@ -214,6 +227,7 @@ class EditGroupInfoFragment : Fragment() {
 
     /**
     * Function: add individual tag to group profile
+     * 2 parameters pass by value
      */
     private fun addChip(text: String, updatedList: ArrayList<String>?): ArrayList<String>? {
 
@@ -231,13 +245,11 @@ class EditGroupInfoFragment : Fragment() {
         chip.setOnCloseIconClickListener{
             binding.tagGroupChip.removeView(chip)
             updatedList?.remove(chip.text as String)
-            sharedViewModel.groupTags.value = updatedList
+            sharedViewModel.groupTags.value = updatedList  //update the group tag since the list is local
 
-//
-//            Toast.makeText(this.context, "remove here", Toast.LENGTH_SHORT).show()
         }
-        Toast.makeText(this.context, "remove here", Toast.LENGTH_SHORT).show()
-//   add chip to the arraylist of interest tags
+
+        //add chip to the arraylist of interest tags
         binding.tagGroupChip.addView(chip)
         updatedList?.add(chip.text.toString())
 
