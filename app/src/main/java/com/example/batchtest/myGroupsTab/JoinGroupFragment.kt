@@ -114,7 +114,7 @@ class JoinGroupFragment : Fragment() {
                                 binding.groupCardView.isVisible = true
                                 // add info of found group to card
                                 binding.groupName.text = group?.name.toString()
-                                if (group!!.image == null) {
+                                if (group!!.image == null || group!!.image == "") {
                                     binding.groupImg.setImageResource(R.drawable.placeholder)
                                 } else {
                                     Glide.with(requireContext()).load(group?.image).into(binding.groupImg)
@@ -133,9 +133,10 @@ class JoinGroupFragment : Fragment() {
                 } else if (binding.joinGroupBtn.text == "Join") {
                     // button will be in join state
                     // add user to group members in database
-                    db.collection("groups").document(groupCode)
+                    db.collection("groups").document(group?.name.toString())
                         .update("users", FieldValue.arrayUnion(currentUser!!.uid))
-                    db.collection("users").document(currentUser.uid).update("myGroups", FieldValue.arrayUnion(group?.name))
+                    db.collection("users").document(currentUser.uid)
+                        .update("myGroups", FieldValue.arrayUnion(group?.name))
                     findNavController().navigate(R.id.action_joinGroupFragment_to_myGroupFragment)
                 }
             }

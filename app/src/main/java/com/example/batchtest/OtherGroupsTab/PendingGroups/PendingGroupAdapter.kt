@@ -11,8 +11,10 @@ import android.util.Log
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.view.isVisible
+import com.bumptech.glide.Glide
 import com.example.batchtest.Group
 import com.example.batchtest.PendingGroup
+import com.example.batchtest.R
 import com.example.batchtest.databinding.VoteGroupCardBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
@@ -37,7 +39,7 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
         // name of pending group
         val pendingGroupName: TextView = binding.pendingGroupName
         // profile picture of user's group that initiated voting
-        val myGroupImg: CircleImageView = binding.myGroupImg
+        val matchingGroupImg: CircleImageView = binding.myGroupImg
         // profile picture of pending group
         val pendingGroupImg: CircleImageView = binding.pendingGroupImg
         // accept button
@@ -67,7 +69,24 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
         var pendingGroup: Group? = group.pendingGroup
         if (pendingGroup != null) {
             holder.pendingGroupName.text = pendingGroup.name
+            if (group.pendingGroup?.image == null) {
+                holder.pendingGroupImg.setImageResource(R.drawable.placeholder)
+            } else {
+                if (context != null) {
+                    Glide.with(context).load(pendingGroup.image).into(holder.pendingGroupImg)
+                }
+            }
         }
+        if (matchingGroup != null) {
+            if (group.matchingGroup?.image == null) {
+                holder.matchingGroupImg.setImageResource(R.drawable.placeholder)
+            } else {
+                if (context != null) {
+                    Glide.with(context).load(matchingGroup.image).into(holder.matchingGroupImg)
+                }
+            }
+        }
+
         group.users?.forEach { (user, map) ->
             // set color for the buttons for the current user
             if (user == currentUser?.uid) {
