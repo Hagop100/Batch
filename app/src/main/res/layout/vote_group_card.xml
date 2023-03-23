@@ -58,22 +58,26 @@
                 android:id="@+id/member_0"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"
+                android:visibility="invisible"/>
             <ImageView
                 android:id="@+id/member_1"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"
+                android:visibility="invisible"/>
             <ImageView
                 android:id="@+id/member_2"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"
+                android:visibility="invisible"/>
             <ImageView
                 android:id="@+id/member_3"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"
+                android:visibility="invisible"/>
         </LinearLayout>
         <!-- container for the accept and reject button -->
         <RelativeLayout

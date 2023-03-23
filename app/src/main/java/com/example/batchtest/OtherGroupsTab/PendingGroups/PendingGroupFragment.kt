@@ -97,6 +97,7 @@ class PendingGroupFragment : Fragment() {
                                 }
                                 // if there are no pending groups, display message
                                 if (pendingGroups.isEmpty()) {
+                                    Log.v(TAG, "no pending groups 2")
                                     binding.pendingTabMessage.text = "No pending groups"
                                     return@addOnSuccessListener
                                 } else {
@@ -106,8 +107,12 @@ class PendingGroupFragment : Fragment() {
                                 pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
                             }
                     }
+                    if (pendingGroups.isEmpty()) {
+                        binding.pendingTabMessage.text = "No pending groups"
+                    }
                 }
             }
+        Log.v(TAG, " pending groups ")
         return binding.root
     }
 

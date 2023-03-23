@@ -81,11 +81,8 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
                         .into(holder.matchingGroupImg)
                 }
             }
-        } else {
-            Log.v(TAG, "null")
         }
 
-        Log.v(TAG, pendingGroupObj.toString())
         // set pending group information
         if (pendingGroupObj != null) {
             holder.pendingGroupName.text = pendingGroupObj.name
@@ -97,7 +94,6 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
                         .into(holder.pendingGroupImg)
                 }
             }
-        } else {
         }
 
         group.users?.forEach { (user, map) ->
@@ -115,12 +111,14 @@ class PendingGroupAdapter(private val context: Context?, private val groups: Arr
                     holder.rejectBtn.isEnabled = false
                 }
             }
+            holder.members[map["index"]]?.isVisible = true
             // set color of vote icon
             if (map["vote"] == "accept") {
                 holder.members[map["index"]]?.setColorFilter(Color.parseColor(green))
             } else if (map["vote"] == "reject") {
                 holder.members[map["index"]]?.setColorFilter(Color.parseColor(red))
             }
+
         }
 
         holder.rejectBtn.setOnClickListener {

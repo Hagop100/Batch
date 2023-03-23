@@ -17,6 +17,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
 import java.util.*
@@ -48,7 +49,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
     // fetches a user from firestore using the uid from the authenticated user
     private val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
     // primary group that user will be matching as
-    private var primaryGroup: Group? = null
+    private var primaryGroup: String? = null
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,10 +84,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 // convert the fetched user into a User object
                 val user: User = result?.toObject(User::class.java)!!
                 // if user does not have a primary group, display message and return
-                if ((user.primaryGroup == null) || (user.primaryGroup.name == null)) {
+                if ((user.primaryGroup == null) || (user.primaryGroup == "")) {
                     binding.matchTabMessage.text = "Set a primary group to start matching!"
                     return@addOnSuccessListener
-                    //binding.matchTabMessage.text = ""
                 } else {
                     primaryGroup = user.primaryGroup
                 }
@@ -197,40 +197,48 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         db.collection("users").document(currentUser?.uid.toString()).update("pendingGroups", FieldValue.arrayUnion(acceptedGroup.name))
         // check if another user in the group has already initated matching
         // db.collection("pendingGroups").whereEqualTo("matchingGroup", primaryGroup).whereEqualTo("pendingGroup", acceptedGroup)
-        var users: HashMap<String, HashMap<String, String>> = hashMapOf()
-
-        var index = 1
-        for (user in primaryGroup?.users!!) {
-            var userMap = hashMapOf<String, String>()
-            userMap["uid"] = user
-            if (user == currentUser?.uid) {
-                userMap["acceptor"] = "true"
-                userMap["vote"] = "accept"
-                userMap["index"] = "0"
-            } else {
-                userMap["acceptor"] = "false"
-                userMap["vote"] = "pending"
-                userMap["index"] = index.toString()
-                index++
-            }
-            users[user] = userMap
+        if (primaryGroup != null) {
+            db.collection("groups").document(primaryGroup!!).get()
+                .addOnSuccessListener { result ->
+                    var users: HashMap<String, HashMap<String, String>> = hashMapOf()
+                    var index = 1
+                    val primaryGroupObj = result.toObject(Group::class.java)
+                    if (primaryGroupObj != null) {
+                        for (user in primaryGroupObj.users!!) {
+                            val userMap = hashMapOf<String, String>()
+                            userMap["uid"] = user
+                            if (user == currentUser?.uid) {
+                                userMap["acceptor"] = "true"
+                                userMap["vote"] = "accept"
+                                userMap["index"] = "0"
+                            } else {
+                                userMap["acceptor"] = "false"
+                                userMap["vote"] = "pending"
+                                userMap["index"] = index.toString()
+                                index++
+                            }
+                            users[user] = userMap
+                        }
+                    }
+                    var pendingGroup = PendingGroup(
+                        pendingGroupId = UUID.randomUUID().toString(),
+                        matchingGroup = primaryGroup,
+                        pendingGroup = acceptedGroup.name,
+                        users = users,
+                        isPending = true,
+                        isMatched = false
+                    )
+                    // add pending group to firestore pendingGroups collection
+                    db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString())
+                        .set(pendingGroup)
+                    removeGroups.add(acceptedGroup)
+                    prevGroup = null
+                    // update undo state of current user
+                    currentUserDocRef.update("undoState", false)
+                    // swipe the card
+                    binding.cardStackView.swipe()
+                }
         }
-        var pendingGroup = PendingGroup(
-            pendingGroupId = UUID.randomUUID().toString(),
-            matchingGroup = primaryGroup?.name,
-            pendingGroup = acceptedGroup.name,
-            users = users,
-            isPending = true,
-            isMatched = false
-        )
-        // add pending group to firestore pendingGroups collection
-        db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString()).set(pendingGroup)
-        removeGroups.add(acceptedGroup)
-        prevGroup = null
-        // update undo state of current user
-        currentUserDocRef.update("undoState", false)
-        // swipe the card
-        binding.cardStackView.swipe()
     }
 
     override fun onRejectBtnClick(group: Group) {
@@ -254,15 +262,12 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
 
     private fun setPrimaryGroup(groupName: String) {
         // set the primary group variable
-        db.collection("groups").document(groupName)
-            .get()
-            .addOnSuccessListener { result ->
-                this.primaryGroup = result.toObject(Group::class.java)
-                // update primary group of user
-                currentUserDocRef.update("primaryGroup", this.primaryGroup)
-            }
+        this.primaryGroup = groupName
+        // update primary group of user
+        currentUserDocRef.update("primaryGroup", groupName)
 
-        // add to users my groups
+
+        // add to users myGroups
         currentUserDocRef.get()
             .addOnSuccessListener { result ->
                 val myGroups = result.data?.get("myGroups") as ArrayList<*>
