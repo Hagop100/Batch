@@ -1,5 +1,6 @@
 package com.example.batchtest.GroupChat
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.*
 import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupAdapter
+import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupFragment
 import com.example.batchtest.databinding.FragmentGroupChatBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -113,23 +115,34 @@ class GroupChatFragment : Fragment() {
             }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun getChat(db: FirebaseFirestore, myGroupName: String, groupChatRV: RecyclerView) {
         var chat = Chat()
         val chatsRef = db.collection("chats")
         chatsRef.whereIn("group1Name", listOf(myGroupName, theirGroupName))
             .whereIn("group2Name", listOf(myGroupName, theirGroupName))
-            .get()
-            .addOnSuccessListener { doc ->
-                for(d in doc) {
-                    chat = d.toObject<Chat>()
+            .addSnapshotListener { doc, e ->
+                if(e != null) {
+                    Log.i(TAG, "Listen failed", e)
+                    return@addSnapshotListener
                 }
-                // attach adapter and send groups
-                val groupChatAdapter = GroupChatAdapter(chat.messages, requireActivity())
-                groupChatRV.adapter = groupChatAdapter
+                messagesArrayList.clear()
+                for (d in doc!!) {
+                    chat = d.toObject<Chat>()
+                    messagesArrayList.addAll(chat.messages)
+                    Log.i(TAG, messagesArrayList.toString())
+                    if(groupChatRV.adapter == null) {
+                        // attach adapter and send groups
+                        val groupChatAdapter = GroupChatAdapter(messagesArrayList, requireActivity())
+                        groupChatRV.adapter = groupChatAdapter
+                    }
+                    else {
+                        Log.i(TAG, "reycler view is not null")
+                        groupChatRV.adapter?.notifyDataSetChanged()
+                    }
+                }
             }
     }
-
-
 
     companion object {
         const val TAG = "GroupChatFragment"
