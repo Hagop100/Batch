@@ -106,10 +106,10 @@ class GroupChatFragment : Fragment() {
                 username = currUser?.email,
                 createdDate = Date()
             )
-            //add the message object to our messages array
-            messagesArrayList.add(message)
             //if the message is nonempty, go ahead and write it to the database
             if(message.content?.isEmpty() != true) {
+                //add the message object to our messages array
+                messagesArrayList.add(message)
                 writeMessageToFirestore(db)
             }
             //clear the edit text after sending a message
