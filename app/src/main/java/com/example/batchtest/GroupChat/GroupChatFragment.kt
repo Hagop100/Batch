@@ -7,18 +7,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.*
-import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupAdapter
-import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupFragment
 import com.example.batchtest.databinding.FragmentGroupChatBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -45,6 +43,9 @@ class GroupChatFragment : Fragment() {
 
     //Chat Reference Firebase
     private var chatId: String? = null
+
+    //max number of messages allowed in recyclerview
+    private val maximumNumberOfMessages: Int = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -171,6 +172,9 @@ class GroupChatFragment : Fragment() {
                 for (d in doc!!) {
                     chatId = d.id
                     chat = d.toObject<Chat>()
+                    if(chat.messages.size > maximumNumberOfMessages) {
+                        chat.messages.removeAt(0)
+                    }
                     messagesArrayList.addAll(chat.messages)
                     Log.i(TAG, messagesArrayList.toString())
                     if(groupChatRV.adapter == null) {
