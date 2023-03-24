@@ -183,7 +183,7 @@ class GroupChatFragment : Fragment() {
                         groupChatRV.adapter = groupChatAdapter
                     }
                     else {
-                        Log.i(TAG, "reycler view is not null")
+                        Log.i(TAG, "recycler view is not null")
                         groupChatRV.adapter?.notifyDataSetChanged()
                     }
                 }
