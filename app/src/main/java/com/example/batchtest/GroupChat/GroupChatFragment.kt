@@ -17,6 +17,8 @@ import com.example.batchtest.databinding.FragmentGroupChatBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -41,6 +43,9 @@ class GroupChatFragment : Fragment() {
     //Firebase auth
     private var currUser: FirebaseUser? = null
 
+    //Chat Reference Firebase
+    private var chatId: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currUser = Firebase.auth.currentUser
@@ -52,6 +57,23 @@ class GroupChatFragment : Fragment() {
         _binding = FragmentGroupChatBinding.inflate(inflater, container, false)
 
         val db = Firebase.firestore
+
+        /*val group1 = "Big Chungus"
+        val group2 = "Batch test"
+
+        val message1 = Message("Hello", "kylebatch491b@gmail.com", Date())
+        val message2 = Message("Welcome", "goofy", Date())
+        messagesArrayList.add(message1)
+        messagesArrayList.add(message2)
+        val chat = Chat(0, messagesArrayList, group1, group2, Date())
+
+        db.collection("chats").add(chat)
+            .addOnSuccessListener { doc ->
+
+            }
+            .addOnFailureListener {e ->
+
+            }*/
 
         val groupChatRV = binding.fragmentGroupChatRecyclerView
         //This will set the recyclerview layout to be like a chat
@@ -75,6 +97,25 @@ class GroupChatFragment : Fragment() {
         queryChatFromFirestore(db, groupChatRV)
         //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
         //--------------------------------------------------
+
+        binding.fragmentGroupChatSendBtn.setOnClickListener {
+            //create message Object from the edit text
+            val message = Message(
+                content = binding.fragmetGroupChatMessageEt.text.toString(),
+                username = currUser?.email,
+                createdDate = Date()
+            )
+            //add the message object to our messages array
+            messagesArrayList.add(message)
+            //if the message is nonempty, go ahead and write it to the database
+            if(message.content?.isEmpty() != true) {
+                writeMessageToFirestore(db)
+            }
+            //clear the edit text after sending a message
+            binding.fragmetGroupChatMessageEt.text.clear()
+            //scroll down to the newest message
+            groupChatRV.scrollToPosition(messagesArrayList.size - 1)
+        }
 
         return binding.root
     }
@@ -128,6 +169,7 @@ class GroupChatFragment : Fragment() {
                 }
                 messagesArrayList.clear()
                 for (d in doc!!) {
+                    chatId = d.id
                     chat = d.toObject<Chat>()
                     messagesArrayList.addAll(chat.messages)
                     Log.i(TAG, messagesArrayList.toString())
@@ -142,6 +184,11 @@ class GroupChatFragment : Fragment() {
                     }
                 }
             }
+    }
+
+    private fun writeMessageToFirestore(db: FirebaseFirestore) {
+        val chatDocRef = chatId?.let { db.collection("chats").document(it) }
+        chatDocRef?.update("messages", messagesArrayList)
     }
 
     companion object {
