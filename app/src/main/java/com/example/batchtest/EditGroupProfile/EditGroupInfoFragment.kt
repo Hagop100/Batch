@@ -67,10 +67,9 @@ class EditGroupInfoFragment : Fragment() {
             interestTags = ArrayList(),
             aboutUsDescription = "",
             biscuits = 0,
-            image = null
+            image = "@drawable/placeholder"
         )
 
-        Log.i("print", "editmode")
 
     }
 
@@ -137,7 +136,7 @@ class EditGroupInfoFragment : Fragment() {
                     updatedList?.remove(chip.text)
                     //update the list
                     sharedViewModel.groupTags.value = updatedList
-                    Toast.makeText(this.context, "$updatedList", Toast.LENGTH_SHORT).show()
+                   // Toast.makeText(this.context, "$updatedList", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -159,7 +158,7 @@ class EditGroupInfoFragment : Fragment() {
             else if (binding.editTextAddTag.text.isEmpty()) {
                 binding.editTextAddTag.error = "Missing Tag"
             }
-            Toast.makeText(this.context, "$updatedList", Toast.LENGTH_SHORT).show()
+           // Toast.makeText(this.context, "$updatedList", Toast.LENGTH_SHORT).show()
 
         }
 
@@ -170,10 +169,9 @@ class EditGroupInfoFragment : Fragment() {
             //view gallery by accessing the internal contents from mobile media
             val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
             startActivityForResult(gallery, pickImage)
-
-            //TODO:FIX THIS ON CHANGES
-            imageURL?.let { it1 -> sharedViewModel.setGroupPicture(it1) }
+            //Toast.makeText(this.context, image, Toast.LENGTH_SHORT).show()
         }
+
 
         //clear all the text from added tag
         clearTagText()
@@ -194,6 +192,9 @@ class EditGroupInfoFragment : Fragment() {
             }
 
         })
+
+        //Log.i("print", "image url: ${imageURL.toString()}")
+      //  sharedViewModel.groupPic.value = imageURL.toString()
 
 
         return binding.root
@@ -294,9 +295,12 @@ class EditGroupInfoFragment : Fragment() {
                 // Getting the TaskSnapshot takes a bit of time,
                 taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
                     imageURL = uri.toString()
+
+                    //load the group picture to preview
+                    sharedViewModel.groupPic.value = imageURL.toString()
                 }
 //                imageURL = imageUri.toString()
-//                Log.i(TAG, "IMAGEURL: $imageURL")
+                Log.i(TAG, "IMAGEURL: $imageURL")
 
             }.addOnFailureListener {
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
@@ -315,7 +319,7 @@ class EditGroupInfoFragment : Fragment() {
         //setting that was selected from the gallery
         if(resultCode == Activity.RESULT_OK && requestCode == pickImage){
             imageUri = data?.data
-            Log.i(TAG, "Image URi: $imageUri.toString()")
+            Log.i("print", "Image URi: $imageUri.toString()")
             grouppic.setImageURI(imageUri)
             uploadUserImageToCloud(activity, imageUri)
 

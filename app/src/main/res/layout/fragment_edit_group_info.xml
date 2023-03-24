@@ -150,48 +150,6 @@
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="20dp">-->
-
-<!--            <Button-->
-<!--                android:id="@+id/group_tags"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:padding="20dp"-->
-<!--                android:backgroundTint="@color/background_text"-->
-<!--                android:drawableEnd="@drawable/edit_profile"-->
-<!--                android:fontFamily="@font/karla"-->
-<!--                android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
-<!--                android:text="Set Tags"-->
-<!--                android:textAlignment="viewStart"-->
-<!--                android:textStyle="bold"-->
-<!--                android:textColor="@color/black"-->
-<!--                android:textSize="20sp"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                app:cornerRadius="10dp"-->
-<!--                android:stateListAnimator="@null"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                tools:ignore="MissingConstraints"-->
-<!--                tools:layout_editor_absoluteY="0dp" />-->
-
-<!--            <com.google.android.material.chip.ChipGroup-->
-<!--                android:id="@+id/tag_group_chip"-->
-<!--                android:layout_width="357dp"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_marginTop="16dp"-->
-<!--                app:layout_constraintEnd_toEndOf="@+id/group_tags"-->
-<!--                app:layout_constraintHorizontal_bias="0.0"-->
-<!--                app:layout_constraintStart_toStartOf="@+id/group_tags"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/group_tags">-->
-
-
-<!--            </com.google.android.material.chip.ChipGroup>-->
-
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
 
         <View
             android:layout_width="wrap_content"
@@ -240,34 +198,7 @@
             android:background="@color/horizontal_line"
             android:layout_marginTop="30dp"
             tools:ignore="MissingConstraints" />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:theme="@style/page_margin">
-        <TextView
-            android:id="@+id/users"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Users:"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:layout_marginTop="20dp"
-            android:padding="10dp"
-            android:layout_marginBottom="10sp"
 
-            />
-    </LinearLayout>
-
-
-
-            <!--            <Button-->
-<!--                android:id="@+id/btn_create_group"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Create"-->
-<!--                android:layout_marginTop="30dp"-->
-<!--                android:layout_marginBottom="30dp"/>-->
         </LinearLayout>
 
 

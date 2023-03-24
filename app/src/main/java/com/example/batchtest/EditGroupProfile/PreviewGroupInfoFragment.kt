@@ -49,8 +49,6 @@ class PreviewGroupInfoFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentPreviewGroupInfoBinding.inflate(layoutInflater, container, false)
 
-
-
         //get group name
         binding.groupName.text = sharedViewModel.getGName().value
         val groupName = binding.groupName.text
@@ -61,13 +59,25 @@ class PreviewGroupInfoFragment : Fragment() {
             binding.aboutUsDescription.text = newVal //display the text in string format
         })
 
-        //get group profile
-        if (sharedViewModel.getGroupPicture().value.isNullOrEmpty()){
-            binding.groupPicture.setImageResource(R.drawable.placeholder)
+        //inflate the group pic if there is no changes - use database
+        db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
+            //set info about group pic
+            val groupPic = document.getString("image")
+            if (groupPic.isNullOrEmpty()) {
+                binding.groupPicture.setImageResource(R.drawable.placeholder)
+
+            } else {
+                Glide.with(this).load(document.getString("image").toString())
+                    .into(binding.groupPicture)
+            }
+
         }
-        else{
-            Glide.with(this).load(sharedViewModel.getGroupPicture().value).into(binding.groupPicture)
-        }
+
+            //get group profile if user set a group pic
+            sharedViewModel.groupPic.observe(viewLifecycleOwner) { imageUrl ->
+                Glide.with(requireContext()).load(imageUrl).into(binding.groupPicture)
+            }
+
 
 
 
@@ -85,6 +95,7 @@ class PreviewGroupInfoFragment : Fragment() {
                 textView.text = tag as String? //set the text of the TextView to current tag
                 flexboxLayout.addView(textView) //add the TextView to Flexbox
             }
+
         })
 
 

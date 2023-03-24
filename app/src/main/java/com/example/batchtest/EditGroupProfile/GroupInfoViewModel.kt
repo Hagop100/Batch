@@ -12,7 +12,7 @@ class GroupInfoViewModel: ViewModel() {
     val groupName: MutableLiveData<String> = MutableLiveData()
     val groupDesc: MutableLiveData<Editable> = MutableLiveData()
     val groupTags: MutableLiveData<ArrayList<String>> = MutableLiveData()
-    val groupPic: MutableLiveData<String> = MutableLiveData()
+    var groupPic: MutableLiveData<String> = MutableLiveData()
 
 
     init{

@@ -53,7 +53,7 @@ class ViewGroupInfoFragment : Fragment() {
     private val binding get() = _binding!!
     var db = Firebase.firestore
     private lateinit var userRecyclerView: RecyclerView
-    private val args: ViewGroupInfoFragmentArgs by navArgs()
+//    private val args: ViewGroupInfoFragmentArgs by navArgs()
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
     private lateinit var userList: ArrayList<User>
     private lateinit var userAdapter: UserInfoAdapter
@@ -75,7 +75,8 @@ class ViewGroupInfoFragment : Fragment() {
          * display the user group information including:
          * group name, profile picture, tags, and about us
          */
-        binding.groupName.text = args.groupName
+//        binding.groupName.text = args.groupName
+        binding.groupName.text = sharedViewModel.getGName().value
 //        binding.aboutUsDescription.text = args.groupDesc
 
         val groupName = binding.groupName.text
@@ -163,7 +164,7 @@ class ViewGroupInfoFragment : Fragment() {
                 // navigate to the edit page
                 findNavController().navigate(R.id.action_viewGroupInfoFragment_to_editGroupProfile)
                 //send data using shared view model
-                sendData()
+                sharedViewModel.groupName.value
                 dialog.dismiss()
             }
 
@@ -212,11 +213,11 @@ class ViewGroupInfoFragment : Fragment() {
     /**
      * send data through shared view model so other fragments can receive the data
      */
-    private fun sendData() {
-        sharedViewModel.groupName.value = args.groupName
-
-//        sharedViewModel.groupDesc.value = args.groupDesc
-    }
+//    private fun sendData() {
+//        sharedViewModel.groupName.value = args.groupName
+//
+////        sharedViewModel.groupDesc.value = args.groupDesc
+//    }
 
     /**
      * Free view from memory

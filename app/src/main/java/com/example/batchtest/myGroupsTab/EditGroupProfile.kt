@@ -2,14 +2,17 @@ package com.example.batchtest.myGroupsTab
 
 import android.location.GnssAntennaInfo.Listener
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.EditGroupProfile.GroupProfileAdapter
 import com.example.batchtest.Group
@@ -17,6 +20,10 @@ import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentEditGroupProfileBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -43,20 +50,6 @@ class EditGroupProfile : Fragment() {
     private lateinit var groupInfo: Group
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        tabLayout = binding.groupEditTabs
-//        viewPager = binding.groupProfileViewpager
-//        viewPager.adapter = GroupProfileAdapter(this)
-//        sharedViewModel = ViewModelProvider(requireActivity())[GroupInfoViewModel::class.java]
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,34 +59,59 @@ class EditGroupProfile : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentEditGroupProfileBinding.inflate(layoutInflater, container, false)
 
-//        val sharedViewModel = ViewModelProvider(this).get(GroupInfoViewModel::class.java)
+        var groupDesc: String = ""
+        var groupImg: String = ""
+        var groupTags: ArrayList<String> = ArrayList()
 
+        //get the updated group description
+        sharedViewModel.groupDesc.observe(viewLifecycleOwner, Observer{ newDesc ->
+            groupDesc = newDesc.toString() //cast newDesc to String from Editable
+        })
 
-        //save info to database
+        //get the updated group picture
+        sharedViewModel.groupPic.observe(viewLifecycleOwner) { imageUrl ->
+            if(imageUrl.isNullOrEmpty()){
+                //do nothing
+            }
+            else{
+                groupImg = imageUrl
+            }
+        }
+
+        //get the updated tags
+        sharedViewModel.groupTags.observe(viewLifecycleOwner, Observer<ArrayList<String>> { newTags: ArrayList<String> ->
+            groupTags = newTags
+        })
+
+        //get the group name
+        val groupName: String = sharedViewModel.groupName.value.toString()
+
+        val db = Firebase.firestore //access database
+        val docRef = db.collection("groups").document(groupName) //access the group
+
+        //save group edits to database
         binding.saveBtn.setOnClickListener{
-
-
+            val updates = hashMapOf<String, Any>(
+                "aboutUsDescription" to groupDesc, //change the field to updated groupDescription
+                "image" to groupImg, //change the field to updated image
+            )
+            docRef.update("interestTags",groupTags) //update the database for interest tags with the new group tags
+            docRef.update(updates) //update the database for about us and image with the new edits
+            findNavController().navigate(R.id.action_editGroupProfile_to_viewGroupInfoFragment)
 
         }
 
         //set up the 2 tab layout: edit and preview
         setUpTabs()
 
-
-
         //cancel to navigate back to my group page
         binding.cancelGroupEdit.setOnClickListener{
             findNavController().navigate(R.id.action_editGroupProfile_to_myGroupFragment)
         }
 
-
-
         return binding.root
 
-
     }
-
-
 
 
     /**
@@ -114,8 +132,6 @@ class EditGroupProfile : Fragment() {
 
 
     }
-
-
 
 
     /**

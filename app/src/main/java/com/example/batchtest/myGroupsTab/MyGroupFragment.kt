@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
 import com.example.batchtest.Group
 import com.example.batchtest.MatchTab.CardStackAdapter
@@ -54,6 +55,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
     private val currentUser = Firebase.auth.currentUser
     private lateinit var progressDialog: Dialog
     private val binding get() = _binding!!
+    private val sharedViewModel: GroupInfoViewModel by activityViewModels()
 
 
     /**
@@ -228,8 +230,10 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
          * navigate to the ViewGroupInfoFragment using the position of the group using Navigation Component
          * passing data to ViewGroupInfoFragment
          */
+        val groupName = sharedViewModel.setGName(groupInfo.name.toString())
         val direction = MyGroupFragmentDirections.actionMyGroupFragmentToViewGroupInfoFragment(
-            groupInfo.name.toString())
+            groupName.toString()
+        )
 //            groupInfo.aboutUsDescription.toString())
         findNavController().navigate(direction)
 
