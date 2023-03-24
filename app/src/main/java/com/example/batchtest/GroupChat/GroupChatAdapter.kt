@@ -1,5 +1,6 @@
 package com.example.batchtest.GroupChat
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -23,12 +24,15 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
         val messageContent = binding.gcMessageContentTv
         val timeText = binding.gcTimeStampTv
         val nameText = binding.gcUsernameTv
+        val date = binding.gcDateTv
         val profileImage = binding.gcProiflePicIv
 
+        @SuppressLint("SetTextI18n")
         fun bind(message: Message) {
             messageContent.text = message.content
-            timeText.text = message.createdDate.toString()
+            timeText.text = message.createdDate?.hours.toString() + ":" + message.createdDate?.minutes.toString()
             nameText.text = message.username
+            date.text = (message.createdDate?.month?.plus(1)).toString() + "/" + message.createdDate?.date.toString()
             //profileImage.setImageURI(message.user.imageUri)
         }
     }
@@ -36,10 +40,13 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
     class SentMessageHolder(val binding: MeMessageRecyclerViewRowBinding): RecyclerView.ViewHolder(binding.root) {
         val messageContent = binding.gcMeMessageContentTv
         val timeText = binding.gcMeTimeStampTv
+        val date = binding.gcMeDateTv
 
+        @SuppressLint("SetTextI18n")
         fun bind(message: Message) {
             messageContent.text = message.content
-            timeText.text = message.createdDate.toString()
+            timeText.text = message.createdDate?.hours.toString() + ":" + message.createdDate?.minutes.toString()
+            date.text = (message.createdDate?.month?.plus(1)).toString() + "/" + message.createdDate?.date.toString()
         }
     }
 
