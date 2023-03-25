@@ -27,7 +27,7 @@
         android:id="@+id/fragment_group_chat_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="16dp"
+        android:background="@color/app_background"
         app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/text_gchat_indicator"
         app:layout_constraintTop_toBottomOf="@+id/layout_group_chat" />
