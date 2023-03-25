@@ -185,6 +185,7 @@ class GroupChatFragment : Fragment() {
                     else {
                         Log.i(TAG, "recycler view is not null")
                         groupChatRV.adapter?.notifyDataSetChanged()
+                        groupChatRV.scrollToPosition(messagesArrayList.size - 1)
                     }
                 }
             }
