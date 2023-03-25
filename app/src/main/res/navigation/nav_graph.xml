@@ -69,7 +69,11 @@
         tools:layout="@layout/fragment_match_tab">
         <action
             android:id="@+id/action_otherGroupTabFragment_to_groupChatFragment"
-            app:destination="@id/groupChatFragment" />
+            app:destination="@id/groupChatFragment"
+            app:enterAnim="@anim/slilde_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
     </fragment>
     <fragment
         android:id="@+id/initialProfilePersonalizationFragment"

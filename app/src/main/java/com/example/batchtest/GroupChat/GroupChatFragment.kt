@@ -45,7 +45,7 @@ class GroupChatFragment : Fragment() {
     private var chatId: String? = null
 
     //max number of messages allowed in recyclerview
-    private val maximumNumberOfMessages: Int = 10
+    private val maximumNumberOfMessages: Int = 300
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
