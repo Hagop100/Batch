@@ -54,8 +54,7 @@ class PendingGroupFragment : Fragment() {
         // remove the default divider from the recycler view
         pendingGroupRV.removeItemDecoration(dividerItemDecoration)
 
-        // fetch groups from database using firebase's firestore
-        val pendingGroups = arrayListOf<PendingGroup>()
+
         // fetches a user from firestore using the uid from the authenticated user
         val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
         /*
@@ -71,9 +70,13 @@ class PendingGroupFragment : Fragment() {
                     Log.w(TAG, "listen failed.", exception)
                     return@addSnapshotListener
                 }
+                // fetch groups from database using firebase's firestore
+                val pendingGroups = arrayListOf<PendingGroup>()
                 if (result != null) {
+                    var groupsFound = false
                     // iterate thru fetched pending groups
                     for (doc in result) {
+                        groupsFound = true
                         // convert pending group to an object
                         val pendingGroupObj = doc.toObject(PendingGroup::class.java)
                         // create 2 queries for the matching and pending group to send to adapter
@@ -95,20 +98,16 @@ class PendingGroupFragment : Fragment() {
                                     pendingGroupObj.pendingGroupObj = pendingGroupDoc
                                     pendingGroups.add(pendingGroupObj)
                                 }
-                                // if there are no pending groups, display message
-                                if (pendingGroups.isEmpty()) {
-                                    Log.v(TAG, "no pending groups 2")
-                                    binding.pendingTabMessage.text = "No pending groups"
-                                    return@addOnSuccessListener
-                                } else {
-                                    binding.pendingTabMessage.text = ""
-                                }
                                 // send pending groups arraylist to adapter to display
                                 pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
                             }
                     }
-                    if (pendingGroups.isEmpty()) {
+                    // if there are no pending groups, display message
+                    if (!groupsFound) {
                         binding.pendingTabMessage.text = "No pending groups"
+                        pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
+                    } else {
+                        binding.pendingTabMessage.text = ""
                     }
                 }
             }

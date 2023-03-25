@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.ktx.Firebase
 
 
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding:ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         // bind and inflate the main activity layout
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -38,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if((destination.id == R.id.loginFragment) || (destination.id == R.id.groupCreationFragment) || (destination.id == R.id.registrationFragment) || (destination.id == R.id.accountSettingFragment) ||
                     destination.id == R.id.initialProfilePersonalizationFragment || (destination.id == R.id.editProfileFragment) || (destination.id == R.id.viewGroupInfoFragment) ||
-                    destination.id == R.id.editGroupProfile ||  destination.id == R.id.joinGroupFragment || destination.id == R.id.groupChatFragment) {
+                    destination.id == R.id.editGroupProfile ||  destination.id == R.id.joinGroupFragment || destination.id == R.id.groupChatFragment || (destination.id == R.id.viewUserInfoFragment)) {
                 binding.navBar.visibility = View.GONE
             } else {
                 binding.navBar.visibility = View.VISIBLE

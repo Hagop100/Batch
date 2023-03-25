@@ -162,6 +162,9 @@
         <action
             android:id="@+id/action_viewGroupInfoFragment_to_previewGroupInfoFragment"
             app:destination="@id/previewGroupInfoFragment" />
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_viewUserInfoFragment"
+            app:destination="@id/viewUserInfoFragment"/>
     </fragment>
     <fragment
         android:id="@+id/joinGroupFragment"
@@ -180,5 +183,13 @@
         android:id="@+id/previewGroupInfoFragment"
         android:name="com.example.batchtest.EditGroupProfile.PreviewGroupInfoFragment"
         android:label="PreviewGroupInfoFragment" />
+    <fragment
+        android:id="@+id/viewUserInfoFragment"
+        android:name="com.example.batchtest.UserProfileTab.userPage.ViewUserInfoFragment"
+        android:label="ViewUserInfoFragment">
+        <argument
+            android:name="userEmail"
+            app:argType="string"/>
+    </fragment>
 
 </navigation>

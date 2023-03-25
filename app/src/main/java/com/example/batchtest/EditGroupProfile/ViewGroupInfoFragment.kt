@@ -48,7 +48,7 @@ import java.util.ArrayList
  * Use the [ViewGroupInfoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ViewGroupInfoFragment : Fragment() {
+class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
     private var _binding: FragmentViewGroupInfoBinding? = null
     private val binding get() = _binding!!
     var db = Firebase.firestore
@@ -134,7 +134,7 @@ class ViewGroupInfoFragment : Fragment() {
                     //add the user into the userList
                     val userInfo: User? = document.toObject(User::class.java)
                     userList.add(userInfo!!)
-                    userAdapter = UserInfoAdapter(requireActivity(),userList)
+                    userAdapter = UserInfoAdapter(requireActivity(),userList, this)
                     userRecyclerView.adapter = userAdapter
                 }
                     .addOnFailureListener { e->
@@ -144,7 +144,6 @@ class ViewGroupInfoFragment : Fragment() {
             }
 
         }//end of firebase collection retrieve
-
 
         // more button on match page opens dialog
         binding.groupProfileMoreBtn.setOnClickListener {
@@ -225,6 +224,14 @@ class ViewGroupInfoFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // navigate to user display page when clicked
+    override fun onItemClick(userId: String) {
+        val action = ViewGroupInfoFragmentDirections.actionViewGroupInfoFragmentToViewUserInfoFragment(
+            userId
+        )
+        findNavController().navigate(action)
     }
 
 }

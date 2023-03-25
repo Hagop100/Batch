@@ -16,7 +16,9 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.firestoreSettings
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
@@ -75,7 +77,17 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         if (prevGroup == null) {
             currentUserDocRef.update("undoState", false)
         }
-
+        Log.v(TAG, "pendingGroup")
+        db.collection("pendingGroups")
+            .whereEqualTo("matchingGroup", "steven's group")
+            .whereEqualTo("pendingGroup", "Batch")
+            .get()
+            .addOnSuccessListener { result ->
+                for (doc in result) {
+                    val group = doc.toObject(PendingGroup::class.java)
+                    Log.v(TAG, group.toString())
+                }
+            }
         // get all potential groups of current user to match with
         currentUserDocRef
             .get()
@@ -134,7 +146,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                             } else {
                                 // attach adapter and send groups and listener
                                 cardStackView.adapter =
-                                    CardStackAdapter(currentUser!!.uid, groups, this)
+                                    CardStackAdapter(currentUser.uid, groups, this)
                             }
                         }
                         .addOnFailureListener { e ->
@@ -194,51 +206,70 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             .build()
         manager.setSwipeAnimationSetting(setting)
         // add the group to the list of pending groups for the user
-        db.collection("users").document(currentUser?.uid.toString()).update("pendingGroups", FieldValue.arrayUnion(acceptedGroup.name))
+        db.collection("users").document(currentUser?.uid.toString())
+            .update("pendingGroups", FieldValue.arrayUnion(acceptedGroup.name))
         // check if another user in the group has already initated matching
-        // db.collection("pendingGroups").whereEqualTo("matchingGroup", primaryGroup).whereEqualTo("pendingGroup", acceptedGroup)
-        if (primaryGroup != null) {
-            db.collection("groups").document(primaryGroup!!).get()
-                .addOnSuccessListener { result ->
-                    var users: HashMap<String, HashMap<String, String>> = hashMapOf()
-                    var index = 1
-                    val primaryGroupObj = result.toObject(Group::class.java)
-                    if (primaryGroupObj != null) {
-                        for (user in primaryGroupObj.users!!) {
-                            val userMap = hashMapOf<String, String>()
-                            userMap["uid"] = user
-                            if (user == currentUser?.uid) {
-                                userMap["acceptor"] = "true"
-                                userMap["vote"] = "accept"
-                                userMap["index"] = "0"
-                            } else {
-                                userMap["acceptor"] = "false"
-                                userMap["vote"] = "pending"
-                                userMap["index"] = index.toString()
-                                index++
-                            }
-                            users[user] = userMap
-                        }
-                    }
-                    var pendingGroup = PendingGroup(
-                        pendingGroupId = UUID.randomUUID().toString(),
-                        matchingGroup = primaryGroup,
-                        pendingGroup = acceptedGroup.name,
-                        users = users,
-                        isPending = true,
-                        isMatched = false
-                    )
-                    // add pending group to firestore pendingGroups collection
+        db.collection("pendingGroups")
+            .whereEqualTo("matchingGroup", primaryGroup)
+            .whereEqualTo("pendingGroup", acceptedGroup)
+            .get()
+            .addOnSuccessListener { result ->
+                var pendingGroupExists = false
+                for (doc in result) {
+                    // pending group already exists
+                    pendingGroupExists = true
+                    val pendingGroup = doc.toObject(PendingGroup::class.java)
+                    // update the existing pending groups vote for current user to accept
                     db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString())
-                        .set(pendingGroup)
-                    removeGroups.add(acceptedGroup)
-                    prevGroup = null
-                    // update undo state of current user
-                    currentUserDocRef.update("undoState", false)
-                    // swipe the card
-                    binding.cardStackView.swipe()
+                        .update("users.$id.vote", "accept")
                 }
-        }
+                // if the pending group does not exist in the database then create a new pending group
+                if (!pendingGroupExists) {
+                    if (primaryGroup != null) {
+                        db.collection("groups").document(primaryGroup!!).get()
+                            .addOnSuccessListener { result ->
+                                var users: HashMap<String, HashMap<String, String>> = hashMapOf()
+                                var index = 1
+                                val primaryGroupObj = result.toObject(Group::class.java)
+                                if (primaryGroupObj != null) {
+                                    for (user in primaryGroupObj.users!!) {
+                                        val userMap = hashMapOf<String, String>()
+                                        userMap["uid"] = user
+                                        if (user == currentUser?.uid) {
+                                            userMap["acceptor"] = "true"
+                                            userMap["vote"] = "accept"
+                                            userMap["index"] = "0"
+                                        } else {
+                                            userMap["acceptor"] = "false"
+                                            userMap["vote"] = "pending"
+                                            userMap["index"] = index.toString()
+                                            index++
+                                        }
+                                        users[user] = userMap
+                                    }
+                                }
+                                var pendingGroup = PendingGroup(
+                                    pendingGroupId = UUID.randomUUID().toString(),
+                                    matchingGroup = primaryGroup,
+                                    pendingGroup = acceptedGroup.name,
+                                    users = users,
+                                    isPending = true,
+                                    isMatched = false
+                                )
+                                // add pending group to firestore pendingGroups collection
+                                db.collection("pendingGroups")
+                                    .document(pendingGroup.pendingGroupId.toString())
+                                    .set(pendingGroup)
+                            }
+                    }
+                }
+                removeGroups.add(acceptedGroup)
+                prevGroup = null
+                // update undo state of current user
+                currentUserDocRef.update("undoState", false)
+                // swipe the card
+                binding.cardStackView.swipe()
+            }
     }
 
     override fun onRejectBtnClick(group: Group) {
