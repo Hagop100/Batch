@@ -61,14 +61,14 @@ class EditGroupInfoFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
 //      initialize the values of Group class
-        group = Group(
-            name = "",
-            users = ArrayList<String>(),
-            interestTags = ArrayList(),
-            aboutUsDescription = "",
-            biscuits = 0,
-            image = "@drawable/placeholder"
-        )
+//        group = Group(
+//            name = "",
+//            users = ArrayList<String>(),
+//            interestTags = ArrayList(),
+//            aboutUsDescription = "",
+//            biscuits = 0,
+//            image = "@drawable/placeholder"
+//        )
 
 
     }
@@ -139,6 +139,8 @@ class EditGroupInfoFragment : Fragment() {
                    // Toast.makeText(this.context, "$updatedList", Toast.LENGTH_SHORT).show()
                 }
             }
+
+
 
         }//end of firebase document
 
@@ -298,9 +300,11 @@ class EditGroupInfoFragment : Fragment() {
 
                     //load the group picture to preview
                     sharedViewModel.groupPic.value = imageURL.toString()
+//                    sharedViewModel.setGroupPicture(imageURL.toString())
+                    Log.i(TAG, "IMAGEURL: $imageURL")
                 }
 //                imageURL = imageUri.toString()
-                Log.i(TAG, "IMAGEURL: $imageURL")
+
 
             }.addOnFailureListener {
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
@@ -330,6 +334,12 @@ class EditGroupInfoFragment : Fragment() {
     companion object {
 
         private const val TAG = "print" //for logcat debugging
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+        sharedViewModel.groupPic.removeObservers(viewLifecycleOwner)
     }
 }
 

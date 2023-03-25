@@ -206,7 +206,8 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
 
         //Exit to navigate back to the my groups page
         binding.exitViewBtn.setOnClickListener{
-            findNavController().popBackStack()
+           // findNavController().popBackStack()
+           findNavController().navigate(R.id.action_viewGroupInfoFragment_to_myGroupFragment)
         }
         return binding.root
     }
@@ -225,6 +226,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
      */
     override fun onDestroyView() {
         super.onDestroyView()
+        sharedViewModel.groupPic.removeObservers(viewLifecycleOwner)
         _binding = null
     }
 
