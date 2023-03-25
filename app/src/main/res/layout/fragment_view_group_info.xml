@@ -136,7 +136,6 @@
             android:id="@+id/user_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="10dp"
             android:layout_below="@id/team_members"/>
     </RelativeLayout>
 </ScrollView>

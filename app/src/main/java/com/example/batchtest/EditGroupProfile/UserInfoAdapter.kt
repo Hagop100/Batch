@@ -66,6 +66,6 @@ class UserInfoAdapter(
 
     // listener will listen whenever user is clicked to navigate to user display page
     interface UserInfoListener {
-        fun onItemClick(userId: String)
+        fun onItemClick(userEmail: String)
     }
 }

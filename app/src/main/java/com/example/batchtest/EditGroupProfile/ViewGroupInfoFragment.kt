@@ -52,6 +52,8 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
     private var _binding: FragmentViewGroupInfoBinding? = null
     private val binding get() = _binding!!
     var db = Firebase.firestore
+    // get the authenticated logged in user
+    private val currentUser = Firebase.auth.currentUser
     private lateinit var userRecyclerView: RecyclerView
 //    private val args: ViewGroupInfoFragmentArgs by navArgs()
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
@@ -204,7 +206,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
 
         //Exit to navigate back to the my groups page
         binding.exitViewBtn.setOnClickListener{
-            findNavController().navigate(R.id.action_viewGroupInfoFragment_to_myGroupFragment)
+            findNavController().popBackStack()
         }
         return binding.root
     }
@@ -227,13 +229,19 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
     }
 
     // navigate to user display page when clicked
-    override fun onItemClick(userId: String) {
-        val action = ViewGroupInfoFragmentDirections.actionViewGroupInfoFragmentToViewUserInfoFragment(
-            userId
-        )
-        findNavController().navigate(action)
+    override fun onItemClick(userEmail: String) {
+        // if current user clicks on own profile picture, then navigate to their profile tab
+        // else navigate to the clicked user's display page
+        if (userEmail == currentUser?.email) {
+            findNavController().navigate(R.id.action_viewGroupInfoFragment_to_userProfileTabFragment)
+        } else {
+            val action =
+                ViewGroupInfoFragmentDirections.actionViewGroupInfoFragmentToViewUserInfoFragment(
+                    userEmail
+                )
+            findNavController().navigate(action)
+        }
     }
-
 }
 
 

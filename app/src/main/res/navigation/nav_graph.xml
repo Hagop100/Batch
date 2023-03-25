@@ -165,6 +165,11 @@
         <action
             android:id="@+id/action_viewGroupInfoFragment_to_viewUserInfoFragment"
             app:destination="@id/viewUserInfoFragment"/>
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_userProfileTabFragment"
+            app:destination="@id/userProfileTabFragment"
+            app:popUpTo="@id/myGroupFragment"
+            app:popUpToSaveState="true"/>
     </fragment>
     <fragment
         android:id="@+id/joinGroupFragment"

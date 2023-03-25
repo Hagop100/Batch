@@ -9,13 +9,17 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragmentArgs
+import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentViewUserInfoBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
 /**
@@ -28,13 +32,18 @@ class ViewUserInfoFragment : Fragment() {
     private val binding get() = _binding!!
     private val args: ViewUserInfoFragmentArgs by navArgs<ViewUserInfoFragmentArgs>()
     var db = Firebase.firestore
+    // get the authenticated logged in user
+    private val currentUser = Firebase.auth.currentUser
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentViewUserInfoBinding.inflate(layoutInflater, container, false)
-
+        val mutualGroupsRV = binding.mutualGroupsRv
+        mutualGroupsRV.layoutManager = LinearLayoutManager(context)
+        val mutualMatchedGroupsRV = binding.mutualMatchedGroupsRv
+        mutualMatchedGroupsRV.layoutManager = LinearLayoutManager(context)
         // return to previous fragment
         binding.exitViewBtn.setOnClickListener {
             findNavController().popBackStack()
@@ -78,25 +87,44 @@ class ViewUserInfoFragment : Fragment() {
             dialog.show()
         }
 
-        // fetch user info
+
+        // fetch displayed user info
         db.collection("users").whereEqualTo("email", args.userEmail)
             .get()
             .addOnSuccessListener { result ->
-                var userFound = false
-                for (doc in result) {
-                    userFound = true
-                    var user = doc.toObject(User::class.java)
+                val user = result.documents[0].toObject(User::class.java)
+                if (user != null) {
                     binding.userName.text = user.getName()
                     if (user.imageUrl.isNullOrEmpty()){
                         binding.userPicture.setImageResource(R.drawable.placeholder)
                     } else {
                         Glide.with(this).load(user.imageUrl).into(binding.userPicture)
                     }
-                }
-                if (!userFound) {
+                    val mutualGroups:ArrayList<String> = arrayListOf()
+                    val mutualMatchedGroups:ArrayList<String> = arrayListOf()
+                    db.collection("users").document(currentUser!!.uid).get()
+                        .addOnSuccessListener {
+                            val currUserObj = it.toObject(User::class.java)
+                            if (currUserObj != null) {
+                                for (group in user.myGroups) {
+                                    if (currUserObj.myGroups.contains(group)) {
+                                        mutualGroups.add(group)
+                                    }
+                                }
+                                mutualGroupsRV.adapter = ViewUserInfoAdapter(context, mutualGroups)
+                                for (group in user.matchedGroups) {
+                                    if (currUserObj.matchedGroups.contains(group)) {
+                                        mutualMatchedGroups.add(group)
+                                    }
+                                }
+                                mutualMatchedGroupsRV.adapter = ViewUserInfoAdapter(context, mutualMatchedGroups)
+                            }
+                        }
+                } else {
                     TODO("user not found")
                 }
             }
+
         return binding.root
     }
 

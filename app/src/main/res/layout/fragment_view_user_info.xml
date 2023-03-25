@@ -43,6 +43,7 @@
                 android:layout_height="199dp"
                 android:scaleType="centerCrop"
                 android:layout_centerHorizontal="true"/>
+            <!-- user display name -->
             <TextView
                 android:id="@+id/user_name"
                 android:layout_width="wrap_content"
@@ -60,14 +61,40 @@
                 android:layout_marginVertical="10dp"
                 android:background="@color/horizontal_line"
                 android:layout_below="@id/user_name"/>
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Groups together"/>-->
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Matched Groups together"/>-->
+            <!-- mutual joined groups with displayed user -->
+            <TextView
+                android:id="@+id/mutual_groups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:text="Mutual Groups"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_below="@id/horizontal_line_1"/>
+            <!-- recycler view for mutual groups of displayed user -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mutual_groups_rv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mutual_groups"/>
+
+            <!-- mutual matched groups of displayed user -->
+            <TextView
+                android:id="@+id/mutual_matched_groups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:text="Mutual Matched Groups"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_below="@id/mutual_groups_rv"/>
+
+            <!-- recycler view for mutual matched groups of displayed user -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mutual_matched_groups_rv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mutual_matched_groups" />
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>

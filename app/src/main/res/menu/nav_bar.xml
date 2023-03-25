@@ -10,7 +10,6 @@
         android:icon="@drawable/my_groups_icon"
         android:title="@string/my_groups"/>
 
-<!--    TODO: change id to designated tab-->
     <item
         android:id="@id/otherGroupTabFragment"
         android:icon="@drawable/other_groups_icon"

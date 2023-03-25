@@ -76,7 +76,7 @@ class PendingGroupAdapter(
             val pendingGroupObj = group.pendingGroupObj
 
             if (matchingGroupObj != null) {
-                if (matchingGroupObj.image == null || matchingGroupObj.image == "") {
+                if (matchingGroupObj.image.isNullOrEmpty()) {
                     holder.matchingGroupImg.setImageResource(R.drawable.placeholder)
                 } else {
                     if (context != null) {
