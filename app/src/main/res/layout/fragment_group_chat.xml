@@ -14,11 +14,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_gchannel"
+            android:id="@+id/fragment_group_chat_tb"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/Widget.AppCompat.Toolbar"
-            app:popupTheme="@style/Theme.AppCompat.Light">
+            app:logo="@drawable/batch_icon"
+            app:popupTheme="@style/Theme.AppCompat.Light"
+            app:title="@string/accept_button"
+            app:titleMargin="4dp"
+            app:titleMarginStart="40dp"
+            app:titleMarginTop="16dp">
 
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
