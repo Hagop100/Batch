@@ -141,6 +141,8 @@ class GroupChatFragment : Fragment() {
                             myGroupNames.add(group?.name!!)
                         }
                         if(myGroupNames.size > 0) {
+                            //Set Group Chat title in toolbar
+                            setGroupChatTitle(myGroupNames[0])
                             //Decision must happen here which groupChat they want to open!
                             //For now we will select the first index
                             Log.i(TAG, myGroupNames[0])
@@ -194,6 +196,10 @@ class GroupChatFragment : Fragment() {
     private fun writeMessageToFirestore(db: FirebaseFirestore) {
         val chatDocRef = chatId?.let { db.collection("chats").document(it) }
         chatDocRef?.update("messages", messagesArrayList)
+    }
+
+    private fun setGroupChatTitle(myGroupName: String) {
+        binding.fragmentGroupChatTb.title = "$myGroupName/$theirGroupName"
     }
 
     companion object {
