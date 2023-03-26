@@ -83,5 +83,18 @@
     <string name="account_setting_title">Account Settings</string>
     <string name="notification">Notifications</string>
 
+    <!-- Notifications -->
+    <string name="default_notification_channel_id">notification_channel_id</string>
+
+
+    <!-- Profile Information -->
+    <string name="update">Update</string>
+    <string name="birthday">Select Birthday</string>
+    <string name="firstName">Enter First Name</string>
+    <string name="lastName">Enter Last Name</string>
+    <string name="displayName">Enter Display Name</string>
+    <string name="personalBio">Tells us a little about yourself</string>
+    <string name="personalEmail">Your Email</string>
+    <string name="group_chat_title_placeholder">Group Chat</string>
 
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="match_parent"
+<ScrollView
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:scrollbars="none"
@@ -7,9 +8,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp">
 
-        <!-- more button in corner to perform actions for group -->
+        <!-- exit button to return to previous fragment -->
         <Button
             android:id="@+id/exit_view_btn"
             style="@style/Widget.AppCompat.Button.Borderless"
@@ -18,6 +20,7 @@
             app:icon="@drawable/close_icon"
             app:iconTint="@color/black" />
 
+        <!-- more button in corner to perform actions for group -->
         <ImageButton
             android:id="@+id/group_profile_more_btn"
             android:layout_width="25dp"
@@ -28,113 +31,111 @@
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="15dp"
             android:layout_marginVertical="15dp"/>
-        <!-- card view that holds the group info -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/group_info_card"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:layout_below="@id/group_profile_more_btn"
-            android:layout_marginHorizontal="7dp"
-            app:cardCornerRadius="4dp"
-            app:cardElevation="13dp"
-            app:cardBackgroundColor="@color/app_background">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <!-- relative layout holds the group name and biscuits -->
-                <RelativeLayout
-                    android:id="@+id/group_info_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="14dp"
-                    android:paddingHorizontal="20dp">
-                    <TextView
-                        android:id="@+id/group_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:theme="@style/page_title" />
-                    <TextView
-                        android:id="@+id/biscuit_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:textColor="@color/black"
-                        android:layout_toStartOf="@id/biscuit_icon"
-                        android:layout_centerInParent="true"/>
-                    <ImageView
-                        android:id="@+id/biscuit_icon"
-                        android:layout_width="15dp"
-                        android:layout_height="15dp"
-                        android:contentDescription="@string/biscuit_icon"
-                        android:src="@drawable/biscuits_icon"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"/>
-                </RelativeLayout>
-                <!-- group photo -->
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:adjustViewBounds="true"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/one_direction_photo"
-                    android:contentDescription="matching group card photo"
-                    android:layout_below="@id/group_info_container"/>
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
-        <!-- a card view for the interest tags -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/interest_tag_card"
+
+        <!-- relative layout holds the group name and biscuits -->
+        <RelativeLayout
+            android:id="@+id/group_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_below="@id/group_info_card"
-            android:layout_marginHorizontal="7dp"
-            android:layout_marginTop="-4dp"
-            app:cardBackgroundColor="@color/app_background"
-            app:cardCornerRadius="4dp"
-            app:cardElevation="16dp">
-            <!-- use flex box layout to align the dynamic interest tags -->
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/interest_tags"
-                android:layout_width="match_parent"
+            android:paddingBottom="14dp"
+            android:paddingHorizontal="20dp"
+            android:layout_below="@id/group_profile_more_btn">
+            <TextView
+                android:id="@+id/group_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:theme="@style/page_title" />
+            <TextView
+                android:id="@+id/biscuit_value"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                app:flexWrap="wrap"
-                app:justifyContent="center">
-            </com.google.android.flexbox.FlexboxLayout>
-        </androidx.cardview.widget.CardView>
-        <!-- card view for the about us description -->
-        <androidx.cardview.widget.CardView
+                android:layout_marginEnd="5dp"
+                android:textColor="@color/black"
+                android:layout_toStartOf="@id/biscuit_icon"
+                android:layout_centerInParent="true"/>
+            <ImageView
+                android:id="@+id/biscuit_icon"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:contentDescription="@string/biscuit_icon"
+                android:src="@drawable/biscuits_icon"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
+        <!-- group photo -->
+        <ImageView
+            android:id="@+id/group_picture"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:contentDescription="matching group card photo"
+            android:layout_below="@id/group_info_container"/>
+
+        <!-- use flex box layout to align the dynamic interest tags -->
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@+id/interest_tags"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/about_us_container"
-            android:layout_below="@id/interest_tag_card"
-            android:layout_marginHorizontal="7dp"
-            android:layout_marginTop="-4dp"
-            app:cardBackgroundColor="@color/app_background"
-            app:cardCornerRadius="4dp"
-            app:cardElevation="18dp"
-            android:layout_marginBottom="60dp">
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingHorizontal="15dp"
-                android:paddingVertical="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="@string/about_us"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/about_us_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="200dp"/>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+            android:padding="20dp"
+            app:flexWrap="wrap"
+            app:justifyContent="center"
+            android:layout_below="@id/group_picture">
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!-- horizontal line -->
+        <View
+            android:id="@+id/horizontal_line_1"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginVertical="10dp"
+            android:background="@color/horizontal_line"
+            android:layout_below="@id/interest_tags"/>
+
+        <!-- about us description -->
+        <TextView
+            android:id="@+id/about_us"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="15dp"
+            android:text="@string/about_us"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_below="@id/horizontal_line_1"/>
+
+        <TextView
+            android:id="@+id/about_us_description"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="15dp"
+            android:paddingBottom="15dp"
+            android:layout_below="@id/about_us"/>
+
+        <!-- horizontal line -->
+        <View
+            android:id="@+id/horizontal_line_2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="10dp"
+            android:background="@color/horizontal_line"
+            android:layout_below="@id/about_us_description"/>
+
+        <!-- team members -->
+        <TextView
+            android:id="@+id/team_members"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Team Members"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:padding="15dp"
+            android:layout_below="@id/horizontal_line_2"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/user_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/team_members"/>
     </RelativeLayout>
 </ScrollView>

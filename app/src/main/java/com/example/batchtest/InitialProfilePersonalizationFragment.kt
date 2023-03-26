@@ -3,6 +3,7 @@ package com.example.batchtest
 import android.Manifest
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -31,6 +32,7 @@ import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
 
+//TODO add a skip button,
 
 /**
  * Use Case 3 Initial Profile Personalization page.
@@ -50,11 +52,16 @@ class InitialProfilePersonalizationFragment : Fragment() {
     private lateinit var birthday: String
     private lateinit var personalBio: String
     private lateinit var gender: String
-    private lateinit var imageUri: Uri
+    private var imageUri: Uri? = null
     private lateinit var userDetails: User
     private lateinit var firstName: String
     private lateinit var lastName: String
     private lateinit var imageURL: String
+    private lateinit var email: String
+    private lateinit var progressDialog: Dialog
+
+    //variable used to check whether URI has been set
+    private var uriSet = false
 
     //ActivityResultLauncher must be initialized onCreate
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
@@ -77,7 +84,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
         const val USER_PROFILE_IMAGE: String = "User_Profile_Image"
         const val FIRSTNAME: String = "firstName"
         const val LASTNAME: String ="lastName"
-        const val EMAIL: String = "email"
+        const val PROFILECOMPLETE = "profileComplete"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -131,16 +138,38 @@ class InitialProfilePersonalizationFragment : Fragment() {
             birthdayPicker()
         }
 
+        //User Profile will be updated in the firestore database and navigation will transition to group
+        //creation fragment.
         binding.btnUpdate.setOnClickListener {
 
             //Verify that no entry is empty and populate the hashMap with the User inputs.
-            if(validateEntries(it) && imageURL != null)
+            if(validateEntries(it))
             {
+
                 updateUserProfileDatabase()
             }
-            //else wait and try again for image URL
+        }
+
+        //User profile will skip the intial profile setup and move to group creation fragment.
+        binding.btnSkip.setOnClickListener {
+            findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_groupCreationFragment)
         }
     }
+
+    /**
+     * Get the user from the database
+     *
+     * */
+//    private fun getUser()
+//    {
+//        FirebaseFirestore.getInstance().collection("users")
+//            .document(getCurrentUserID()).get().addOnSuccessListener { document ->
+//                userDetails = document.toObject(User::class.java)!!
+//                email = userDetails.email.toString()
+//            }.addOnFailureListener{ e ->
+//                Toast.makeText(context, "Unable to retrieve User Info $e", Toast.LENGTH_SHORT).show()
+//            }
+//    }
 
     /**
      * Gathers the user's input and places it in a hashmap
@@ -148,6 +177,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
      * */
     private fun updateUserProfileDatabase()
     {
+
         //Get the values the user has input
         //Save values in a Hashmap that will be used to update the user's information
         //in the firebase database.
@@ -165,13 +195,17 @@ class InitialProfilePersonalizationFragment : Fragment() {
         personalBio = binding.etPersonalBio.text.toString()
         userHasMap[FIRSTNAME] = firstName
         userHasMap[LASTNAME] = lastName
-        userHasMap[EMAIL] = "eman@email.com"
         userHasMap[DISPLAYNAME] = displayName
         userHasMap[GENDER] = gender
         userHasMap[BIRTHDATE] = birthday
         userHasMap[PERSONALBIO] = personalBio
-        userHasMap[IMAGEURI] = imageUri
-        userHasMap[IMAGEURL] = imageURL
+        userHasMap[PROFILECOMPLETE] = true
+        if(uriSet)
+        {
+            userHasMap[IMAGEURI] = imageUri!!
+            userHasMap[IMAGEURL] = imageURL
+        }
+
 
         //Get a instance of the Firebase Firestore database and update the user's information
         FirebaseFirestore.getInstance().collection("users")
@@ -240,12 +274,15 @@ class InitialProfilePersonalizationFragment : Fragment() {
                 try {
                     Toast.makeText(context,"Got URI",Toast.LENGTH_LONG).show()
                     imageUri = data.data!!
+                    uriSet = true
                     Glide.with(this).load(imageUri).into(userPic)
-                    //Not necessarily the best location for this
-                    //However, since it takes time to receive the URL
-                    //Placing it here has led to successful results.
-                    //Still must determine if there is a better solution
+
+                    //Progress Dialog giving time to get the storage locations URL
+                    //This might not be the best location, however, it is the
+                    //only location that it works since uploadUserImage is an asynchronous listener.
+                    showProgressDialog()
                     uploadUserImageToCloud(activity,imageUri)
+
                 }catch (e: IOException){
                     e.printStackTrace()
                     Toast.makeText(context, "Image Selection Failed", Toast.LENGTH_LONG).show()
@@ -289,9 +326,11 @@ class InitialProfilePersonalizationFragment : Fragment() {
                 // Getting the TaskSnapshot takes a bit of time,
                 taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
                     imageURL = uri.toString()
+                    dismissProgressDialog()
                 }
 
             }.addOnFailureListener {
+                dismissProgressDialog()
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
             }
     }
@@ -300,7 +339,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
     /**Function Returns whether any User input is empty
      * Displays a toast to the user to fill in property*/
     private fun validateEntries(view: View):Boolean{
-        return when{
+         when{
             TextUtils.isEmpty(binding.etFirstName.text.toString().trim{it <= ' '})-> {
                 Toast.makeText(view.context,"Please Enter Your First Name", Toast.LENGTH_LONG).show()
                 return false
@@ -322,10 +361,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
                 Toast.makeText(view.context,"Please Select Your Date of Birth", Toast.LENGTH_LONG).show()
                 return false
             }
-            imageURL == "holder"  -> {
-                Toast.makeText(view.context,"Please Enter a profile image", Toast.LENGTH_LONG).show()
-                return false
-            }
+
             else->{return true}
         }
     }
@@ -373,5 +409,22 @@ class InitialProfilePersonalizationFragment : Fragment() {
 
         datePicker.datePicker.maxDate = System.currentTimeMillis()
         datePicker.show()
+    }
+
+    private fun showProgressDialog()
+    {
+        progressDialog = Dialog(requireContext())
+
+        progressDialog.setContentView(R.layout.dialog_progress)
+
+        progressDialog.setCancelable(false)
+        progressDialog.setCanceledOnTouchOutside(false)
+
+        progressDialog.show()
+    }
+
+    private fun dismissProgressDialog()
+    {
+        progressDialog.dismiss()
     }
 }

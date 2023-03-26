@@ -10,4 +10,13 @@
         android:layout_height="match_parent"
         android:paddingBottom="80dp"
         android:clipToPadding="false"/>
+    <!--    display message that user has no pending groups-->
+    <TextView
+        android:id="@+id/pending_tab_message"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:paddingTop="200dp"/>
 </RelativeLayout>

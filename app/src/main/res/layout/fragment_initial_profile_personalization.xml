@@ -240,12 +240,24 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/et_personalBio"
             app:layout_constraintStart_toStartOf="@id/et_personalBio"
+            app:layout_constraintBottom_toTopOf="@id/btn_skip"
+            android:layout_marginTop="10dp"
+            android:paddingTop="5dp"
+            android:text="@string/update"
+            />
+        <Button
+            android:id="@+id/btn_skip"
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/btn_update"
+            app:layout_constraintStart_toStartOf="@id/btn_update"
             app:layout_constraintBottom_toBottomOf="@id/sv_personalize"
             android:layout_marginTop="10dp"
             android:paddingTop="5dp"
             android:layout_marginBottom="40dp"
-            android:text="Update"
+            android:text="Skip For Now"
             />
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

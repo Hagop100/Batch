@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/app_background"
+    android:id="@+id/group_card_view"
+    android:backgroundTint="@color/app_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:backgroundTint="@color/app_background">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal"
+            >
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/group_profile"
+                android:layout_width="65dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="20dp"
+                android:clickable="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/one_direction_photo"
+                app:civ_border_color="#FF000000"
+                android:focusable="true" />
+            <!--            <ImageButton-->
+            <!--                android:id="@+id/group_profile"-->
+            <!--                android:layout_width="60dp"-->
+            <!--                android:layout_height="60dp"-->
+            <!--                android:layout_marginStart="20dp"-->
+            <!--                android:layout_marginBottom="20dp"-->
+            <!--                android:layout_weight="0"-->
+            <!--                android:background="@drawable/circular_shape"-->
+            <!--                android:scaleType="centerCrop"-->
+            <!--                tools:layout_editor_absoluteX="176dp" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/group_list_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:text="Group Name"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/group_list_des"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+
+                    android:text="Group Description"
+                    android:textColor="@color/purple_500" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/horizontal_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/horizontal_line" />
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

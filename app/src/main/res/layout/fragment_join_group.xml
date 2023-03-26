@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".myGroupsTab.JoinGroupFragment"
+    android:background="@color/app_background"
+    android:theme="@style/page_text"
+    android:paddingVertical="30dp"
+    android:paddingHorizontal="20dp">
+
+    <TextView
+        android:id="@+id/join_group_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Join a group"
+        android:theme="@style/page_title"/>
+
+    <Button
+        android:id="@+id/exit_join_group"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:layout_alignParentEnd="true"
+        app:icon="@drawable/close_icon"
+        app:iconTint="#312B28" />
+
+    <TextView
+        android:id="@+id/group_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="10dp"
+        android:text="Invite code:"
+        android:layout_below="@id/join_group_title"/>
+
+    <EditText
+        android:id="@+id/edit_group_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter group invite code"
+        android:background="@drawable/round_corner"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:padding="10dp"
+        android:textStyle="bold"
+        android:layout_below="@id/group_code"
+        />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/group_card_view"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_below="@id/edit_group_code"
+        android:layout_marginVertical="40dp"
+        android:padding="10dp"
+        android:visibility="invisible"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/off_white">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingVertical="50dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/group_img"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/one_direction_photo"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="4dp"
+                />
+
+            <TextView
+                android:id="@+id/group_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Batch besties"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:fontFamily="@font/karla_extra_bold"
+                android:layout_below="@id/group_img"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/member_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="/4"
+                android:gravity="center"
+                android:textSize="14sp"
+                android:layout_below="@id/group_name"/>
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <Button
+        android:id="@+id/join_group_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/purple_500"
+        android:fontFamily="@font/karla"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:padding="15dp"
+        android:layout_marginTop="50dp"
+        android:text="Search"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:cornerRadius="10dp"
+        android:stateListAnimator="@null"
+        android:layout_alignParentBottom="true"/>
+</RelativeLayout>

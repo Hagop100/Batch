@@ -57,13 +57,30 @@
         <action
             android:id="@+id/action_myGroupFragment_to_viewGroupInfoFragment"
             app:destination="@id/viewGroupInfoFragment" />
+        <action
+            android:id="@+id/action_myGroupFragment_to_joinGroupFragment"
+            app:destination="@id/joinGroupFragment" />
+        <action
+            android:id="@+id/action_myGroupFragment_to_groupChatFragment"
+            app:destination="@id/groupChatFragment" />
+        <argument
+            android:name="groupName"
+            app:argType="string" />
     </fragment>
     <!-- other group tab fragment -->
     <fragment
         android:id="@+id/otherGroupTabFragment"
         android:name="com.example.batchtest.OtherGroupsTab.OtherGroupTabFragment"
         android:label="fragment_match_tab"
-        tools:layout="@layout/fragment_match_tab"/>
+        tools:layout="@layout/fragment_match_tab">
+        <action
+            android:id="@+id/action_otherGroupTabFragment_to_groupChatFragment"
+            app:destination="@id/groupChatFragment"
+            app:enterAnim="@anim/slide_in_from_right"
+            app:exitAnim="@anim/slide_out_to_left"
+            app:popEnterAnim="@anim/slide_in_from_left"
+            app:popExitAnim="@anim/slide_out_to_right" />
+    </fragment>
     <fragment
         android:id="@+id/initialProfilePersonalizationFragment"
         android:name="com.example.batchtest.InitialProfilePersonalizationFragment"
@@ -120,6 +137,9 @@
         <action
             android:id="@+id/action_editGroupProfile_to_myGroupFragment"
             app:destination="@id/myGroupFragment" />
+        <action
+            android:id="@+id/action_editGroupProfile_to_viewGroupInfoFragment"
+            app:destination="@id/viewGroupInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
@@ -142,6 +162,49 @@
         <action
             android:id="@+id/action_viewGroupInfoFragment_to_myGroupFragment"
             app:destination="@id/myGroupFragment" />
+        <argument
+            android:name="groupName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_previewGroupInfoFragment"
+            app:destination="@id/previewGroupInfoFragment" />
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_viewUserInfoFragment"
+            app:destination="@id/viewUserInfoFragment"/>
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_userProfileTabFragment"
+            app:destination="@id/userProfileTabFragment"
+            app:popUpTo="@id/myGroupFragment"
+            app:popUpToSaveState="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/joinGroupFragment"
+        android:name="com.example.batchtest.myGroupsTab.JoinGroupFragment"
+        android:label="fragment_join_group"
+        tools:layout="@layout/fragment_join_group" >
+        <action
+            android:id="@+id/action_joinGroupFragment_to_myGroupFragment"
+            app:destination="@id/myGroupFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupChatFragment"
+        android:name="com.example.batchtest.GroupChat.GroupChatFragment"
+        android:label="GroupChatFragment" >
+        <argument
+            android:name="groupName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/previewGroupInfoFragment"
+        android:name="com.example.batchtest.EditGroupProfile.PreviewGroupInfoFragment"
+        android:label="PreviewGroupInfoFragment" />
+    <fragment
+        android:id="@+id/viewUserInfoFragment"
+        android:name="com.example.batchtest.UserProfileTab.userPage.ViewUserInfoFragment"
+        android:label="ViewUserInfoFragment">
+        <argument
+            android:name="userEmail"
+            app:argType="string"/>
     </fragment>
 
 </navigation>

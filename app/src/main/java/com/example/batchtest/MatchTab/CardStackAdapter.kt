@@ -3,17 +3,20 @@ package com.example.batchtest.MatchTab
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Group
 import com.example.batchtest.R
-import com.example.batchtest.databinding.InterestTagBinding
+import com.example.batchtest.User
 import com.example.batchtest.databinding.MatchGroupCardBinding
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 private const val TAG = "CardStackAdapter"
@@ -25,11 +28,20 @@ private const val TAG = "CardStackAdapter"
 //
 // returns a recycler view of cards for each group
 // @params groups   list of potential groups to be matched
+
+// keep state of undo button
 class CardStackAdapter(
+    userId: String,
     private val groups: ArrayList<Group>,
     private val listener: CardStackAdapterListener
     ) : RecyclerView.Adapter<CardStackAdapter.CardStackHolder>() {
+        // initialize firestore to access database
+        private val db = Firebase.firestore
         private lateinit var binding: MatchGroupCardBinding
+        // document reference in firebase of current user
+        val currentUserDocRef = db.collection("users").document(userId)
+        // local variable to store undo state
+        private var undoState: Boolean = false
         // inflate parent fragment with card item layout when ViewHolder is created
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardStackHolder {
             // inflater from parent fragment
@@ -42,6 +54,7 @@ class CardStackAdapter(
             binding.matchMoreBtn.setOnClickListener {
                 // create a bottom sheet dialog
                 val dialog = BottomSheetDialog(parent.context)
+
                 // inflate the view with the dialog linear layout
                 val view:LinearLayout = LayoutInflater.from(parent.context).inflate(R.layout.dialog_layout, binding.root, false) as LinearLayout
 
@@ -74,7 +87,6 @@ class CardStackAdapter(
                 // show the dialog
                 dialog.show()
             }
-
             // pass into a holder to bind
             return CardStackHolder(binding)
         }
@@ -82,6 +94,7 @@ class CardStackAdapter(
         override fun onBindViewHolder(holder: CardStackHolder, position: Int) {
             // create recycle layout for group
             val group = groups[position]
+            //Log.v(TAG, group.name.toString())
             // get interest tags of group
             val tags = group.interestTags
             // set group name
@@ -91,17 +104,43 @@ class CardStackAdapter(
             // set group description
             holder.description.text = group.aboutUsDescription
 
+            // change ui of button dynamically based on undo state of user
+            currentUserDocRef.addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    undoState = snapshot["undoState"] as Boolean
+                    if (undoState) {
+                        holder.undoBtn.alpha = 1F
+                    } else {
+                        holder.undoBtn.alpha = .1F
+                    }
+                } else {
+                    Log.d(TAG, "user not found in database")
+                }
+            }
+
             // inflate the interest tag container
             val inflater: LayoutInflater = LayoutInflater.from(holder.interestTags.context)
             var interestTag: TextView
             // set the layout parameter and margins for interest tag
             val params: LinearLayout.LayoutParams =
-                LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
             params.setMargins(10, 10, 10, 10)
             // dynamically add group tags
             for (tag in tags!!) {
                 // use existing interest tag layout
-                interestTag = inflater.inflate(R.layout.interest_tag, holder.interestTags, false) as TextView
+                interestTag = inflater.inflate(
+                    R.layout.interest_tag,
+                    holder.interestTags,
+                    false
+                ) as TextView
                 // set text of tag
                 interestTag.text = tag
                 // set the defined layout parameters
@@ -112,19 +151,27 @@ class CardStackAdapter(
 
             // undo on click listener
             binding.undoBtn.setOnClickListener {
-                listener.onUndoBtnClick()
+                if (undoState) {
+                    // listener from MatchTabFragment listens when undo button is clicked and will call method
+                    listener.onUndoBtnClick(position)
+                    // reset undo state
+                    undoState = false
+                }
             }
 
             // accept button accepts group when clicked
-            binding.acceptBtn.setOnClickListener{
-                listener.onAcceptBtnClick(group.name!!)
+            binding.acceptBtn.setOnClickListener {
+                // listener from MatchTabFragment listens when accept button is clicked and will call method
+                listener.onAcceptBtnClick(group)
             }
 
             // reject button rejects group when clicked
-            binding.rejectBtn.setOnClickListener{
-                listener.onRejectBtnClick(group.name!!)
+            binding.rejectBtn.setOnClickListener {
+                // listener from MatchTabFragment listens when reject button is clicked and will call method
+                listener.onRejectBtnClick(group)
             }
         }
+
         // returns number of groups
         override fun getItemCount(): Int {
             return groups.size
@@ -140,12 +187,14 @@ class CardStackAdapter(
             val description: TextView = binding.aboutUsDescription
             // interest tags of groups
             val interestTags: FlexboxLayout = binding.interestTags
+            // undo button
+            val undoBtn: ImageButton = binding.undoBtn
         }
 
     // match tab fragment listens to when undo or more button is clicked
     interface CardStackAdapterListener {
-        fun onUndoBtnClick()
-        fun onAcceptBtnClick(groupName:String)
-        fun onRejectBtnClick(groupName:String)
+        fun onUndoBtnClick(position: Int)
+        fun onAcceptBtnClick(group:Group)
+        fun onRejectBtnClick(group:Group)
     }
 }
