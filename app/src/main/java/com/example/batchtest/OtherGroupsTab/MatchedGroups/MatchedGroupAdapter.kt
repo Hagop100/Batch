@@ -3,10 +3,13 @@ package com.example.batchtest.OtherGroupsTab.MatchedGroups
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Group
+import com.example.batchtest.R
 import com.example.batchtest.databinding.MatchedGroupRecyclerViewRowBinding
 
 class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
@@ -14,6 +17,7 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
 
     inner class MatchedGroupViewHolder(val binding: MatchedGroupRecyclerViewRowBinding):
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
+        val card: CardView = binding.matchedGroupRecyclerViewRowCardView
         val groupName: TextView = binding.matchedGroupRecycleViewRowGroupName
         //This needs to be fixed
         val groupPhoto: ImageView = binding.matchedGroupRecyclerViewRowGroupPhoto
@@ -42,6 +46,7 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
     }
 
     override fun onBindViewHolder(holder: MatchedGroupViewHolder, position: Int) {
+        //holder.card.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.slide_in_from_right)
         val currentItem = matchedGroupList[position]
         holder.groupName.text = currentItem
         //holder.groupPhoto = currentItem.image

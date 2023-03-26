@@ -151,7 +151,8 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
      */
     private fun buildDeleteAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int, matchedGroupRV: RecyclerView) {
         alertDialogBuilder.setTitle("Confirm Action: Delete")
-            .setMessage("Are you sure you want to delete this group?")
+            .setMessage("Are you sure you want to un-match this group? " +
+                    "Other members of your group will not be affected. ")
             .setCancelable(true)
             .setPositiveButton("Delete") { _, _ ->
                 db.collection("users")
