@@ -8,7 +8,7 @@
     android:layout_margin="7dp"
     app:cardCornerRadius="5dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="@color/background_text">
+    app:cardBackgroundColor="@color/off_white">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -25,7 +25,6 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/one_direction_photo"
                 android:layout_alignParentBottom="true"
                 android:layout_marginStart="40dp"
             />
@@ -34,7 +33,6 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/one_direction_photo"
                 app:civ_border_color="@color/off_white"
                 app:civ_border_width="3dp"
                 android:layout_centerInParent="true"/>
@@ -49,8 +47,7 @@
             android:layout_above="@id/votingPersonIcons"
             android:paddingTop="10dp"
             android:paddingBottom="4dp"
-            android:textSize="15sp"
-            android:text="lulz"/>
+            android:textSize="15sp"/>
         <!-- container for the person icons during voting -->
         <LinearLayout
             android:id="@+id/votingPersonIcons"
@@ -58,21 +55,29 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true">
             <ImageView
+                android:id="@+id/member_0"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"
+                android:visibility="invisible"/>
             <ImageView
+                android:id="@+id/member_1"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"
+                android:visibility="invisible"/>
             <ImageView
+                android:id="@+id/member_2"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"
+                android:visibility="invisible"/>
             <ImageView
+                android:id="@+id/member_3"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:background="@drawable/person_icon"/>
+                android:src="@drawable/person_icon"
+                android:visibility="invisible"/>
         </LinearLayout>
         <!-- container for the accept and reject button -->
         <RelativeLayout
@@ -83,20 +88,20 @@
             android:layout_centerInParent="true"
             android:paddingHorizontal="20dp"
             android:paddingTop="10dp">
-            <ImageButton
+            <ImageView
                 android:id="@+id/reject_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:contentDescription="@string/reject_button"
-                android:background="@drawable/reject_btn" />
+                android:src="@drawable/reject_btn" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/accept_btn"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:contentDescription="@string/accept_button"
-                android:background="@drawable/accept_btn"/>
+                android:src="@drawable/accept_btn"/>
         </RelativeLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

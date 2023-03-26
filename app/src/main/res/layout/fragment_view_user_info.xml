@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:scrollbars="none"
+    android:background="@color/app_background"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="10dp">
+        <!-- exit button to return to previous fragment -->
+        <Button
+            android:id="@+id/exit_view_btn"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="58dp"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/close_icon"
+            app:iconTint="@color/black" />
+
+        <!-- more button in corner to perform actions for group -->
+        <ImageButton
+            android:id="@+id/user_profile_more_btn"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/more_horiz"
+            android:fillColor="@color/black"
+            android:contentDescription="@string/match_group_card_more_button"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"
+            android:layout_marginVertical="15dp"/>
+
+        <RelativeLayout
+            android:id="@+id/user_info_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_profile_more_btn">
+            <!-- user photo -->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/user_picture"
+                android:layout_width="225dp"
+                android:layout_height="199dp"
+                android:scaleType="centerCrop"
+                android:layout_centerHorizontal="true"/>
+            <!-- user display name -->
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="5dp"
+                android:theme="@style/page_title"
+                android:layout_below="@id/user_picture"
+                android:layout_centerHorizontal="true"/>
+            <!-- horizontal line -->
+            <View
+                android:id="@+id/horizontal_line_1"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginVertical="10dp"
+                android:background="@color/horizontal_line"
+                android:layout_below="@id/user_name"/>
+            <!-- mutual joined groups with displayed user -->
+            <TextView
+                android:id="@+id/mutual_groups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:text="Mutual Groups"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_below="@id/horizontal_line_1"/>
+            <!-- recycler view for mutual groups of displayed user -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mutual_groups_rv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mutual_groups"/>
+
+            <!-- mutual matched groups of displayed user -->
+            <TextView
+                android:id="@+id/mutual_matched_groups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:text="Mutual Matched Groups"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_below="@id/mutual_groups_rv"/>
+
+            <!-- recycler view for mutual matched groups of displayed user -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mutual_matched_groups_rv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mutual_matched_groups" />
+        </RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

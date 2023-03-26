@@ -7,11 +7,16 @@ import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import androidx.cardview.widget.CardView
+import androidx.core.view.marginBottom
+import androidx.core.view.marginTop
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.example.batchtest.R
 import java.util.*
 
 @SuppressLint("ClickableViewAccessibility")
@@ -36,6 +41,9 @@ abstract class MatchedGroupsSwipeHelper(context: Context, private val recyclerVi
         }
     }
 
+    /*
+    This code handles the swiping motion
+     */
     @SuppressLint("ClickableViewAccessibility")
     private val onTouchListener = View.OnTouchListener { _, motionEvent ->
         if(swipePosition < 0) return@OnTouchListener false
@@ -180,12 +188,20 @@ abstract class MatchedGroupsSwipeHelper(context: Context, private val recyclerVi
         super.onChildDraw(c, recyclerView, viewHolder, translationX, dY, actionState, isCurrentlyActive)
     }
 
+    //Draws the buttons revealed via swiping
     private fun drawButton(c: Canvas, itemView: View, buffer: MutableList<MatchedGroupButton>, pos: Int, translationX: Float) {
         var right = itemView.right.toFloat()
         val dButtonWidth = -1*translationX/buffer.size
+        //get cardView item because we will need its margin values to adjust the top and bottom of the rectangle
+        val cardView: CardView = itemView.findViewById(R.id.matched_group_recycler_view_row_card_view)
+        //Top must be added with the margin
+        //Remember that on a computer the y-axis becomes more positive moving downwards
+        //This adjusts the rectangle to match the cardview size
+        val top = itemView.top.toFloat() + cardView.marginTop.toFloat()
+        val bottom = itemView.bottom.toFloat() - cardView.marginBottom.toFloat()
         for(button in buffer) {
             val left = right - dButtonWidth
-            button.onDraw(c, RectF(left, itemView.top.toFloat(), right, itemView.bottom.toFloat()), pos)
+            button.onDraw(c, RectF(left, top, right, bottom), pos)
             right = left
         }
     }

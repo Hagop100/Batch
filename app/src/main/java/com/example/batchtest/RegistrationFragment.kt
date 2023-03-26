@@ -67,13 +67,13 @@ class RegistrationFragment : Fragment() {
             myGroups = ArrayList(),
             matchedGroups = ArrayList(),
             pendingGroups = ArrayList(),
+            undoState = false,
+            primaryGroup = null
         )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val db = Firebase.firestore // database
-
-
 
         // Inflate the layout for this fragment
         _binding = FragmentRegistrationBinding.inflate(inflater, container, false)
@@ -124,8 +124,6 @@ class RegistrationFragment : Fragment() {
 //                .addOnFailureListener{ e ->
 //                    Log.i(email, "Error writing document", e)
 //                }
-
-
         }
 
         return binding.root

@@ -9,7 +9,7 @@ class UserHolder(
     val binding: ListItemUserBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(user: User) {
-        binding.nameListTitle.text = user.getName()
+        binding.userName.text = user.getName()
     }
 }
 

@@ -10,6 +10,10 @@ import androidx.core.content.ContextCompat
 class MatchedGroupButton(private val context: Context, private val text: String,
                          private val textSize: Int, private val imageResId: Int,
                          private val color: Int, private val listener: MatchedGroupAdapter.MatchedGroupRecyclerViewEvent) {
+
+    /*
+    This file handles the individual buttons that appear when swiping
+     */
     private var pos: Int = 0
     private var clickRegion: RectF? = null
     private val resources: Resources = context.resources
@@ -46,13 +50,28 @@ class MatchedGroupButton(private val context: Context, private val text: String,
         else {
             val d = ContextCompat.getDrawable(context, imageResId)
             val bitmap = drawableToBitMap(d)
-            c.drawBitmap(bitmap, (rectF.left + rectF.right) / 2, (rectF.top + rectF.bottom) / 2, p)
+            val left = ((rectF.left + rectF.right) / 2) - (bitmap.width / 2).toFloat()
+            val top = ((rectF.top + rectF.bottom) / 2) - (bitmap.height / 2).toFloat()
+            /*
+            This is the moment where we actually draw the icon into the button
+            Note that to properly center the buttons we cannot simply take the left and right side of the rectangle
+            and divide by 2. While this does get us the center of our rectangle, the image will be placed at this center
+            starting from the images top left. The top left of the image is the (0,0) coordinate and that exact point of
+            the image is placed where we tell it to. Therefore, if we want the image to SEEM centered, we actually have
+            to modify the center of the rectangle to actually be offset by the images width and height. This is exactly what
+            I do above.
+             */
+            c.drawBitmap(bitmap, left, top, p)
         }
 
         clickRegion = rectF
         this.pos = pos
     }
 
+    /*
+    This specifically takes in the icon images and converts them into a bitMap
+    That is how android handles drawing images programmatically by creating a bitmap out of them
+     */
     private fun drawableToBitMap(d: Drawable?): Bitmap {
         if(d is BitmapDrawable) return d.bitmap
         val bitmap = Bitmap.createBitmap(d!!.intrinsicWidth, d.intrinsicHeight, Bitmap.Config.ARGB_8888)
