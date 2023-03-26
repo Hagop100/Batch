@@ -20,7 +20,7 @@
             android:theme="@style/Widget.AppCompat.Toolbar"
             app:logo="@drawable/batch_icon"
             app:popupTheme="@style/Theme.AppCompat.Light"
-            app:title="@string/accept_button"
+            app:title="@string/group_chat_title_placeholder"
             app:titleMargin="4dp"
             app:titleMarginStart="40dp"
             app:titleMarginTop="16dp">

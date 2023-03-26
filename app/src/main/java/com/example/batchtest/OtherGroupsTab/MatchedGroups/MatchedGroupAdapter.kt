@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Group
 import com.example.batchtest.databinding.MatchedGroupRecyclerViewRowBinding
 
-class MatchedGroupAdapter(private val matchedGroupList: ArrayList<Group>,
+class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
                           private val listener: MatchedGroupRecyclerViewEvent): RecyclerView.Adapter<MatchedGroupAdapter.MatchedGroupViewHolder>() {
 
     inner class MatchedGroupViewHolder(val binding: MatchedGroupRecyclerViewRowBinding):
@@ -43,7 +43,7 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<Group>,
 
     override fun onBindViewHolder(holder: MatchedGroupViewHolder, position: Int) {
         val currentItem = matchedGroupList[position]
-        holder.groupName.text = currentItem.name
+        holder.groupName.text = currentItem
         //holder.groupPhoto = currentItem.image
     }
 
