@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -19,6 +20,7 @@ import com.bumptech.glide.Glide
 import com.example.batchtest.Group
 import com.example.batchtest.R
 import de.hdodenhof.circleimageview.CircleImageView
+import org.w3c.dom.Text
 
 /**
  * bridge the communication between MyGroupFragment and GroupCreationFragment.
@@ -44,6 +46,7 @@ class MyGroupAdapter(
         holder.groupName.text = info.name
         holder.aboutUs.text = info.aboutUsDescription
 
+
         //if user does not change the default picture. then set the default as group pic
         if (groupNameList[position].image.isNullOrEmpty()){
             holder.groupPic.setImageResource(R.drawable.placeholder)
@@ -63,12 +66,12 @@ class MyGroupAdapter(
 //            findNavController(holder.groupName).navigate(R.id.action_myGroupFragment_to_viewGroupInfoFragment)
 //
 //        }
-
+        //set on click action to move to the group chat - implemented in the MyGroupFragment with override function
+        holder.groupCardView.setOnClickListener{
+            listener.onCardViewClick(position)
+        }
 
     }
-
-
-
 
     //It returns the count of items present in the list.
     override fun getItemCount(): Int {
@@ -81,10 +84,13 @@ class MyGroupAdapter(
         val groupName : TextView = itemView.findViewById(R.id.group_list_name)
         val aboutUs: TextView = itemView.findViewById(R.id.group_list_des)
         val groupPic : CircleImageView = itemView.findViewById(R.id.group_profile)
+        val groupCardView: CardView = itemView.findViewById(R.id.group_card_view)
 
         init {
             groupPic.setOnClickListener(this)
+            groupCardView.setOnClickListener(this)
         }
+
         //extract the position of the group pic
         override fun onClick(v: View?) {
             val position = absoluteAdapterPosition
@@ -97,9 +103,10 @@ class MyGroupAdapter(
         }
     }
 
-    //
+    //functions that are implemented in the MyGroupFragment for navigation
     interface GroupProfileViewEvent{
-        fun onItemClick(postion: Int)
+        fun onItemClick(position: Int)
+        fun onCardViewClick(position: Int)
     }
 
 

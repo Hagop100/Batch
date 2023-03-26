@@ -60,6 +60,12 @@
         <action
             android:id="@+id/action_myGroupFragment_to_joinGroupFragment"
             app:destination="@id/joinGroupFragment" />
+        <action
+            android:id="@+id/action_myGroupFragment_to_groupChatFragment"
+            app:destination="@id/groupChatFragment" />
+        <argument
+            android:name="groupName"
+            app:argType="string" />
     </fragment>
     <!-- other group tab fragment -->
     <fragment
@@ -183,7 +189,11 @@
     <fragment
         android:id="@+id/groupChatFragment"
         android:name="com.example.batchtest.GroupChat.GroupChatFragment"
-        android:label="GroupChatFragment" />
+        android:label="GroupChatFragment" >
+        <argument
+            android:name="groupName"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/previewGroupInfoFragment"
         android:name="com.example.batchtest.EditGroupProfile.PreviewGroupInfoFragment"
