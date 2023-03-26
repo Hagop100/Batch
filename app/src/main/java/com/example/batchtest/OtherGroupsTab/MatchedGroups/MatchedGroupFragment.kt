@@ -43,7 +43,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     private lateinit var currUser: FirebaseUser
 
     //ArrayList for groups
-    private var matchedGroupArrayList: ArrayList<Group> = arrayListOf<Group>()
+    private var matchedGroupArrayList: ArrayList<String> = arrayListOf<String>()
 
     //AlertDialog Builder
     private var alertDialogBuilder: AlertDialog.Builder? = null
@@ -89,7 +89,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                     Color.parseColor("#FF000000"),
                     object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
                         override fun onItemClick(position: Int) {
-                            buildDeleteAlertDialog(alertDialogBuilder!!, db, position)
+                            buildDeleteAlertDialog(alertDialogBuilder!!, db, position, matchedGroupRV)
                         }
                     }
                 ))
@@ -122,7 +122,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
             .setCancelable(true)
             .setPositiveButton("Report") { _, _ ->
                 db.collection("groups")
-                    .whereEqualTo("name", matchedGroupArrayList[position].name)
+                    .whereEqualTo("name", matchedGroupArrayList[position])
                     .get()
                     .addOnSuccessListener { documents ->
                         for (document in documents) {
@@ -149,17 +149,22 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     /*
     Builds the Delete Alert Dialog in order to unMatch a group from your matched group list
      */
-    private fun buildDeleteAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
+    private fun buildDeleteAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int, matchedGroupRV: RecyclerView) {
         alertDialogBuilder.setTitle("Confirm Action: Delete")
-            .setMessage("Are you sure you want to delete this group?")
+            .setMessage("Are you sure you want to un-match this group? " +
+                    "Other members of your group will not be affected. ")
             .setCancelable(true)
             .setPositiveButton("Delete") { _, _ ->
                 db.collection("users")
                     .document(currUser.uid)
                     .update(
                         "matchedGroups",
-                        FieldValue.arrayRemove(matchedGroupArrayList[position].name)
+                        FieldValue.arrayRemove(matchedGroupArrayList[position])
                     )
+                //manually delete the item from the application
+                //previously we were listening to the database for real-time updates
+                //for some reason this was causing the application to crash
+                deleteItemFromRecyclerView(position, matchedGroupRV)
             }
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
@@ -173,40 +178,29 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     @SuppressLint("NotifyDataSetChanged")
     private fun selectMatchedGroups(db: FirebaseFirestore, matchedGroupRV: RecyclerView) {
         val userDoc = db.collection("users").document(currUser.uid)
-        userDoc.addSnapshotListener { snapshot, e ->
+        userDoc.get().addOnSuccessListener { doc ->
             //group arrayList must be cleared otherwise anytime data is changed in the database
             //groups will be added on top of the old groups and create duplicates
             matchedGroupArrayList.clear()
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                return@addSnapshotListener
-            }
+            val tempUser = doc.toObject<User>()!!
+            matchedGroupArrayList.addAll(tempUser.matchedGroups)
 
-            snapshot?.let {
-                val tempUser = snapshot.toObject<User>()!!
-                for(g in tempUser.matchedGroups) {
-                    db.collection("groups")
-                        .whereEqualTo("name", g)
-                        .get()
-                        .addOnSuccessListener { groupDoc ->
-                            for(d in groupDoc) {
-                                val group = d.toObject<Group>()
-                                matchedGroupArrayList.add(group)
-                            }
-                            Log.i(TAG, "Data has been changed!")
-                            if(matchedGroupRV.adapter == null) {
-                                // attach adapter and send groups
-                                val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
-                                matchedGroupRV.adapter = matchedGroupAdapter
-                            }
-                            else {
-                                matchedGroupRV.adapter?.notifyDataSetChanged()
-                                Log.i(TAG, "adapter is already set")
-                            }
-                        }
-                }
+            if(matchedGroupRV.adapter == null) {
+                // attach adapter and send groups
+                val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
+                matchedGroupRV.adapter = matchedGroupAdapter
+            }
+            else {
+                matchedGroupRV.adapter?.notifyDataSetChanged()
+                Log.i(TAG, "adapter is already set")
             }
         }
+    }
+
+    private fun deleteItemFromRecyclerView(position: Int, matchedGroupRV: RecyclerView) {
+        matchedGroupArrayList.removeAt(position)
+        matchedGroupRV.adapter?.notifyItemChanged(position)
+        matchedGroupRV.adapter?.notifyItemRangeRemoved(position, 1)
     }
 
     override fun onDestroyView() {
@@ -224,7 +218,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
      */
     override fun onItemClick(position: Int) {
         //This will communicate to the next fragment which group we click on
-        val bundle = bundleOf("groupName" to matchedGroupArrayList[position].name)
+        val bundle = bundleOf("groupName" to matchedGroupArrayList[position])
         findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment, bundle)
     }
 

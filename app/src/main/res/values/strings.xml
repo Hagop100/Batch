@@ -95,5 +95,6 @@
     <string name="displayName">Enter Display Name</string>
     <string name="personalBio">Tells us a little about yourself</string>
     <string name="personalEmail">Your Email</string>
+    <string name="group_chat_title_placeholder">Group Chat</string>
 
 </resources>
