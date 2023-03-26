@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.example.batchtest.EditGroupProfile.EditGroupInfoFragment
 import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.EditGroupProfile.GroupProfileAdapter
 import com.example.batchtest.Group
@@ -48,6 +49,7 @@ class EditGroupProfile : Fragment() {
     private lateinit var tabLayout: TabLayout
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
     private lateinit var groupInfo: Group
+    var db = Firebase.firestore
 
 
     override fun onCreateView(
@@ -63,28 +65,44 @@ class EditGroupProfile : Fragment() {
         var groupImg: String = ""
         var groupTags: ArrayList<String> = ArrayList()
 
+        //get the group name
+        val groupName: String = sharedViewModel.groupName.value.toString()
+
         //get the updated group description
         sharedViewModel.groupDesc.observe(viewLifecycleOwner, Observer{ newDesc ->
             groupDesc = newDesc.toString() //cast newDesc to String from Editable
         })
 
+
         //get the updated group picture
-        sharedViewModel.groupPic.observe(viewLifecycleOwner) { imageUrl ->
+        sharedViewModel.groupPic.observe(viewLifecycleOwner, Observer { imageUrl ->
+            //if there is no changes. see database
             if(imageUrl.isNullOrEmpty()){
-                //do nothing
+                //inflate the group pic if there is no changes - use database
+                db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
+                    //set info about group pic
+                    val groupPic = document.getString("image")
+                    groupImg = groupPic as String
+                    Log.i("print", "group img1.0: $groupImg")
+                }
             }
+            //if changes are made. set the group picture
             else{
-                groupImg = imageUrl
+                groupImg = imageUrl.toString()
+
+                Log.i("print", "group img1: $groupImg")
             }
-        }
+        })
+
+
+
 
         //get the updated tags
         sharedViewModel.groupTags.observe(viewLifecycleOwner, Observer<ArrayList<String>> { newTags: ArrayList<String> ->
             groupTags = newTags
         })
 
-        //get the group name
-        val groupName: String = sharedViewModel.groupName.value.toString()
+
 
         val db = Firebase.firestore //access database
         val docRef = db.collection("groups").document(groupName) //access the group
@@ -95,9 +113,11 @@ class EditGroupProfile : Fragment() {
                 "aboutUsDescription" to groupDesc, //change the field to updated groupDescription
                 "image" to groupImg, //change the field to updated image
             )
+            Log.i("print", "group img2: $groupImg")
             docRef.update("interestTags",groupTags) //update the database for interest tags with the new group tags
             docRef.update(updates) //update the database for about us and image with the new edits
             findNavController().navigate(R.id.action_editGroupProfile_to_viewGroupInfoFragment)
+            sharedViewModel.groupPic.value = "" //reset the observing changes
 
         }
 
@@ -106,7 +126,7 @@ class EditGroupProfile : Fragment() {
 
         //cancel to navigate back to my group page
         binding.cancelGroupEdit.setOnClickListener{
-            findNavController().navigate(R.id.action_editGroupProfile_to_myGroupFragment)
+            findNavController().navigate(R.id.action_editGroupProfile_to_viewGroupInfoFragment)
         }
 
         return binding.root
@@ -139,7 +159,8 @@ class EditGroupProfile : Fragment() {
      */
     override fun onDestroyView() {
         super.onDestroyView()
-        super.onDestroyView()
+        sharedViewModel.groupPic.removeObservers(viewLifecycleOwner)
+//        super.onDestroyView()
         viewPager.let {
             (viewPager.parent as? ViewGroup)?.removeView(viewPager)
             viewPager.adapter = null

@@ -73,11 +73,12 @@ class PreviewGroupInfoFragment : Fragment() {
 
         }
 
-            //get group profile if user set a group pic
-            sharedViewModel.groupPic.observe(viewLifecycleOwner) { imageUrl ->
-                Glide.with(requireContext()).load(imageUrl).into(binding.groupPicture)
-            }
+        //get group profile if user set a group pic
+        sharedViewModel.groupPic.observe(viewLifecycleOwner) { imageUrl ->
+//            val img:String = imageUrl.toString()
+            Glide.with(requireContext()).load(imageUrl).into(binding.groupPicture)
 
+        }
 
 
 
@@ -108,6 +109,7 @@ class PreviewGroupInfoFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        sharedViewModel.groupPic.removeObservers(viewLifecycleOwner)
     }
 
 }
