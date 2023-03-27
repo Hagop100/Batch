@@ -8,22 +8,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
-import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.batchtest.Group
 import com.example.batchtest.R
-import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.example.batchtest.databinding.FragmentJoinGroupBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import java.lang.reflect.Field
-
 
 private const val TAG = "JoinGroupFragment"
 /**
@@ -40,7 +34,7 @@ class JoinGroupFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentJoinGroupBinding.inflate(layoutInflater, container, false)
 
@@ -60,7 +54,7 @@ class JoinGroupFragment : Fragment() {
                 }
                 // reset button's text to search
                 if (binding.joinGroupBtn.text != "Search") {
-                    binding.joinGroupBtn.text = "Search"
+                    binding.joinGroupBtn.text = getString(R.string.search)
                 }
                 // reset button clickability if disabled
                 if (!binding.joinGroupBtn.isClickable || binding.joinGroupBtn.alpha != 1F) {
@@ -70,7 +64,7 @@ class JoinGroupFragment : Fragment() {
 
         })
         // default button to "Search"
-        binding.joinGroupBtn.text = "Search"
+        binding.joinGroupBtn.text = getString(R.string.search)
         var group: Group? = null
         // set listener on button
         binding.joinGroupBtn.setOnClickListener {
@@ -95,20 +89,20 @@ class JoinGroupFragment : Fragment() {
                             for (doc in it) {
                                 group = doc.toObject(Group::class.java)
                                 // change button state to Join
-                                binding.joinGroupBtn.text = "Join"
+                                binding.joinGroupBtn.text = getString(R.string.join)
                                 // get member count of group to see if it is full
                                 val memberCount = group?.users?.size
                                 // if group is full, disable button and change text to group is full
                                 if (memberCount != null && memberCount >= 4) {
                                     disableBtn()
-                                    binding.joinGroupBtn.text = "Group is full"
+                                    binding.joinGroupBtn.text = getString(R.string.group_full)
                                 } else if (group?.users?.contains(currentUser?.uid) == true) {
                                     // if user is already a member of the group
                                     disableBtn()
-                                    binding.joinGroupBtn.text = "Already joined"
+                                    binding.joinGroupBtn.text = getString(R.string.already_joined)
                                 } else {
                                     // change button state to Join
-                                    binding.joinGroupBtn.text = "Join"
+                                    binding.joinGroupBtn.text = getString(R.string.join)
                                 }
                                 // make group card visible
                                 binding.groupCardView.isVisible = true
@@ -119,7 +113,7 @@ class JoinGroupFragment : Fragment() {
                                 } else {
                                     Glide.with(requireContext()).load(group?.image).into(binding.groupImg)
                                 }
-                                binding.memberCount.text = "${group?.users?.size}/4"
+                                binding.memberCount.text = getString(R.string.member_count,group?.users?.size)
                                 break
                             }
                             // if a group is not found, display invite code is invalid

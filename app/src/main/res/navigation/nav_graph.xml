@@ -175,6 +175,8 @@
             android:id="@+id/action_viewGroupInfoFragment_to_userProfileTabFragment"
             app:destination="@id/userProfileTabFragment"
             app:popUpTo="@id/myGroupFragment"
+            app:restoreState="true"
+            app:popUpToInclusive="true"
             app:popUpToSaveState="true"/>
     </fragment>
     <fragment
@@ -205,6 +207,9 @@
         android:id="@+id/viewUserInfoFragment"
         android:name="com.example.batchtest.UserProfileTab.userPage.ViewUserInfoFragment"
         android:label="ViewUserInfoFragment">
+        <action
+            android:id="@+id/action_viewUserInfoFragment_to_viewGroupInfoFragment"
+            app:destination="@id/viewGroupInfoFragment"/>
         <argument
             android:name="userEmail"
             app:argType="string"/>

@@ -1,5 +1,6 @@
 package com.example.batchtest.OtherGroupsTab.MatchedGroups
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +9,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.batchtest.Group
+import com.example.batchtest.MainActivity
 import com.example.batchtest.R
 import com.example.batchtest.databinding.MatchedGroupRecyclerViewRowBinding
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 
 class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
-                          private val listener: MatchedGroupRecyclerViewEvent): RecyclerView.Adapter<MatchedGroupAdapter.MatchedGroupViewHolder>() {
+                          private val listener: MatchedGroupRecyclerViewEvent,
+                          private var mContext: Context): RecyclerView.Adapter<MatchedGroupAdapter.MatchedGroupViewHolder>() {
 
     inner class MatchedGroupViewHolder(val binding: MatchedGroupRecyclerViewRowBinding):
         RecyclerView.ViewHolder(binding.root), View.OnClickListener {
@@ -49,11 +56,23 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
         //holder.card.animation = AnimationUtils.loadAnimation(holder.itemView.context, R.anim.slide_in_from_right)
         val currentItem = matchedGroupList[position]
         holder.groupName.text = currentItem
-        //holder.groupPhoto = currentItem.image
+        setGroupPhoto(holder, position)
     }
 
     override fun getItemCount(): Int {
         return matchedGroupList.size
+    }
+
+    private fun setGroupPhoto(holder: MatchedGroupViewHolder, position: Int) {
+        var group: Group? = null
+        val db = Firebase.firestore
+        val currentItem = matchedGroupList[position]
+        db.collection("groups").document(currentItem)
+            .get()
+            .addOnSuccessListener { doc ->
+                group = doc.toObject<Group>()
+                Glide.with(mContext).load(group?.image).into(holder.groupPhoto)
+            }
     }
 
     /*
