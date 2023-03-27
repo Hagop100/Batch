@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.*
 import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.databinding.FragmentGroupChatBinding
+import com.example.batchtest.myGroupsTab.MyGroupFragment
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -104,18 +105,18 @@ class GroupChatFragment : Fragment() {
         val currentGroupName = sharedViewModel.groupName.value.toString()
         Log.i(TAG, "group name: $currentGroupName")
 
+        //--------------------------------------------------
+        //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
         //if the previous fragment came from my group, query my groups
         if (previousFragmentName == "MyGroupFragment"){
             queryChatFromMyGroups(db, groupChatRV, currentGroupName)
         }
-        //--------------------------------------------------
-
-
-        //--------------------------------------------------
-        //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
-        queryChatFromFirestore(db, groupChatRV)
+        else{
+            queryChatFromFirestore(db, groupChatRV)
+        }
         //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
         //--------------------------------------------------
+
 
         binding.fragmentGroupChatSendBtn.setOnClickListener {
             //create message Object from the edit text
@@ -182,51 +183,28 @@ class GroupChatFragment : Fragment() {
 
     /**
      * QUERY CHAT FROM myGroups
-     * retrieve messages for specific and display them in recyclerview
+     * retrieve messages for specific group and display them in recyclerview
      *
      */
     private fun queryChatFromMyGroups(
         db: FirebaseFirestore,
         groupChatRV: RecyclerView,
-        currentGroupName: String?
+        currentGroupName: String
     ) {
-        var user: User? = null
-        val userDocRef = currUser?.let { db.collection("users").document(it.uid) }
-        userDocRef?.get()?.addOnSuccessListener { doc ->
-            if (doc != null) {
-                user = doc.toObject<User>()
-                for(myGroups in user?.myGroups!!) {
-                    if (myGroups == currentGroupName){
-                        setMyGroupChatTitle(currentGroupName)
-                        getMyGroupChat(db, currentGroupName, groupChatRV)
+        db.collection("chats")
+                .whereEqualTo("group1Name", currentGroupName)
+                .addSnapshotListener { doc, exception ->
+                    if (exception != null){
+                        // handle the error
+                        Log.i(TAG, "Listen failed.", exception)
+                        return@addSnapshotListener
                     }
-                }
-            } else {
-                Log.i(TAG, "no such doc")
-            }
-        }
-            ?.addOnFailureListener { e ->
-                Log.i(TAG, "get failed with ", e)
-            }
-    }
 
-    /**
-     * GET CHAT FOR my group
-     * listen to chat updates and retrieve messages for a specific chat
-     */
-    @SuppressLint("NotifyDataSetChanged")
-    private fun getMyGroupChat(db: FirebaseFirestore, myGroupName: String, groupChatRV: RecyclerView) {
-        var chat = Chat()
-        val chatsRef = db.collection("chats").document(myGroupName)
-        chatsRef.addSnapshotListener { doc, e ->
-            if(e != null) {
-                Log.i(TAG, "Listen failed", e)
-                return@addSnapshotListener
-            }
-            if (doc != null && doc.exists()) {
-                val chat = doc.toObject<Chat>()
-                if (chat != null) {
                     messagesArrayList.clear()
+
+                for (d in doc!!){
+                    chatId = d.id
+                    val chat: Chat = d.toObject<Chat>()
                     messagesArrayList.addAll(chat.messages)
                     if(groupChatRV.adapter == null) {
                         // attach adapter and send groups
@@ -239,12 +217,8 @@ class GroupChatFragment : Fragment() {
                         groupChatRV.scrollToPosition(messagesArrayList.size - 1)
                     }
                 }
-            } else {
-                Log.d(TAG, "Current data null")
-            }
-        }
+                }
     }
-
 
     /**
      * GET CHAT FOR matched group
