@@ -18,10 +18,7 @@ import android.widget.Toast
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.example.batchtest.Group
-import com.example.batchtest.PendingGroup
-import com.example.batchtest.R
-import com.example.batchtest.User
+import com.example.batchtest.*
 import com.example.batchtest.databinding.FragmentGroupCreationBinding
 import com.google.android.material.chip.Chip
 import com.google.firebase.auth.ktx.auth
@@ -49,6 +46,7 @@ class GroupCreationFragment : Fragment() {
     private var imageUri: Uri? = null
     private val pickImage = 100
     private var imageURL: String? = null
+    var chat: Chat? = null
 
 
     /**
@@ -144,6 +142,15 @@ class GroupCreationFragment : Fragment() {
                                     else{
                                         val groupInfo = Group(UUID.randomUUID().toString(), groupName, users, tags, aboutUs,biscuit, image)
 
+                                        //initalize A chat object
+                                        chat = Chat(0, arrayListOf(), groupName, "", Date())
+                                        db.collection("chats").add(chat!!)
+                                            .addOnSuccessListener { doc ->
+
+                                            }
+                                            .addOnFailureListener {e ->
+
+                                            }
                                         //add current user to the Group
                                         groupInfo.users?.add(currentUser!!)
 
@@ -199,6 +206,8 @@ class GroupCreationFragment : Fragment() {
                                 Log.i(TAG, "Error writing document", e)
                             }
                     }
+
+
 
 
         }// end of button group creation

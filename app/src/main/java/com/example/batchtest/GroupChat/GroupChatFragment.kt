@@ -7,21 +7,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.*
+import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.databinding.FragmentGroupChatBinding
-import com.google.firebase.auth.FirebaseAuth
+import com.example.batchtest.myGroupsTab.MyGroupFragment
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -47,6 +45,10 @@ class GroupChatFragment : Fragment() {
     //max number of messages allowed in recyclerview
     private val maximumNumberOfMessages: Int = 300
 
+    //access share view model for group name
+    private val sharedViewModel: GroupInfoViewModel by activityViewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currUser = Firebase.auth.currentUser
@@ -58,6 +60,7 @@ class GroupChatFragment : Fragment() {
         _binding = FragmentGroupChatBinding.inflate(inflater, container, false)
 
         val db = Firebase.firestore
+
 
         /*val group1 = "Big Chungus"
         val group2 = "Batch test"
@@ -93,11 +96,27 @@ class GroupChatFragment : Fragment() {
         theirGroupName = result!!
         Log.i(TAG, theirGroupName)
 
+        //---------------------------------------------------
+        /**
+         * identify which fragment came previously for query
+         */
+        val previousFragmentName = arguments?.getString("currentFragmentName") //get the previous fragment that navigated here
+        Log.i(TAG, "what fragment: $previousFragmentName") //get the group name that was selected to enter chat
+        val currentGroupName = sharedViewModel.groupName.value.toString()
+        Log.i(TAG, "group name: $currentGroupName")
+
         //--------------------------------------------------
         //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
-        queryChatFromFirestore(db, groupChatRV)
+        //if the previous fragment came from my group, query my groups
+        if (previousFragmentName == "MyGroupFragment"){
+            queryChatFromMyGroups(db, groupChatRV, currentGroupName)
+        }
+        else{
+            queryChatFromFirestore(db, groupChatRV)
+        }
         //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
         //--------------------------------------------------
+
 
         binding.fragmentGroupChatSendBtn.setOnClickListener {
             //create message Object from the edit text
@@ -126,6 +145,9 @@ class GroupChatFragment : Fragment() {
         _binding = null
     }
 
+    /**
+     * QUERY CHAT FROM matchedGroups
+     */
     private fun queryChatFromFirestore(db: FirebaseFirestore, groupChatRV: RecyclerView) {
         var user: User? = null
         val userDocRef = currUser?.let { db.collection("users").document(it.uid) }
@@ -159,6 +181,48 @@ class GroupChatFragment : Fragment() {
             }
     }
 
+    /**
+     * QUERY CHAT FROM myGroups
+     * retrieve messages for specific group and display them in recyclerview
+     *
+     */
+    private fun queryChatFromMyGroups(
+        db: FirebaseFirestore,
+        groupChatRV: RecyclerView,
+        currentGroupName: String
+    ) {
+        db.collection("chats")
+                .whereEqualTo("group1Name", currentGroupName)
+                .addSnapshotListener { doc, exception ->
+                    if (exception != null){
+                        // handle the error
+                        Log.i(TAG, "Listen failed.", exception)
+                        return@addSnapshotListener
+                    }
+
+                    messagesArrayList.clear()
+
+                for (d in doc!!){
+                    chatId = d.id
+                    val chat: Chat = d.toObject<Chat>()
+                    messagesArrayList.addAll(chat.messages)
+                    if(groupChatRV.adapter == null) {
+                        // attach adapter and send groups
+                        val groupChatAdapter = GroupChatAdapter(messagesArrayList, requireActivity())
+                        groupChatRV.adapter = groupChatAdapter
+                    }
+                    else {
+                        Log.i(TAG, "recycler view is not null")
+                        groupChatRV.adapter?.notifyDataSetChanged()
+                        groupChatRV.scrollToPosition(messagesArrayList.size - 1)
+                    }
+                }
+                }
+    }
+
+    /**
+     * GET CHAT FOR matched group
+     */
     @SuppressLint("NotifyDataSetChanged")
     private fun getChat(db: FirebaseFirestore, myGroupName: String, groupChatRV: RecyclerView) {
         var chat = Chat()
@@ -198,8 +262,14 @@ class GroupChatFragment : Fragment() {
         chatDocRef?.update("messages", messagesArrayList)
     }
 
+    //SET GROUP CHAT TITLE FOR MATCHED GROUP
     private fun setGroupChatTitle(myGroupName: String) {
         binding.fragmentGroupChatTb.title = "$myGroupName/$theirGroupName"
+    }
+
+    //SET GROUP CHAT TITLE FOR MY GROUP
+    private fun setMyGroupChatTitle(myGroupName: String) {
+        binding.fragmentGroupChatTb.title = myGroupName
     }
 
     companion object {
