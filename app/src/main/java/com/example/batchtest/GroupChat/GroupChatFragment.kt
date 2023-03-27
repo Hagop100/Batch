@@ -193,6 +193,7 @@ class GroupChatFragment : Fragment() {
     ) {
         db.collection("chats")
                 .whereEqualTo("group1Name", currentGroupName)
+                .whereEqualTo("group2Name", "")
                 .addSnapshotListener { doc, exception ->
                     if (exception != null){
                         // handle the error
@@ -201,10 +202,14 @@ class GroupChatFragment : Fragment() {
                     }
 
                     messagesArrayList.clear()
+                    setMyGroupChatTitle(currentGroupName)
 
                 for (d in doc!!){
                     chatId = d.id
                     val chat: Chat = d.toObject<Chat>()
+                    if(chat.messages.size > maximumNumberOfMessages) {
+                        chat.messages.removeAt(0)
+                    }
                     messagesArrayList.addAll(chat.messages)
                     if(groupChatRV.adapter == null) {
                         // attach adapter and send groups
