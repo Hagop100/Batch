@@ -13,6 +13,7 @@ class GroupInfoViewModel: ViewModel() {
     val groupDesc: MutableLiveData<Editable> = MutableLiveData()
     val groupTags: MutableLiveData<ArrayList<String>> = MutableLiveData()
     var groupPic: MutableLiveData<String> = MutableLiveData()
+    private val isInGroup: MutableLiveData<Boolean> = MutableLiveData()
 
 
     init{
@@ -45,5 +46,13 @@ class GroupInfoViewModel: ViewModel() {
     }
     fun getGroupPicture(): MutableLiveData<String> {
         return groupPic
+    }
+
+    // set and get boolean value if current user is in the group or not
+    fun setIsInGroup(bool: Boolean) {
+        isInGroup.value = bool
+    }
+    fun getIsInGroup(): MutableLiveData<Boolean> {
+        return isInGroup
     }
 }

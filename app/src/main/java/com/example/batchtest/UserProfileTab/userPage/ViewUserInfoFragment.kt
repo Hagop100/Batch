@@ -7,19 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragmentArgs
-import com.example.batchtest.Group
+import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentViewUserInfoBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
 /**
@@ -27,18 +26,21 @@ import com.google.firebase.ktx.Firebase
  * Use the [ViewUserInfoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ViewUserInfoFragment : Fragment() {
+class ViewUserInfoFragment : Fragment(), ViewUserInfoAdapter.GroupProfileViewEvent {
     private var _binding: FragmentViewUserInfoBinding? = null
     private val binding get() = _binding!!
-    private val args: ViewUserInfoFragmentArgs by navArgs<ViewUserInfoFragmentArgs>()
+    private val args: ViewUserInfoFragmentArgs by navArgs()
+    private val sharedViewModel: GroupInfoViewModel by activityViewModels()
     var db = Firebase.firestore
     // get the authenticated logged in user
     private val currentUser = Firebase.auth.currentUser
+    private val mutualGroups = arrayListOf<String>()
+    private val mutualMatchedGroups = arrayListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentViewUserInfoBinding.inflate(layoutInflater, container, false)
         val mutualGroupsRV = binding.mutualGroupsRv
         mutualGroupsRV.layoutManager = LinearLayoutManager(context)
@@ -49,7 +51,7 @@ class ViewUserInfoFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        // open dialog when clicking on more buton
+        // open dialog when clicking on more button
         binding.userProfileMoreBtn.setOnClickListener {
             // create a bottom sheet dialog
             val dialog = BottomSheetDialog(requireContext())
@@ -60,7 +62,7 @@ class ViewUserInfoFragment : Fragment() {
 
             // inflate a text view to hold the block profile dialog
             val blockUserDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
-            blockUserDialogBtn.text = "Block user"
+            blockUserDialogBtn.text = getString(R.string.block_user)
             // perform action on click
             blockUserDialogBtn.setOnClickListener {
                 // add code to block user here //
@@ -69,7 +71,7 @@ class ViewUserInfoFragment : Fragment() {
 
             // inflate a text view to hold the report profile dialog
             val reportUserDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
-            reportUserDialogBtn.text = "Report user"
+            reportUserDialogBtn.text = getString(R.string.report_user)
             // perform action on click
             reportUserDialogBtn.setOnClickListener {
                 // add code to report user here //
@@ -100,24 +102,22 @@ class ViewUserInfoFragment : Fragment() {
                     } else {
                         Glide.with(this).load(user.imageUrl).into(binding.userPicture)
                     }
-                    val mutualGroups:ArrayList<String> = arrayListOf()
-                    val mutualMatchedGroups:ArrayList<String> = arrayListOf()
                     db.collection("users").document(currentUser!!.uid).get()
                         .addOnSuccessListener {
                             val currUserObj = it.toObject(User::class.java)
                             if (currUserObj != null) {
                                 for (group in user.myGroups) {
-                                    if (currUserObj.myGroups.contains(group)) {
+                                    if (!mutualGroups.contains(group) && currUserObj.myGroups.contains(group)) {
                                         mutualGroups.add(group)
                                     }
                                 }
-                                mutualGroupsRV.adapter = ViewUserInfoAdapter(context, mutualGroups)
+                                mutualGroupsRV.adapter = ViewUserInfoAdapter(context, mutualGroups, this)
                                 for (group in user.matchedGroups) {
-                                    if (currUserObj.matchedGroups.contains(group)) {
+                                    if (!mutualMatchedGroups.contains(group) && currUserObj.matchedGroups.contains(group)) {
                                         mutualMatchedGroups.add(group)
                                     }
                                 }
-                                mutualMatchedGroupsRV.adapter = ViewUserInfoAdapter(context, mutualMatchedGroups)
+                                mutualMatchedGroupsRV.adapter = ViewUserInfoAdapter(context, mutualMatchedGroups, this)
                             }
                         }
                 } else {
@@ -132,5 +132,24 @@ class ViewUserInfoFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    // clicking on a group will pass the group name to teh shared view model then
+    // navigate to the view group info fragment to display the selected group
+    override fun onItemClick(groupName: String) {
+        // set group name in the shared view model
+        sharedViewModel.setGName(groupName)
+        // if the group is apart of the mutual groups, set isInGroup to true
+        if (mutualGroups.contains(groupName)) {
+            sharedViewModel.setIsInGroup(true)
+        } else {
+            sharedViewModel.setIsInGroup(false)
+        }
+        // navigate to view group info fragment
+        val direction = ViewUserInfoFragmentDirections.actionViewUserInfoFragmentToViewGroupInfoFragment(
+            groupName
+        )
+//            groupInfo.aboutUsDescription.toString())
+        findNavController().navigate(direction)
     }
 }

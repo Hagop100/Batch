@@ -1,53 +1,34 @@
 package com.example.batchtest.EditGroupProfile
 
-import android.annotation.SuppressLint
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.ListView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.User
-import com.example.batchtest.databinding.FragmentEditGroupInfoBinding
 import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
-import com.example.batchtest.myGroupsTab.MyGroupAdapter
-import com.example.batchtest.myGroupsTab.MyGroupFragment
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import org.w3c.dom.Text
 import java.util.ArrayList
 
+private const val TAG = "ViewGroupInfoFragment"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ViewGroupInfoFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+// view group info fragment will navigate to a selected group's display page
 class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
     private var _binding: FragmentViewGroupInfoBinding? = null
     private val binding get() = _binding!!
@@ -55,20 +36,14 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
     // get the authenticated logged in user
     private val currentUser = Firebase.auth.currentUser
     private lateinit var userRecyclerView: RecyclerView
-//    private val args: ViewGroupInfoFragmentArgs by navArgs()
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
     private lateinit var userList: ArrayList<User>
     private lateinit var userAdapter: UserInfoAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-    @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         _binding = FragmentViewGroupInfoBinding.inflate(layoutInflater, container, false)
 
@@ -77,16 +52,17 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
          * display the user group information including:
          * group name, profile picture, tags, and about us
          */
-//        binding.groupName.text = args.groupName
         binding.groupName.text = sharedViewModel.getGName().value
-//        binding.aboutUsDescription.text = args.groupDesc
+        // check if user is in group to grant certain actions in more dialog box
+        val isInGroup = sharedViewModel.getIsInGroup().value
 
         val groupName = binding.groupName.text
 
         //get info from the group collection in firebase
         db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
+            // set biscuit value
+            binding.biscuitValue.text = document.get("biscuits").toString()
 
-            Log.i("print", "view group info here")
             //set info about group pic
             val groupPic = document.getString("image")
             if (groupPic.isNullOrEmpty()){
@@ -94,7 +70,6 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
             }
             else{
                 Glide.with(this).load(document.getString("image").toString()).into(binding.groupPicture)
-
             }
 
             //retrieve group description
@@ -156,48 +131,67 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
 
             // create block dialog button to add into the dialog layout dynamically
             // using the dialog button layout
-            // inflate a text view to hold the edit profile dialog
-            val editProfileDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
-            editProfileDialogBtn.text = "Edit group profile"
-            // perform action on click
 
-            editProfileDialogBtn.setOnClickListener {
-                // navigate to the edit page
-                findNavController().navigate(R.id.action_viewGroupInfoFragment_to_editGroupProfile)
-                //send data using shared view model
-                sharedViewModel.groupName.value
-                dialog.dismiss()
-            }
+            // if user is in the group displayed, then the user will be able
+            // to edit the group profile or invite a user
+            // else if the user is not in the group, then the user will be able
+            // to report or block the group
+            if (isInGroup == true) {
+                // inflate a text view to hold the edit profile dialog
+                val editProfileDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+                editProfileDialogBtn.text = getString(R.string.edit_group_profile)
+                // perform action on click
 
-            // inflate a text view to hold the edit profile dialog
-            val groupInviteBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
-            groupInviteBtn.text = "Invite a user"
+                editProfileDialogBtn.setOnClickListener {
+                    // navigate to the edit page
+                    findNavController().navigate(R.id.action_viewGroupInfoFragment_to_editGroupProfile)
+                    //send data using shared view model
+                    sharedViewModel.groupName.value
+                    dialog.dismiss()
+                }
 
-            // perform action on click
-            groupInviteBtn.setOnClickListener {
-                // fetch group ID from firebase using groupName
-                db.collection("groups").document(groupName)
-                    .get()
-                    .addOnSuccessListener { result ->
-                        // start an intent to send group id using different actions
-                        // such as copying to clipboard, email, messaging
-                        activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-                        val sendIntent: Intent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, result.data?.get("groupId").toString())
-                            type = "text/plain"
+                // inflate a text view to hold the edit profile dialog
+                val groupInviteBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+                groupInviteBtn.text = getString(R.string.invite_user)
+
+                // perform action on click
+                groupInviteBtn.setOnClickListener {
+                    // fetch group ID from firebase using groupName
+                    db.collection("groups").document(groupName)
+                        .get()
+                        .addOnSuccessListener { result ->
+                            // start an intent to send group id using different actions
+                            // such as copying to clipboard, email, messaging
+                            activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                            val sendIntent: Intent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, result.data?.get("groupId").toString())
+                                type = "text/plain"
+                            }
+                            // user chooses which method to share
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            // starts intent
+                            activity?.startActivity(shareIntent)
                         }
-                        // user chooses which method to share
-                        val shareIntent = Intent.createChooser(sendIntent, null)
-                        // starts intent
-                        activity?.startActivity(shareIntent)
-                    }
-            }
-            // add the edit profile dialog button to the bottom dialog view
-            view.addView(editProfileDialogBtn)
-            // add the group invite dialog button to the bottom dialog view
-            view.addView(groupInviteBtn)
+                }
+                // add the edit profile dialog button to the bottom dialog view
+                view.addView(editProfileDialogBtn)
+                // add the group invite dialog button to the bottom dialog view
+                view.addView(groupInviteBtn)
+            } else {
+                // inflate a text view to hold the report group dialog
+                val reportGroupDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+                reportGroupDialogBtn.text = getString(R.string.report_group)
 
+                // inflate a text view to hold the block group dialog
+                val blockGroupBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+                blockGroupBtn.text = getString(R.string.block_group)
+
+                // add the report group dialog button to the bottom dialog view
+                view.addView(reportGroupDialogBtn)
+                // add the block group dialog button to the bottom dialog view
+                view.addView(blockGroupBtn)
+            }
             // set the view of the dialog using the inflated layout
             dialog.setContentView(view)
             // show the dialog
@@ -212,18 +206,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
         return binding.root
     }
 
-    /**
-     * send data through shared view model so other fragments can receive the data
-     */
-//    private fun sendData() {
-//        sharedViewModel.groupName.value = args.groupName
-//
-////        sharedViewModel.groupDesc.value = args.groupDesc
-//    }
-
-    /**
-     * Free view from memory
-     */
+    // free from memory
     override fun onDestroyView() {
         super.onDestroyView()
         sharedViewModel.groupPic.removeObservers(viewLifecycleOwner)

@@ -9,17 +9,14 @@ import android.view.animation.AccelerateInterpolator
 import androidx.fragment.app.Fragment
 import com.example.batchtest.Group
 import com.example.batchtest.PendingGroup
+import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMatchTabBinding
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.firestoreSettings
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
 import java.util.*
@@ -97,14 +94,14 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 val user: User = result?.toObject(User::class.java)!!
                 // if user does not have a primary group, display message and return
                 if ((user.primaryGroup == null) || (user.primaryGroup == "")) {
-                    binding.matchTabMessage.text = "Set a primary group to start matching!"
+                    binding.matchTabMessage.text = getString(R.string.set_primary_group_message)
                     return@addOnSuccessListener
                 } else {
                     primaryGroup = user.primaryGroup
                 }
                 // if user is not a group, then display message and return
                 if (user.myGroups.isEmpty()) {
-                    binding.matchTabMessage.text = "Create or join a group to start matching!"
+                    binding.matchTabMessage.text = getString(R.string.join_group_message)
                     return@addOnSuccessListener
                 }
                 // if the groups has not been populated (is empty), fetch the groups from firebase
@@ -142,11 +139,11 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
 
                             // if groups is empty, display that the user needs to join a group
                             if (groups.isEmpty()) {
-                                binding.matchTabMessage.text = "Create or join a group to start matching!"
+                                binding.matchTabMessage.text = getString(R.string.join_group_message)
                             } else {
                                 // attach adapter and send groups and listener
                                 cardStackView.adapter =
-                                    CardStackAdapter(currentUser.uid, groups, this)
+                                    CardStackAdapter(currentUser.uid, context, groups, this)
                             }
                         }
                         .addOnFailureListener { e ->
@@ -171,7 +168,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                             removeGroups.clear()
                         }
                         // recycler view will display the groups
-                        cardStackView.adapter = CardStackAdapter(currentUser!!.uid, groups, this)
+                        cardStackView.adapter = CardStackAdapter(currentUser!!.uid, requireContext(), groups, this)
                         if (prevGroup != null) {
                             // groups[0], the previous group, will be displayed so we will skip to groups[1]
                             manager.scrollToPosition(1)
@@ -228,7 +225,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                     if (primaryGroup != null) {
                         db.collection("groups").document(primaryGroup!!).get()
                             .addOnSuccessListener { result ->
-                                var users: HashMap<String, HashMap<String, String>> = hashMapOf()
+                                val users: HashMap<String, HashMap<String, String>> = hashMapOf()
                                 var index = 1
                                 val primaryGroupObj = result.toObject(Group::class.java)
                                 if (primaryGroupObj != null) {
@@ -248,7 +245,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                                         users[user] = userMap
                                     }
                                 }
-                                var pendingGroup = PendingGroup(
+                                val pendingGroup = PendingGroup(
                                     pendingGroupId = UUID.randomUUID().toString(),
                                     matchingGroup = primaryGroup,
                                     pendingGroup = acceptedGroup.name,

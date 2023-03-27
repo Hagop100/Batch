@@ -222,8 +222,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
      * click on individual item of the Group pic with the right position
      * to navigate to the corresponding group
      */
-    override fun onItemClick(postion: Int) {
-        val groupInfo =  myGroupList[postion]
+    override fun onItemClick(position: Int) {
+        val groupInfo =  myGroupList[position]
         Toast.makeText(this.context, groupInfo.name, Toast.LENGTH_SHORT).show()
 
         /**
@@ -231,10 +231,31 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
          * passing data to ViewGroupInfoFragment
          */
         val groupName = sharedViewModel.setGName(groupInfo.name.toString())
+        // user will be in group since we are in my group fragment so set to true
+        sharedViewModel.setIsInGroup(true)
         val direction = MyGroupFragmentDirections.actionMyGroupFragmentToViewGroupInfoFragment(
             groupName.toString()
         )
 //            groupInfo.aboutUsDescription.toString())
+        findNavController().navigate(direction)
+
+    }
+
+    /**
+     * click on the card-view of the my groups list to navigate to specific group
+     */
+    override fun onCardViewClick(position: Int) {
+        val groupInfo =  myGroupList[position]
+        Toast.makeText(this.context, groupInfo.name, Toast.LENGTH_SHORT).show()
+        val groupName = sharedViewModel.setGName(groupInfo.name.toString())
+
+        /**
+         * navigate to the GroupChatFragment using the position of the group using Navigation Component
+         * added attribute to the GroupChatFragment as groupName
+         */
+        val direction = MyGroupFragmentDirections.actionMyGroupFragmentToGroupChatFragment(
+            groupName.toString()
+        )
         findNavController().navigate(direction)
 
     }
