@@ -71,7 +71,7 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
             .get()
             .addOnSuccessListener { doc ->
                 group = doc.toObject<Group>()
-                Glide.with(mContext).load(group?.image).into(holder.groupPhoto)
+                Glide.with(mContext).load(group?.image).placeholder(R.drawable.placeholder).into(holder.groupPhoto)
             }
     }
 
