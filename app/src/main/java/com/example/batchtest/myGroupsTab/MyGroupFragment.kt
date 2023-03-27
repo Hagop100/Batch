@@ -231,6 +231,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
          * passing data to ViewGroupInfoFragment
          */
         val groupName = sharedViewModel.setGName(groupInfo.name.toString())
+        // user will be in group since we are in my group fragment so set to true
+        sharedViewModel.setIsInGroup(true)
         val direction = MyGroupFragmentDirections.actionMyGroupFragmentToViewGroupInfoFragment(
             groupName.toString()
         )

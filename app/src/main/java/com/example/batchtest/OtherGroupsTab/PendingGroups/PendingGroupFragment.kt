@@ -15,9 +15,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.example.batchtest.Group
+import com.example.batchtest.R
 
 
 private const val TAG = "PendingGroupsLog"
@@ -36,7 +36,7 @@ class PendingGroupFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         // inflate the layout for pending group fragment
         _binding = FragmentPendingGroupBinding.inflate(inflater, container, false)
@@ -104,7 +104,7 @@ class PendingGroupFragment : Fragment() {
                     }
                     // if there are no pending groups, display message
                     if (!groupsFound) {
-                        binding.pendingTabMessage.text = "No pending groups"
+                        binding.pendingTabMessage.text = getString(R.string.no_pending_groups)
                         pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
                     } else {
                         binding.pendingTabMessage.text = ""
