@@ -140,7 +140,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                     }
 
                     //check for null, whether there is any changes in the current user collection on firebase
-                    if (snapshot != null && snapshot.exists()){
+                    if (snapshot != null && snapshot.exists()) {
                         currentUserDocRef
                             // reads the document reference
                             .get()
@@ -197,12 +197,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
                         myAdapter.notifyDataSetChanged()
                     }
 
-
                 }
-
-
     }
-
 
 
 /**
@@ -244,17 +240,23 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
      */
     override fun onCardViewClick(position: Int) {
         val groupInfo =  myGroupList[position]
-        Toast.makeText(this.context, groupInfo.name, Toast.LENGTH_SHORT).show()
+//        Toast.makeText(this.context, groupInfo.name, Toast.LENGTH_SHORT).show()
+
         val groupName = sharedViewModel.setGName(groupInfo.name.toString())
+
+        //get the current fragment name to pass it into the next fragment
+        val currentFragmentName = "MyGroupFragment"
 
         /**
          * navigate to the GroupChatFragment using the position of the group using Navigation Component
-         * added attribute to the GroupChatFragment as groupName
+         * added attribute to the GroupChatFragment as groupName and the current fragment name
          */
         val direction = MyGroupFragmentDirections.actionMyGroupFragmentToGroupChatFragment(
-            groupName.toString()
-        )
-        findNavController().navigate(direction)
+                groupName.toString(), currentFragmentName
+            )
+
+        findNavController().navigate(direction) //navigate action to the requesting fragment
+
 
     }
 }

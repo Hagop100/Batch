@@ -193,6 +193,9 @@
         <argument
             android:name="groupName"
             app:argType="string" />
+        <argument
+            android:name="currentFragmentName"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/previewGroupInfoFragment"
