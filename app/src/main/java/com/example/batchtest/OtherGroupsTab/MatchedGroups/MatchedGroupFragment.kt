@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.batchtest.Group
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupAdapter
 import com.example.batchtest.R
@@ -187,7 +188,8 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
 
             if(matchedGroupRV.adapter == null) {
                 // attach adapter and send groups
-                val matchedGroupAdapter = MatchedGroupAdapter(matchedGroupArrayList, this)
+                val matchedGroupAdapter =
+                    context?.let { MatchedGroupAdapter(matchedGroupArrayList, this, it) }
                 matchedGroupRV.adapter = matchedGroupAdapter
             }
             else {

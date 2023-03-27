@@ -18,7 +18,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
-                       private var mContext: Context,): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                       private var mContext: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     inner class ReceivedMessageHolder(val binding: ThemMessageRecyclerViewRowBinding): RecyclerView.ViewHolder(binding.root) {
         val messageContent = binding.gcMessageContentTv
