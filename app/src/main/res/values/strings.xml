@@ -117,4 +117,11 @@
     <string name="block_user">Block user</string>
     <string name="report_user">Report user</string>
 
+    <!-- Discovery Preferences -->
+    <string name="discoverPref">Discovery Preferences</string>
+    <string-array name="rangeSliderValues">
+        <item>18</item>
+        <item>100</item>
+    </string-array>
+
 </resources>
