@@ -27,7 +27,7 @@ import org.w3c.dom.Text
  * allows information that was generated from Group Creation and set into view in My Group listing.
  */
 class MyGroupAdapter(
-    private val context: Context,
+    val context: Context,
     private val listener: GroupProfileViewEvent,
     private val groupNameList: ArrayList<Group>)
     : RecyclerView.Adapter<MyGroupAdapter.MyViewHolder>() {

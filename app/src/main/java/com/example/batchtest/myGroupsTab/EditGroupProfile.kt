@@ -79,23 +79,21 @@ class EditGroupProfile : Fragment() {
             //if there is no changes. see database
             if(imageUrl.isNullOrEmpty()){
                 //inflate the group pic if there is no changes - use database
-                db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
+                db.collection("groups").document(groupName).get().addOnSuccessListener { document ->
                     //set info about group pic
-                    val groupPic = document.getString("image")
-                    groupImg = groupPic as String
+                    val groupPic = document.getString("image").toString()
+                    Log.i("print", "groupic here: $groupPic")
+                    groupImg = groupPic
                     Log.i("print", "group img1.0: $groupImg")
                 }
             }
-            //if changes are made. set the group picture
             else{
+                //if changes are made. set the group picture
                 groupImg = imageUrl.toString()
 
                 Log.i("print", "group img1: $groupImg")
             }
         })
-
-
-
 
         //get the updated tags
         sharedViewModel.groupTags.observe(viewLifecycleOwner, Observer<ArrayList<String>> { newTags: ArrayList<String> ->
@@ -111,11 +109,27 @@ class EditGroupProfile : Fragment() {
         binding.saveBtn.setOnClickListener{
             val updates = hashMapOf<String, Any>(
                 "aboutUsDescription" to groupDesc, //change the field to updated groupDescription
+            )
+            val updateImg = hashMapOf<String, Any>(
                 "image" to groupImg, //change the field to updated image
             )
             Log.i("print", "group img2: $groupImg")
             docRef.update("interestTags",groupTags) //update the database for interest tags with the new group tags
-            docRef.update(updates) //update the database for about us and image with the new edits
+
+            if (groupImg.isNullOrEmpty()){
+                db.collection("groups").document(groupName).get().addOnSuccessListener { document ->
+                    //set info about group pic
+                    val groupPic = document.getString("image").toString()
+                    if (groupPic.isNullOrEmpty()) {
+                        //dont do anything if there is no group pic
+                    }
+                }
+            }
+            //update firebase if the group pic is set
+            else {
+                docRef.update(updateImg)
+            }
+            docRef.update(updates) //update the database for about us the new edits
             findNavController().navigate(R.id.action_editGroupProfile_to_viewGroupInfoFragment)
             sharedViewModel.groupPic.value = "" //reset the observing changes
 

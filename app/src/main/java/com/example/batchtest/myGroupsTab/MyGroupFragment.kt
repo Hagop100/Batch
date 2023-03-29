@@ -1,6 +1,7 @@
 package com.example.batchtest.myGroupsTab
 
 import android.app.Dialog
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,6 +21,9 @@ import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
 import com.example.batchtest.Group
 import com.example.batchtest.MatchTab.CardStackAdapter
+import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupAdapter
+import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupButton
+import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupsSwipeHelper
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMyGroupBinding
@@ -74,7 +78,6 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
         recyclerView.setHasFixedSize(true)
         myGroupList = arrayListOf()
         myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList) }!!
-
 
 
         // call function to retrieve info from database

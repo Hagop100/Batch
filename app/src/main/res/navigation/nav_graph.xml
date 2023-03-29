@@ -117,6 +117,9 @@
         <action
             android:id="@+id/action_userProfileTabFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_userProfileTabFragment_to_userGuideFragment"
+            app:destination="@id/userGuideFragment" />
     </fragment>
 
 <!--   account setting -->
@@ -214,5 +217,10 @@
             android:name="userEmail"
             app:argType="string"/>
     </fragment>
+    <fragment
+        android:id="@+id/userGuideFragment"
+        android:name="com.example.batchtest.UserProfileTab.UserGuideFragment"
+        android:label="fragment_user_guide"
+        tools:layout="@layout/fragment_user_guide" />
 
 </navigation>

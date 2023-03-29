@@ -297,11 +297,6 @@ class EditGroupInfoFragment : Fragment() {
                 // Getting the TaskSnapshot takes a bit of time,
                 taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
                     imageURL = uri.toString()
-
-                    //load the group picture to preview
-                    sharedViewModel.groupPic.value = imageURL.toString()
-//                    sharedViewModel.setGroupPicture(imageURL.toString())
-                    Log.i(TAG, "IMAGEURL: $imageURL")
                 }
 //                imageURL = imageUri.toString()
 
@@ -323,8 +318,34 @@ class EditGroupInfoFragment : Fragment() {
         //setting that was selected from the gallery
         if(resultCode == Activity.RESULT_OK && requestCode == pickImage){
             imageUri = data?.data
+            imageURL = imageUri.toString()
+
             Log.i("print", "Image URi: $imageUri.toString()")
             grouppic.setImageURI(imageUri)
+            //check if the image url is empty or null
+            if (imageURL.isNullOrEmpty()){
+                        Log.i(TAG, "IMAGEURL1: $imageURL")
+                        val db = FirebaseFirestore.getInstance()
+                        val groupName = sharedViewModel.groupName.value
+                        //get info from the group collection in firebase
+                        db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
+                            //set info about group pic
+                            val groupPic = document.getString("image")
+                            if (groupPic.isNullOrEmpty()) {
+                                binding.groupProfile.setImageResource(R.drawable.placeholder)
+
+                            } else {
+                                Glide.with(this).load(document.getString("image").toString())
+                                    .into(binding.groupProfile)
+                            }
+                        }
+                    }
+
+                    else{
+                        Log.i(TAG, "IMAGEURL2: $imageURL")
+                        //load the group picture to preview
+                        sharedViewModel.groupPic.value = imageURL.toString()
+                    }
             uploadUserImageToCloud(activity, imageUri)
 
         }

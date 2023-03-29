@@ -9,12 +9,6 @@
     android:backgroundTint="@color/app_background">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:backgroundTint="@color/app_background">
-
-        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="20dp"
@@ -32,41 +26,32 @@
                 android:src="@drawable/one_direction_photo"
                 app:civ_border_color="#FF000000"
                 android:focusable="true" />
-<!--            <ImageButton-->
-<!--                android:id="@+id/group_profile"-->
-<!--                android:layout_width="60dp"-->
-<!--                android:layout_height="60dp"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:layout_weight="0"-->
-<!--                android:background="@drawable/circular_shape"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                tools:layout_editor_absoluteX="176dp" />-->
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
+                android:orientation="vertical"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp">
+            <TextView
                     android:id="@+id/group_list_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
                     android:text="Group Name"
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/group_list_des"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
+            <TextView
+                android:id="@+id/group_list_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Group Description"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/purple_500" />
 
-                    android:text="Group Description"
-                    android:textColor="@color/purple_500" />
-            </LinearLayout>
+
         </LinearLayout>
 
         <View

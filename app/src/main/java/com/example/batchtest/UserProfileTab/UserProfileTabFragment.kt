@@ -108,6 +108,14 @@ class UserProfileTabFragment : Fragment() {
             findNavController().navigate(R.id.action_userProfileTabFragment_to_accountSettingFragment)
         }
 
+        /**
+         * user guide - help center
+         */
+        binding.helpBtn.setOnClickListener{
+            //navigate to user guide fragment
+            findNavController().navigate(R.id.action_userProfileTabFragment_to_userGuideFragment)
+        }
+
         return binding.root
     }
 
