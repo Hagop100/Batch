@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +40,8 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
     private lateinit var userList: ArrayList<User>
     private lateinit var userAdapter: UserInfoAdapter
+
+    private lateinit var groupId: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,6 +79,8 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
             val aboutUs = document.getString("aboutUsDescription")
             binding.aboutUsDescription.text = aboutUs
 
+            //used for passing value to preference fragment
+            groupId = document.getString("groupId").toString()
             /**
              * retrieve info of interest tags
              */
@@ -150,6 +155,14 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
                     dialog.dismiss()
                 }
 
+                //TODO where do I initialize the groupID
+                val discoveryPreferenceBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button,view,false) as TextView
+                discoveryPreferenceBtn.text = "Discovery Preferences"
+                discoveryPreferenceBtn.setOnClickListener {
+                    findNavController().navigate(ViewGroupInfoFragmentDirections.actionViewGroupInfoFragmentToPreferencesFragment(groupId))
+                    dialog.dismiss()
+                }
+
                 // inflate a text view to hold the edit profile dialog
                 val groupInviteBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
                 groupInviteBtn.text = getString(R.string.invite_user)
@@ -176,6 +189,9 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
                 }
                 // add the edit profile dialog button to the bottom dialog view
                 view.addView(editProfileDialogBtn)
+
+                //add the discovery profile dialog button to the bottom dialog view
+                view.addView(discoveryPreferenceBtn)
                 // add the group invite dialog button to the bottom dialog view
                 view.addView(groupInviteBtn)
             } else {
