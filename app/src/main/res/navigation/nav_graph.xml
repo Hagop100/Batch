@@ -121,6 +121,18 @@
             android:id="@+id/action_userProfileTabFragment_to_userGuideFragment"
             app:destination="@id/userGuideFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/preferencesFragment"
+        android:name="com.example.batchtest.myGroupsTab.PreferencesFragment"
+        android:label="fragment_preferences"
+        tools:layout="@layout/fragment_preferences" >
+        <action
+            android:id="@+id/action_preferencesFragment_to_viewGroupInfoFragment"
+            app:destination="@id/viewGroupInfoFragment" />
+        <argument
+            android:name="groupId"
+            app:argType="string" />
+    </fragment>
 
 <!--   account setting -->
     <fragment
@@ -146,7 +158,7 @@
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
-        android:name="com.example.batchtest.EditProfileFragment"
+        android:name="com.example.batchtest.UserProfileTab.EditProfileFragment"
         android:label="fragment_edit_profile"
         tools:layout="@layout/fragment_edit_profile" >
         <action
@@ -181,6 +193,9 @@
             app:restoreState="true"
             app:popUpToInclusive="true"
             app:popUpToSaveState="true"/>
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_preferencesFragment"
+            app:destination="@id/preferencesFragment" />
     </fragment>
     <fragment
         android:id="@+id/joinGroupFragment"
