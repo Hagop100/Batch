@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".UserProfileTab.UserGuideFragment">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,6 +58,49 @@
             android:layout_marginBottom="20dp"
             android:background="@color/horizontal_line" />
 
+
+<!--        learn more about batch-->
+<!--        <Button-->
+<!--            android:id="@+id/learn_more_batch"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="20dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginEnd="20dp"-->
+<!--            android:layout_marginBottom="10dp"-->
+<!--            android:backgroundTint="@color/background_text"-->
+<!--            android:drawableEnd="@drawable/next_btn"-->
+<!--            android:fontFamily="@font/karla"-->
+<!--            android:padding="20dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:text="Learn more about Batch"-->
+<!--            android:textAlignment="viewStart"-->
+<!--            android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textSize="18sp"-->
+<!--            app:cornerRadius="10dp"-->
+<!--            android:stateListAnimator="@null"-->
+<!--            tools:ignore="HardcodedText" />-->
+<!--        <View-->
+<!--            android:id="@id/horizontal_bar"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="1dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginBottom="20dp"-->
+<!--            android:background="@color/horizontal_line" />-->
+
+<!--        app functionality-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="App Functionality:"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:theme="@style/page_heading"
+            />
+
     <LinearLayout
         android:id="@+id/join_a_group_layout"
         android:layout_width="match_parent"
@@ -104,12 +146,11 @@
                 />
 
     </LinearLayout>
-
     </LinearLayout>
-
 
 <!--        -->
         <LinearLayout
+            android:id="@+id/create_a_group_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -117,7 +158,9 @@
             android:layout_marginEnd="15dp"
             android:background="@drawable/round_corner"
             android:orientation="horizontal"
-            android:padding="20dp">
+            android:padding="20dp"
+            android:clickable="true"
+            android:focusable="true">
 
 
             <ImageView
@@ -154,6 +197,7 @@
         </LinearLayout>
 <!--        -->
         <LinearLayout
+            android:id="@+id/set_primary_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -200,6 +244,7 @@
 
         <!--        -->
         <LinearLayout
+            android:id="@+id/batching_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -247,6 +292,7 @@
 
         <!--        -->
         <LinearLayout
+            android:id="@+id/vote_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -261,7 +307,6 @@
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:src="@drawable/ic_launcher_foreground"
                 android:contentDescription="placeholder"
                 tools:ignore="HardcodedText" />
@@ -275,7 +320,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Set Primary Group"
+                    android:text="Vote on matches"
                     android:theme="@style/page_heading"
                     tools:ignore="HardcodedText" />
 
@@ -284,7 +329,7 @@
                     android:layout_height="wrap_content"
                     android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
-                    android:text="Set primary group can be use to generate matching."
+                    android:text="Individuals of the group votes to determine the outcome of the match."
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>

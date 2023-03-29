@@ -221,6 +221,10 @@
         android:id="@+id/userGuideFragment"
         android:name="com.example.batchtest.UserProfileTab.UserGuideFragment"
         android:label="fragment_user_guide"
-        tools:layout="@layout/fragment_user_guide" />
+        tools:layout="@layout/fragment_user_guide" >
+        <action
+            android:id="@+id/action_userGuideFragment_to_userProfileTabFragment"
+            app:destination="@id/userProfileTabFragment" />
+    </fragment>
 
 </navigation>
