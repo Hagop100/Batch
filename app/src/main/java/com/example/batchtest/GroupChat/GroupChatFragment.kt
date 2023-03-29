@@ -268,13 +268,14 @@ class GroupChatFragment : Fragment() {
     }
 
     //SET GROUP CHAT TITLE FOR MATCHED GROUP
+    @SuppressLint("SetTextI18n")
     private fun setGroupChatTitle(myGroupName: String) {
-        binding.fragmentGroupChatTb.title = "$myGroupName/$theirGroupName"
+        binding.fragmentGroupChatTb.text = "$myGroupName/$theirGroupName"
     }
 
     //SET GROUP CHAT TITLE FOR MY GROUP
     private fun setMyGroupChatTitle(myGroupName: String) {
-        binding.fragmentGroupChatTb.title = myGroupName
+        binding.fragmentGroupChatTb.text = myGroupName
     }
 
     companion object {
