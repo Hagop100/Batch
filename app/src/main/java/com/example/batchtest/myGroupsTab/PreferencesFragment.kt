@@ -19,10 +19,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentPreferencesBinding
 import com.google.android.gms.location.*
+import kotlinx.coroutines.launch
 
 
 /**
@@ -177,7 +179,11 @@ class PreferencesFragment : Fragment() {
             val lastLocation: Location? = result.lastLocation
             viewModel.latitude = lastLocation!!.latitude
             viewModel.longitude = lastLocation.longitude
-            binding.tvLocation.text = viewModel.longitude.toString()
+            viewLifecycleOwner.lifecycleScope.launch {
+                val addressGeocoder = GetAddressFromLatLng(requireContext(), viewModel.latitude, viewModel.longitude )
+                binding.tvLocation.text = addressGeocoder.getAddress()
+            }
+
         }
     }
 
@@ -187,14 +193,19 @@ class PreferencesFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private fun requestLocationData(){
 
-        //must create location request first
-        var locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        locationRequest.interval = 1000
-        locationRequest.numUpdates = 1
+        viewLifecycleOwner.lifecycleScope.launch{
+            //must create location request first
+            var locationRequest = LocationRequest()
+            locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+            locationRequest.interval = 1000
+            locationRequest.numUpdates = 1
 
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallBack, Looper.myLooper())
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallBack, Looper.myLooper())
+        }
+
     }
+
+    /**Function sets the city name in the location text after calling the geo*/
 
     /**Make sure location permission are enabled,
      * Otherwise Request Coarse and Fine Location permissions */
