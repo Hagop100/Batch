@@ -69,4 +69,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-safetynet:18.0.1'
     implementation platform('com.google.firebase:firebase-bom:31.2.3')
     implementation 'com.google.firebase:firebase-messaging-ktx:23.1.2'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 }
