@@ -91,44 +91,63 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
 
         // add swipe buttons
         val swipe = object: MyGroupSwipeHelper(requireActivity(), recyclerView, 200){
-            override fun instantiateSwipeButtons(
+             override fun instantiateSwipeButtons(
                 viewHolder: RecyclerView.ViewHolder,
                 buffer: MutableList<SwipeButtons>
             ) {
-                //add button
-                buffer.add(
-                    SwipeButtons(requireActivity(),
-                    "Delete", 30,
-                    R.drawable.ic_baseline_delete_24,
-                        Color.parseColor("#FF000000"),
-                        object:MyGroupAdapter.GroupProfileViewEvent {
-                            override fun onItemClick(position: Int) {
-                                buildDeleteAlertDialog(alertDialogBuilder!!, db, position, recyclerView)
-                            }
+                 //primary
+                 buffer.add(
+                     SwipeButtons(requireActivity(),
+                         "Primary", 30,
+                         R.drawable.set_primary_btn,
+                         Color.parseColor("#f0d01a"),
+                         object:MyGroupAdapter.GroupProfileViewEvent {
+                             override fun onItemClick(position: Int) {
+                                 buildDeleteAlertDialog(alertDialogBuilder!!, db, position, recyclerView)
+                             }
 
 
-                            override fun onCardViewClick(position: Int) {
-                               //do nothing
-                            }
+                             override fun onCardViewClick(position: Int) {
+                                 //do nothing
+                             }
 
-                        }
-                ))
+                         }
+                     ))
 
-                buffer.add(SwipeButtons(requireActivity(),
-                    "Report",
-                    30,
-                    R.drawable.ic_baseline_report_24,
-                    Color.parseColor("#4E4035"),
-                    object:MyGroupAdapter.GroupProfileViewEvent {
-                        override fun onItemClick(position: Int) {
-                            buildReportAlertDialog(alertDialogBuilder!!, db, position)
-                        }
+                 //report
+                 buffer.add(SwipeButtons(requireActivity(),
+                     "Report",
+                     30,
+                     R.drawable.ic_baseline_report_24,
+                     Color.parseColor("#4E4035"),
+                     object:MyGroupAdapter.GroupProfileViewEvent {
+                         override fun onItemClick(position: Int) {
+                             buildReportAlertDialog(alertDialogBuilder!!, db, position)
+                         }
 
-                        override fun onCardViewClick(position: Int) {
-                            //do nothing
-                        }
-                    }
-                ))
+                         override fun onCardViewClick(position: Int) {
+                             //do nothing
+                         }
+                     }
+                 ))
+
+                 //delete button
+                 buffer.add(
+                     SwipeButtons(requireActivity(),
+                         "Delete", 30,
+                         R.drawable.ic_baseline_delete_24,
+                         Color.parseColor("#e01b53"),
+                         object:MyGroupAdapter.GroupProfileViewEvent {
+                             override fun onItemClick(position: Int) {
+                                 buildDeleteAlertDialog(alertDialogBuilder!!, db, position, recyclerView)
+                             }
+
+                             override fun onCardViewClick(position: Int) {
+                                 //do nothing
+                             }
+
+                         }
+                     ))
             }
 
         }

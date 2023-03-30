@@ -18,7 +18,7 @@ import com.example.batchtest.R
 import java.util.*
 
 abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: RecyclerView, internal var buttonWidth: Int)
-    : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT){
+    : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
 
     var buttonList: MutableList<SwipeButtons> ?= null
     lateinit var gestureDetector: GestureDetector
@@ -26,8 +26,11 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
     var swipeThreshold = 0.5f
     var buttonBuffer:MutableMap<Int,MutableList<SwipeButtons>>
     lateinit var removerQueue: LinkedList<Int>
+    private var swipeLeftButton: SwipeButtons? = null
+    private var swipeRightButton: SwipeButtons? = null
 
     abstract fun instantiateSwipeButtons(viewHolder: RecyclerView.ViewHolder, buffer: MutableList<SwipeButtons>)
+
 
     private val gestureListener = object:GestureDetector.SimpleOnGestureListener() {
         override fun onSingleTapUp(e: MotionEvent?): Boolean {
@@ -133,6 +136,8 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
         else {
             buttonList!!.clear()
         }
+
+
         buttonBuffer.clear()
         swipeThreshold = 0.5f*buttonList!!.size.toFloat()*buttonWidth.toFloat()
         recoverSwipeItem()
@@ -168,7 +173,7 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
         }
 
         if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-            if(dX < 0) {
+            if(dX < 0) { // swipe left
                 var buffer: MutableList<SwipeButtons> = ArrayList()
                 if(!buttonBuffer.containsKey(pos)) {
                     instantiateSwipeButtons(viewHolder, buffer)
@@ -177,8 +182,20 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
                 else {
                     buffer = buttonBuffer[pos]!!
                 }
-                translationX = dX*buffer.size.toFloat() * buttonWidth.toFloat() / itemView.width
-                drawButton(c, itemView, buffer, pos, translationX)
+                translationX = dX * 2 * buttonWidth.toFloat() / itemView.width
+                drawLeftButton(c, itemView, buffer, pos, translationX)
+            }
+            else if (dX > 0) { // swipe right
+                var buffer: MutableList<SwipeButtons> = ArrayList()
+                if (!buttonBuffer.containsKey(pos)) {
+                    instantiateSwipeButtons(viewHolder, buffer)
+                    buttonBuffer[pos] = buffer
+                } else {
+                    buffer = buttonBuffer[pos]!!
+                }
+                val buttonWidthTotal = buttonWidth
+                translationX = dX * buttonWidthTotal.toFloat() / itemView.width
+                drawRightButton(c, itemView, buffer.reversed() as MutableList<SwipeButtons>, pos, translationX)
             }
         }
         super.onChildDraw(c, recyclerView, viewHolder, translationX, dY, actionState, isCurrentlyActive)
@@ -186,9 +203,9 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
 
 
     //Draws the buttons revealed via swiping
-    private fun drawButton(c: Canvas, itemView: View, buffer: MutableList<SwipeButtons>, pos: Int, translationX: Float) {
-        var right = itemView.right.toFloat()
-        val dButtonWidth = -1*translationX/buffer.size
+    private fun drawLeftButton(c: Canvas, itemView: View, buffer: MutableList<SwipeButtons>, pos: Int, translationX: Float) {
+        var right = itemView.right.toFloat() //start from the right and swipe to left
+        val dButtonWidth = -1*translationX/2
         //get cardView item because we will need its margin values to adjust the top and bottom of the rectangle
         val cardView: CardView = itemView.findViewById(R.id.group_card_view)
         //Top must be added with the margin
@@ -197,10 +214,32 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
         val top = itemView.top.toFloat() + cardView.marginTop.toFloat()
         val bottom = itemView.bottom.toFloat() - cardView.marginBottom.toFloat()
         for(button in buffer) {
+            if (button == buffer[0]){
+                continue
+            }
             val left = right - dButtonWidth
             button.onDraw(c, RectF(left, top, right, bottom), pos)
             right = left
         }
+    }
+
+    //Draws the buttons revealed via swiping
+    private fun drawRightButton(c: Canvas, itemView: View, buffer: MutableList<SwipeButtons>, pos: Int, translationX: Float) {
+        var right = itemView.left.toFloat() //start from the left and swipe to right
+        val dButtonWidth = -1*translationX
+        //get cardView item because we will need its margin values to adjust the top and bottom of the rectangle
+        val cardView: CardView = itemView.findViewById(R.id.group_card_view)
+        //Top must be added with the margin
+        //Remember that on a computer the y-axis becomes more positive moving downwards
+        //This adjusts the rectangle to match the cardview size
+        val top = itemView.top.toFloat() + cardView.marginTop.toFloat()
+        val bottom = itemView.bottom.toFloat() - cardView.marginBottom.toFloat()
+
+        val button = buffer[2]
+            val left = right - dButtonWidth
+            button.onDraw(c, RectF(left, top, right, bottom), pos)
+            right = left
+
     }
 
 }
