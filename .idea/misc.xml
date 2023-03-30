@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.2015" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_forgot_password_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_group_chat.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_login.xml" value="0.2712962962962963" />

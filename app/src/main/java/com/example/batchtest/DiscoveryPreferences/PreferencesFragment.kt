@@ -26,16 +26,16 @@ import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentPreferencesBinding
 import com.example.batchtest.myGroupsTab.GetAddressFromLatLng
+import com.example.batchtest.myGroupsTab.PreferencesFragmentArgs
 import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
-
 
 /**
  * A simple [Fragment] subclass.
  * Use the [PreferencesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+ * create an instance of this fragment.*/
 class PreferencesFragment : Fragment() {
 
 
@@ -159,8 +159,9 @@ class PreferencesFragment : Fragment() {
         //TODO send changes to firestore.
     }
 
-    /**Check if location services are enabled
+/**Check if location services are enabled
      * Such as GPS or Network Provider*/
+
     //TODO check that it works
     private fun isLocationServicesEnabled(): Boolean {
         val locationManager: LocationManager =
@@ -185,9 +186,10 @@ class PreferencesFragment : Fragment() {
         }
     }
 
-    /** Function used to launch fused location client
+/** Function used to launch fused location client
      * Suppress Requirement to check for permission prior to using RequestLocationUpdates
-     * */
+     **/
+
     @SuppressLint("MissingPermission")
     private fun requestLocationData(){
 
@@ -203,10 +205,12 @@ class PreferencesFragment : Fragment() {
 
     }
 
-    /**Function sets the city name in the location text after calling the geo*/
+/**Function sets the city name in the location text after calling the geo
 
-    /**Make sure location permission are enabled,
-     * Otherwise Request Coarse and Fine Location permissions */
+
+*Make sure location permission are enabled,
+     * Otherwise Request Coarse and Fine Location permissions*/
+
     private fun launchUserLocation()
     {
 
