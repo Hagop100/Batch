@@ -98,6 +98,8 @@ class MyGroupAdapter(
             //check if the current position is valid
             if (position != RecyclerView.NO_POSITION){
                 listener.onItemClick(position)
+//                listener.onCardViewClick(position)
+
             }
 
         }

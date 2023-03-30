@@ -21,18 +21,16 @@ import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
 import com.example.batchtest.Group
 import com.example.batchtest.MatchTab.CardStackAdapter
-import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupAdapter
-import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupButton
-import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupsSwipeHelper
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMyGroupBinding
+import com.example.batchtest.myGroupsTab.Swipe.MyGroupSwipeHelper
+import com.example.batchtest.myGroupsTab.Swipe.SwipeButtons
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import org.w3c.dom.Text
@@ -46,7 +44,7 @@ import java.util.*
  * create an instance of this fragment.
  */
 
-class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end of RetrieveGroups()
+class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
 
     private lateinit var groupInfo: Group
     private var _binding: FragmentMyGroupBinding? = null
@@ -60,7 +58,18 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
     private lateinit var progressDialog: Dialog
     private val binding get() = _binding!!
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
+    //AlertDialog Builder
+    private var alertDialogBuilder: AlertDialog.Builder? = null
+    //authentication variable
+    private lateinit var auth: FirebaseAuth
+    private lateinit var currUser: FirebaseUser
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        alertDialogBuilder = AlertDialog.Builder(requireActivity())
+        auth = Firebase.auth //Firebase.auth initialization
+        currUser = auth.currentUser!!
+    }
 
     /**
      * inflates the view of my group fragment
@@ -80,10 +89,53 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
         myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList) }!!
 
 
+        // add swipe buttons
+        val swipe = object: MyGroupSwipeHelper(requireActivity(), recyclerView, 200){
+            override fun instantiateSwipeButtons(
+                viewHolder: RecyclerView.ViewHolder,
+                buffer: MutableList<SwipeButtons>
+            ) {
+                //add button
+                buffer.add(
+                    SwipeButtons(requireActivity(),
+                    "Delete", 30,
+                    R.drawable.ic_baseline_delete_24,
+                        Color.parseColor("#FF000000"),
+                        object:MyGroupAdapter.GroupProfileViewEvent {
+                            override fun onItemClick(position: Int) {
+                                buildDeleteAlertDialog(alertDialogBuilder!!, db, position, recyclerView)
+                            }
+
+
+                            override fun onCardViewClick(position: Int) {
+                               //do nothing
+                            }
+
+                        }
+                ))
+
+                buffer.add(SwipeButtons(requireActivity(),
+                    "Report",
+                    30,
+                    R.drawable.ic_baseline_report_24,
+                    Color.parseColor("#4E4035"),
+                    object:MyGroupAdapter.GroupProfileViewEvent {
+                        override fun onItemClick(position: Int) {
+                            buildReportAlertDialog(alertDialogBuilder!!, db, position)
+                        }
+
+                        override fun onCardViewClick(position: Int) {
+                            //do nothing
+                        }
+                    }
+                ))
+            }
+
+        }
         // call function to retrieve info from database
         RetrieveGroups()
 
-        /**
+        /*
          * onclick dialog
           */
         binding.btnToGroupCreation.setOnClickListener{
@@ -122,6 +174,73 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent { //end
 
         return binding.root
 
+    }
+
+    /*
+   Builds the alert dialog required to report a group
+   Furthermore, this handles the database read and write necessary to update the reportCount of the group
+   being reported
+    */
+    private fun buildReportAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
+        alertDialogBuilder.setTitle("Confirm Action: Report")
+            .setMessage("Are you sure you want to report this group?")
+            .setCancelable(true)
+            .setPositiveButton("Report") { _, _ ->
+                db.collection("groups")
+                    .whereEqualTo("name", myGroupList[position])
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents) {
+                            Log.d("print", "${document.id} => ${document.data}")
+                            val group: Group = document.toObject<Group>()
+                            group.reportCount += 1
+                            val currGroup = db.collection("groups").document(document.id)
+                            currGroup
+                                .update("reportCount", group.reportCount)
+                                .addOnSuccessListener { Log.d("print", "DocumentSnapshot successfully updated!") }
+                                .addOnFailureListener { e -> Log.w("print", "Error updating document", e) }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w("print", "Error getting documents: ", exception)
+                    }
+            }
+            .setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }
+            .show()
+    }
+
+    /*
+    Builds the Delete Alert Dialog in order to delete from group list
+     */
+    private fun buildDeleteAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int, recyclerView: RecyclerView) {
+        alertDialogBuilder.setTitle("Confirm Action: Delete")
+            .setMessage("Are you sure you want to un-match this group? " +
+                    "Other members of your group will not be affected. ")
+            .setCancelable(true)
+            .setPositiveButton("Delete") { _, _ ->
+                db.collection("users")
+                    .document(currUser.uid)
+                    .update(
+                        "myGroups",
+                        FieldValue.arrayRemove(myGroupList[position])
+                    )
+                //manually delete the item from the application
+                //previously we were listening to the database for real-time updates
+                //for some reason this was causing the application to crash
+                deleteItemFromRecyclerView(position, recyclerView)
+            }
+            .setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }
+            .show()
+    }
+
+    private fun deleteItemFromRecyclerView(position: Int, recyclerView: RecyclerView) {
+        myGroupList.removeAt(position)
+        recyclerView.adapter?.notifyItemChanged(position)
+        recyclerView.adapter?.notifyItemRangeRemoved(position, 1)
     }
 
     /**
