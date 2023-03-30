@@ -17,6 +17,7 @@ import com.example.batchtest.databinding.MatchedGroupRecyclerViewRowBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import de.hdodenhof.circleimageview.CircleImageView
 
 class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
                           private val listener: MatchedGroupRecyclerViewEvent,
@@ -27,10 +28,11 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
         val card: CardView = binding.matchedGroupRecyclerViewRowCardView
         val groupName: TextView = binding.matchedGroupRecycleViewRowGroupName
         //This needs to be fixed
-        val groupPhoto: ImageView = binding.matchedGroupRecyclerViewRowGroupPhoto
+        val groupPhoto: CircleImageView = binding.matchedGroupRecyclerViewRowGroupPhoto
 
         init {
-            binding.root.setOnClickListener(this)
+            card.setOnClickListener(this)
+            groupPhoto.setOnClickListener(this)
         }
 
         override fun onClick(p0: View?) {
@@ -57,6 +59,10 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
         val currentItem = matchedGroupList[position]
         holder.groupName.text = currentItem
         setGroupPhoto(holder, position)
+
+        holder.groupPhoto.setOnClickListener{
+            listener.onGroupPictureClick(position)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -80,6 +86,7 @@ class MatchedGroupAdapter(private val matchedGroupList: ArrayList<String>,
      */
     interface MatchedGroupRecyclerViewEvent {
         fun onItemClick(position: Int)
+        fun onGroupPictureClick(position: Int)
     }
 
 }

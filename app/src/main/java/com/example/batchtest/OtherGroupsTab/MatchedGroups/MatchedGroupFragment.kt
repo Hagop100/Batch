@@ -11,12 +11,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.Group
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupAdapter
 import com.example.batchtest.R
@@ -24,6 +26,7 @@ import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentLoginBinding
 import com.example.batchtest.databinding.FragmentMatchedGroupBinding
 import com.example.batchtest.myGroupsTab.MyGroupAdapter
+import com.example.batchtest.myGroupsTab.MyGroupFragmentDirections
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -51,6 +54,9 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
 
     //User variable
     private lateinit var user: User
+
+    //Group Info View Model
+    private val sharedViewModel: GroupInfoViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +98,10 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                         override fun onItemClick(position: Int) {
                             buildDeleteAlertDialog(alertDialogBuilder!!, db, position, matchedGroupRV)
                         }
+
+                        override fun onGroupPictureClick(position: Int) {
+                            //Do nothing
+                        }
                     }
                 ))
 
@@ -103,6 +113,10 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                     object:MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
                         override fun onItemClick(position: Int) {
                             buildReportAlertDialog(alertDialogBuilder!!, db, position)
+                        }
+
+                        override fun onGroupPictureClick(position: Int) {
+                            //Do nothing
                         }
                     }
                 ))
@@ -222,6 +236,16 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
         //This will communicate to the next fragment which group we click on
         val bundle = bundleOf("groupName" to matchedGroupArrayList[position])
         findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment, bundle)
+    }
+
+    override fun onGroupPictureClick(position: Int) {
+        val groupInfo = matchedGroupArrayList[position]
+        //Toast.makeText(this.context, groupInfo.name, Toast.LENGTH_SHORT).show()
+
+        sharedViewModel.setGName(groupInfo)
+
+        //navigate action to the requesting fragment
+        findNavController().navigate(R.id.action_otherGroupTabFragment_to_viewGroupInfoFragment)
     }
 
 }

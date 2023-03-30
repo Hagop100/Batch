@@ -80,6 +80,9 @@
             app:exitAnim="@anim/slide_out_to_left"
             app:popEnterAnim="@anim/slide_in_from_left"
             app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_otherGroupTabFragment_to_viewGroupInfoFragment"
+            app:destination="@id/viewGroupInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/initialProfilePersonalizationFragment"
@@ -123,7 +126,7 @@
     </fragment>
     <fragment
         android:id="@+id/preferencesFragment"
-        android:name="com.example.batchtest.myGroupsTab.PreferencesFragment"
+        android:name="com.example.batchtest.DiscoveryPreferences.PreferencesFragment"
         android:label="fragment_preferences"
         tools:layout="@layout/fragment_preferences" >
         <action

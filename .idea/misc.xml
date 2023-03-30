@@ -3,15 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.2015" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_forgot_password_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_group_chat.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_login.xml" value="0.2712962962962963" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_m_f_authentication_verification_dialog.xml" value="0.35648148148148145" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_matched_group.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_my_group.xml" value="0.33425925925925926" />
+        <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_other_group_tab.xml" value="0.33425925925925926" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_registration.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/matched_group_recycler_view_row.xml" value="0.3177083333333333" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/me_message.xml" value="0.365625" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/me_message_recycler_view_row.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/my_group_list.xml" value="0.33425925925925926" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/them_message_recycler_view_row.xml" value="0.365625" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/BatchTest/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/BatchTest/app/src/main/res/layout/fragment_input.xml" value="0.3314814814814815" />
