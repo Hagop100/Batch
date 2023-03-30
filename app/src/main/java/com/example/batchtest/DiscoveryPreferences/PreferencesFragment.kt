@@ -1,4 +1,4 @@
-package com.example.batchtest.myGroupsTab
+package com.example.batchtest.DiscoveryPreferences
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -10,6 +10,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,9 +22,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentPreferencesBinding
+import com.example.batchtest.myGroupsTab.GetAddressFromLatLng
 import com.google.android.gms.location.*
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 
@@ -34,15 +38,12 @@ import kotlinx.coroutines.launch
  */
 class PreferencesFragment : Fragment() {
 
-    companion object {
-        const val LATITUDE:String = "latitude"
-        const val LONGITUDE: String = "longitude"
-        const val SEARCHDISTANCE: String = "distance"
-    }
+
 
     //View Model
     private lateinit var viewModel: PreferencesViewModel
-    private lateinit var groupId: String
+    private lateinit var viewModelFactory: PreferencesViewModelFactory
+
 
     private var _binding: FragmentPreferencesBinding? = null
     private val binding get() = _binding!!
@@ -85,12 +86,7 @@ class PreferencesFragment : Fragment() {
                 }
             }
         }
-        //initialize modelview - might not use
-        viewModel = ViewModelProvider(this).get(PreferencesViewModel::class.java)
 
-        //get groupId from ViewGroupInfoFragment
-        val args = PreferencesFragmentArgs.fromBundle(requireArguments())
-        viewModel.groupId = args.groupId
         //Initialize the Fused location provider
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
     }
@@ -101,16 +97,18 @@ class PreferencesFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentPreferencesBinding.inflate(inflater, container, false)
+
+        //initialize factory to pass in group id
+        viewModelFactory = PreferencesViewModelFactory(PreferencesFragmentArgs.fromBundle(requireArguments()).groupId)
+        //initialize modelview - might not use
+        viewModel = ViewModelProvider(this, viewModelFactory).get(PreferencesViewModel::class.java)
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //HashMap with user location attributes
-        viewModel.locationHashMap[LATITUDE] = 0.0
-        viewModel.locationHashMap[LONGITUDE] = 0.0
-        viewModel.locationHashMap[SEARCHDISTANCE] = 0
 
         //TODO button listener for btn_to_user_profile_tab
         //Button returns user to their ViewGroupInfo page without saving info
@@ -123,8 +121,8 @@ class PreferencesFragment : Fragment() {
         //Age range slider that determines the minimum and max ages of group members the other group can have
         binding.rsAge.addOnChangeListener { slider, value, fromUser ->
             binding.tvAgeSelected.text = "${slider.values[0].toInt()} - ${slider.values[1].toInt()}"
-            viewModel.minimumAge = slider.values[0].toInt()
-            viewModel.maxAge = slider.values[1].toInt()
+            viewModel.minimumAge.value = slider.values[0].toInt()
+            viewModel.maxAge.value = slider.values[1].toInt()
         }
 
         //Button that gets the user location
@@ -149,7 +147,6 @@ class PreferencesFragment : Fragment() {
             }
 
         }
-        //TODO DISPLAY LOCATION CITY or ZIP
 
         //TODO get Max distance from current location
 
@@ -158,6 +155,7 @@ class PreferencesFragment : Fragment() {
         //TODO set Gender of group to discover
 
         //TODO save changes
+
         //TODO send changes to firestore.
     }
 
@@ -165,9 +163,9 @@ class PreferencesFragment : Fragment() {
      * Such as GPS or Network Provider*/
     //TODO check that it works
     private fun isLocationServicesEnabled(): Boolean {
-        Toast.makeText(context, "in location service", Toast.LENGTH_SHORT)
         val locationManager: LocationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE)!! as LocationManager
+
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
@@ -225,5 +223,7 @@ class PreferencesFragment : Fragment() {
         }
 
     }
+
+
 
 }

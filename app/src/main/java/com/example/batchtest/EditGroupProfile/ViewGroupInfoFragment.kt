@@ -159,7 +159,9 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
                 val discoveryPreferenceBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button,view,false) as TextView
                 discoveryPreferenceBtn.text = "Discovery Preferences"
                 discoveryPreferenceBtn.setOnClickListener {
-                    findNavController().navigate(ViewGroupInfoFragmentDirections.actionViewGroupInfoFragmentToPreferencesFragment(groupId))
+                    findNavController().navigate(ViewGroupInfoFragmentDirections.actionViewGroupInfoFragmentToPreferencesFragment(
+                        groupName
+                    ))
                     dialog.dismiss()
                 }
 
