@@ -29,12 +29,13 @@ class UserGuideFragment : Fragment() {
     ): View {
         _binding = FragmentUserGuideBinding.inflate(layoutInflater, container, false)
         dialog = Dialog(requireActivity())
-        val backButton = dialog.findViewById<Button>(R.id.btn_user_guide)
+//        val backButton = dialog.findViewById<Button>(R.id.btn_user_guide)
         /*
          * dialog for join a group
          */
         binding.joinAGroupLayout.setOnClickListener{
             dialog.setContentView(R.layout.join_group_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_join_a_group)
             dialog.show()
             backButton.setOnClickListener{
                 dialog.dismiss()
@@ -46,7 +47,9 @@ class UserGuideFragment : Fragment() {
          */
 
         binding.createAGroupLayout.setOnClickListener{
+
             dialog.setContentView(R.layout.create_group_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_create_a_group)
             dialog.show()
             backButton.setOnClickListener{
                 dialog.dismiss()
@@ -57,7 +60,9 @@ class UserGuideFragment : Fragment() {
          * dialog for set primary group
          */
         binding.setPrimaryLayout.setOnClickListener{
+
             dialog.setContentView(R.layout.set_primary_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_set_primary)
             dialog.show()
             backButton.setOnClickListener{
                 dialog.dismiss()
@@ -68,7 +73,9 @@ class UserGuideFragment : Fragment() {
          * dialog for 'batching'
          */
         binding.batchingLayout.setOnClickListener{
+
             dialog.setContentView(R.layout.batching_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_batching)
             dialog.show()
             backButton.setOnClickListener{
                 dialog.dismiss()
