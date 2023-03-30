@@ -1,4 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/app_background"
+    android:id="@+id/matched_group_recycler_view_row_card_view"
+    android:backgroundTint="@color/app_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/matched_group_recycler_view_row_group_photo"
+            android:layout_width="65dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="20dp"
+            android:clickable="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/one_direction_photo"
+            app:civ_border_color="#FF000000"
+            android:focusable="true" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:id="@+id/matched_group_recycle_view_row_group_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Group Name"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/horizontal_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@color/horizontal_line" />
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
+<!--
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -27,13 +87,15 @@
 
             <ImageView
                 android:id="@+id/matched_group_recycler_view_row_group_photo"
-                android:layout_width="100dp"
-                android:layout_height="80dp"
-                android:contentDescription="TODO"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/one_direction_photo" />
+                android:layout_width="65dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="20dp"
+                android:clickable="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/one_direction_photo"
+                app:civ_border_color="#FF000000"
+                android:focusable="true" />
 
             <TextView
                 android:id="@+id/matched_group_recycle_view_row_group_name"
@@ -47,4 +109,4 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>-->
