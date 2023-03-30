@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -26,7 +27,7 @@ import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentPreferencesBinding
 import com.example.batchtest.myGroupsTab.GetAddressFromLatLng
-import com.example.batchtest.myGroupsTab.PreferencesFragmentArgs
+import com.example.batchtest.DiscoveryPreferences.PreferencesFragmentArgs
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.firestore.FirebaseFirestore
@@ -38,7 +39,14 @@ import kotlinx.coroutines.launch
  * create an instance of this fragment.*/
 class PreferencesFragment : Fragment() {
 
-
+    companion object
+    {
+        const val LATITUDE: String = "latitude"
+        const val LONGITUDE: String = "longitude"
+        const val MIN_AGE: String = "minimumAge"
+        const val MAX_AGE: String = "maxAge"
+        const val MAX_DISTANCE: String = "maxDistance"
+    }
 
     //View Model
     private lateinit var viewModel: PreferencesViewModel
@@ -98,11 +106,23 @@ class PreferencesFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentPreferencesBinding.inflate(inflater, container, false)
 
-        //initialize factory to pass in group id
+        //initialize factory to pass in group name necessary to get Group from database
         viewModelFactory = PreferencesViewModelFactory(PreferencesFragmentArgs.fromBundle(requireArguments()).groupId)
-        //initialize modelview - might not use
+        //initialize modelview - using a viewModelFactory to pass in the group Name
         viewModel = ViewModelProvider(this, viewModelFactory).get(PreferencesViewModel::class.java)
 
+        //Observe the minimum age and update the viewModel hashMap in case the user saves the preferences
+        viewModel.minimumAge.observe(viewLifecycleOwner, Observer { newMinAge->
+            viewModel.preferencesHash[MIN_AGE] = newMinAge
+        })
+        viewModel.maxAge.observe(viewLifecycleOwner, Observer { newMaxAge->
+            viewModel.preferencesHash[MAX_AGE] = newMaxAge
+        })
+        viewModel.distance.observe(viewLifecycleOwner, Observer { newDistance->
+            viewModel.preferencesHash[MAX_DISTANCE] = newDistance
+        })
+
+        //TODO add obsevers for deal breakers? - Latitude and Longitude
         return binding.root
     }
 
@@ -117,13 +137,18 @@ class PreferencesFragment : Fragment() {
             findNavController().navigate(R.id.action_preferencesFragment_to_viewGroupInfoFragment)
         }
 
-        //TODO GET GROUP AGE RANGE
         //Age range slider that determines the minimum and max ages of group members the other group can have
         binding.rsAge.addOnChangeListener { slider, value, fromUser ->
             binding.tvAgeSelected.text = "${slider.values[0].toInt()} - ${slider.values[1].toInt()}"
             viewModel.minimumAge.value = slider.values[0].toInt()
             viewModel.maxAge.value = slider.values[1].toInt()
         }
+
+        binding.rsDistance.addOnChangeListener { slider, value, fromUser ->
+            binding.tvDistance.text = "${value.toInt()} Miles"
+            viewModel.distance.value = value.toInt()
+        }
+
 
         //Button that gets the user location
         binding.btnCurrentLocation.setOnClickListener {

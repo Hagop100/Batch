@@ -33,8 +33,12 @@ class PreferencesViewModel(gId: String): ViewModel() {
     var groupId: String = ""
     var dBreakers = ArrayList<String>()
     val database = FirebaseFirestore.getInstance()
+
+    //Use for check whether the group already has variables initialized
     var isDealBreakers: Boolean = false
     var isPrefs: Boolean = false
+    //used for updating the groups discovery preferences
+    val preferencesHash = HashMap<String, Any>()
     private lateinit var group: Group
 
 

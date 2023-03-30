@@ -126,7 +126,7 @@
     </fragment>
     <fragment
         android:id="@+id/preferencesFragment"
-        android:name="com.example.batchtest.myGroupsTab.PreferencesFragment"
+        android:name="com.example.batchtest.DiscoveryPreferences.PreferencesFragment"
         android:label="fragment_preferences"
         tools:layout="@layout/fragment_preferences" >
         <action
