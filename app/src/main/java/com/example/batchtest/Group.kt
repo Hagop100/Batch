@@ -3,6 +3,7 @@ package com.example.batchtest
 import com.google.firebase.firestore.ServerTimestamp
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 data class Group(
     val groupId: String? = null,
@@ -15,6 +16,8 @@ data class Group(
     val image: String? = null,
     var reportCount: Int = 0,
     var matchedGroups: ArrayList<String> = ArrayList(),
+    val dealBreakers: ArrayList<String>? = null,
+    val discoverPrefs: HashMap<String, Any>? = null,
     @ServerTimestamp
     var createdDate: Date? = Date(),
 
