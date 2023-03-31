@@ -3,7 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/drawable/ic_baseline_delete_24.xml" value="0.2015" />
+        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_forgot_password_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_group_chat.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_login.xml" value="0.2712962962962963" />
@@ -46,6 +46,7 @@
         <entry key="app/src/main/res/font/karla.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/layout/activity_group_creation.xml" value="0.1578125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/custom_dialog.xml" value="0.178125" />
         <entry key="app/src/main/res/layout/dialog_button.xml" value="0.14990942028985507" />
         <entry key="app/src/main/res/layout/dialog_layout.xml" value="0.22055385423743207" />
         <entry key="app/src/main/res/layout/fragment_account_setting.xml" value="0.22418478260869565" />

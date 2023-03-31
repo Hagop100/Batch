@@ -138,8 +138,7 @@ used to populate the cardStackView recycler -->
                         android:id="@+id/about_us_description"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:paddingTop="20dp"
-                        android:paddingBottom="200dp"/>
+                        android:paddingVertical="20dp"/>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </RelativeLayout>

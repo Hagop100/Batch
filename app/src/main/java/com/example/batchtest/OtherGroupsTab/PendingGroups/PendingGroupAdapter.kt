@@ -10,13 +10,20 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
+import com.example.batchtest.Chat
+import com.example.batchtest.Message
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.R
 import com.example.batchtest.databinding.VoteGroupCardBinding
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val TAG = "PendingGroupAdapter"
 
@@ -27,6 +34,7 @@ class PendingGroupAdapter(
         private val db = Firebase.firestore
         // get the authenticated logged in user
         private val currentUser = Firebase.auth.currentUser
+        // colors for ui based on vote state
         private val green = "#5BC368"
         private val red = "#C35B5B"
         private val darkRed = "#994646"
@@ -110,15 +118,16 @@ class PendingGroupAdapter(
                 }
 
             }
-
+            // handle reject button logic
             holder.rejectBtn.setOnClickListener {
                 rejectPendingGroup(group, holder)
             }
+            // handle accept button logic
             holder.acceptBtn.setOnClickListener {
                 acceptPendingGroup(group, holder)
             }
         }
-
+        // update current users vote to accept in database and update ui of vote card
         private fun acceptPendingGroup(group: PendingGroup, holder: PendingGroupHolder) {
             val id = currentUser?.uid
             val index = group.users?.get(id)?.get("index")
@@ -127,11 +136,11 @@ class PendingGroupAdapter(
                 .addOnSuccessListener {
                     toggleButtonUI(holder, true)
                     setIconColor(holder, index.toString(), green)
-                    voting(group)
+                    voting(db, group)
                 }
 
         }
-
+        // update current users vote to reject in database and update ui of vote card
         private fun rejectPendingGroup(group: PendingGroup, holder: PendingGroupHolder) {
             val id = currentUser?.uid
             val index = group.users?.get(id)?.get("index")
@@ -140,11 +149,11 @@ class PendingGroupAdapter(
                 .addOnSuccessListener {
                     toggleButtonUI(holder, false)
                     setIconColor(holder, index.toString(), red)
-                    voting(group)
+                    voting(db, group)
                 }
 
         }
-
+        // toggle button user interface based on user's vote
         private fun toggleButtonUI(holder: PendingGroupHolder, accept:Boolean) {
             val acceptBtnColor: String
             val rejectBtnColor: String
@@ -160,17 +169,27 @@ class PendingGroupAdapter(
             holder.acceptBtn.isEnabled = false
             holder.rejectBtn.isEnabled = false
         }
-
+        // color of icon
         private fun setIconColor(holder: PendingGroupHolder, index: String, color: String) {
             holder.members[index]?.setColorFilter(Color.parseColor(color))
         }
 
+    // returns number of pending groups
+        override fun getItemCount(): Int {
+            return groups.size
+        }
 
-        private fun voting(pendingGroup: PendingGroup) {
+    companion object {
+        // voting algorithm runs when a user votes to check if a majority votes has occurred
+        // if a majority vote (accept or reject) has occurred, then check if both groups have
+        // decided to match. if one group rejects, then delete the pending group from the db
+        // if voting is still pending, do nothing
+        fun voting(db: FirebaseFirestore, pendingGroup: PendingGroup) {
             var acceptCount = 0
             var rejectCount = 0
             val memberCount = pendingGroup.users?.size
             if (memberCount != null && memberCount > 0) {
+                Log.v(TAG, "voting")
                 pendingGroup.users.forEach { (_, map) ->
                     if (map["vote"] == "accept") {
                         acceptCount++
@@ -178,18 +197,91 @@ class PendingGroupAdapter(
                         rejectCount++
                     }
                 }
+                // if majority of group members vote to accept the group:
+                // update pending to be false so the pending group will not be displayed anymore
+                // update matched to be true indicating the group accepted the group
+                // else if vote to reject the group:
+                // remove the pending group from the database
                 if ((acceptCount.toFloat() / memberCount.toFloat()) >= .5F) {
-                    db.collection("pendingGroup").document(pendingGroup.pendingGroupId.toString())
-                        .update("pending", false)
-                    Log.v(TAG, "matched")
+                    db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString())
+                        .update("pending", false, "matched", true)
+                        .addOnSuccessListener {
+                            // once updated, fetch the pending group for the other group to see if they had
+                            // voted to accept or reject the group if both groups have accepted, then match
+                            db.collection("pendingGroups")
+                                .whereEqualTo("matchingGroup", pendingGroup.pendingGroup) // the pending group will be the matching group
+                                .whereEqualTo("pendingGroup", pendingGroup.matchingGroup) // the matching group will be the pending group
+                                .get()
+                                .addOnSuccessListener {
+                                    if (it.documents.isNotEmpty()) {
+                                        val otherPendingGroup =
+                                            it.documents[0].toObject(PendingGroup::class.java)
+                                        // check if they had voted to match
+                                        if (otherPendingGroup != null) {
+                                            if (otherPendingGroup.matched == true) {
+                                                // add the user's group to the matched groups of all users in the other pending group
+                                                otherPendingGroup.users?.forEach { (key, _) ->
+                                                    db.collection("users").document(key)
+                                                        .update(
+                                                            "matchedGroups",
+                                                            FieldValue.arrayUnion(otherPendingGroup.pendingGroup)
+                                                        )
+                                                        .addOnFailureListener { e ->
+                                                            Log.v(
+                                                                TAG,
+                                                                "error adding current group to matched group of user:",
+                                                                e
+                                                            )
+                                                        }
+                                                }
+                                                // add the other group to the matched groups of all users in the user's group
+                                                pendingGroup.users.forEach { (key, _) ->
+                                                    db.collection("users").document(key)
+                                                        .update(
+                                                            "matchedGroups",
+                                                            FieldValue.arrayUnion(pendingGroup.pendingGroup)
+                                                        )
+                                                        .addOnFailureListener { e ->
+                                                            Log.v(
+                                                                TAG,
+                                                                "error adding other group to matched group of user:",
+                                                                e
+                                                            )
+                                                        }
+                                                }
+                                                // create a chat object
+                                                val messages = arrayListOf<Message>()
+                                                val chat = Chat(
+                                                    0,
+                                                    messages,
+                                                    otherPendingGroup.matchingGroup,
+                                                    otherPendingGroup.pendingGroup,
+                                                    Date()
+                                                )
+                                                // add chat to db
+                                                db.collection("chats").add(chat)
+                                                    .addOnFailureListener { e ->
+                                                        Log.v(
+                                                            TAG,
+                                                            "error adding chat for groups ${otherPendingGroup.matchingGroup} and ${otherPendingGroup.pendingGroup}",
+                                                            e
+                                                        )
+                                                    }
+                                                // delete both pending groups from db
+                                                db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString()).delete()
+                                                db.collection("pendingGroups").document(otherPendingGroup.pendingGroupId.toString()).delete()
+                                            }
+                                        }
+                                    }
+                                }
+                        }
                 } else if ((rejectCount.toFloat() / memberCount.toFloat()) > .5F) {
-                    Log.v(TAG, "not matched")
+                    // remove the pending group from the database which will add the group back to the card stack
+                    db.collection("pendingGroups")
+                        .document(pendingGroup.pendingGroupId.toString())
+                        .delete()
                 }
-                TODO("if two members automatically match")
             }
         }
-        // returns number of pending groups
-        override fun getItemCount(): Int {
-            return groups.size
-        }
     }
+}

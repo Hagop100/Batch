@@ -13,7 +13,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import com.example.batchtest.EditProfileFragment
+import com.example.batchtest.UserProfileTab.EditProfileFragment
 import com.example.batchtest.LoginFragment
 import com.example.batchtest.MainActivity
 import com.example.batchtest.R
