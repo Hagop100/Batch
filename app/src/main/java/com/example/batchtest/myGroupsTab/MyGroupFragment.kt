@@ -108,6 +108,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                          Color.parseColor("#f0d01a"),
                          object:MyGroupAdapter.GroupProfileViewEvent {
                              override fun onItemClick(position: Int) {
+                                 Log.d("print", "Primary Button pressed")
                                  buildPrimaryGroupDialog(alertDialogBuilder!!, db, position)
                              }
 
@@ -127,6 +128,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                      Color.parseColor("#134abf"),
                      object:MyGroupAdapter.GroupProfileViewEvent {
                          override fun onItemClick(position: Int) {
+                             Log.d("print", "Mute button pressed")
                              val groupName = myGroupList[position].name
                              if (mutedGroupList.contains(groupName)) {
                                  db.collection("users").document(currUser.uid)
@@ -151,6 +153,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                          Color.parseColor("#e01b53"),
                          object:MyGroupAdapter.GroupProfileViewEvent {
                              override fun onItemClick(position: Int) {
+                                 Log.d("print", "Delete button pressed")
                                  buildDeleteAlertDialog(alertDialogBuilder!!, db, position, recyclerView)
                              }
 
@@ -208,7 +211,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
     }
 
     /*
-    Builds teh alert dialog required to make a primary group
+    Builds the alert dialog required to make a primary group
     Also handles the database read and write to update the primary group of the user
      */
     private fun buildPrimaryGroupDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int){
@@ -218,7 +221,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
             .setPositiveButton("Primary") { _, _ ->
                 db.collection("users")
                     .document(currUser.uid)
-                    .update( "primaryGroup", myGroupList[position])
+                    .update( "primaryGroup", myGroupList[position].name)
             }
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
