@@ -27,8 +27,6 @@
                 app:civ_border_color="#FF000000"
                 android:focusable="true" />
 
-
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

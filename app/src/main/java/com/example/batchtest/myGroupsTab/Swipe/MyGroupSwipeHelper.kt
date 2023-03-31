@@ -26,8 +26,6 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
     var swipeThreshold = 0.5f
     var buttonBuffer:MutableMap<Int,MutableList<SwipeButtons>>
     lateinit var removerQueue: LinkedList<Int>
-    private var swipeLeftButton: SwipeButtons? = null
-    private var swipeRightButton: SwipeButtons? = null
 
     abstract fun instantiateSwipeButtons(viewHolder: RecyclerView.ViewHolder, buffer: MutableList<SwipeButtons>)
 
@@ -213,6 +211,8 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
         //This adjusts the rectangle to match the cardview size
         val top = itemView.top.toFloat() + cardView.marginTop.toFloat()
         val bottom = itemView.bottom.toFloat() - cardView.marginBottom.toFloat()
+
+        //skipped the primary button
         for(button in buffer) {
             if (button == buffer[0]){
                 continue
@@ -235,6 +235,7 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
         val top = itemView.top.toFloat() + cardView.marginTop.toFloat()
         val bottom = itemView.bottom.toFloat() - cardView.marginBottom.toFloat()
 
+        //only show primary button on the left - swipe to right
         val button = buffer[2]
             val left = right - dButtonWidth
             button.onDraw(c, RectF(left, top, right, bottom), pos)

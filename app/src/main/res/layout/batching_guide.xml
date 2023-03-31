@@ -34,7 +34,7 @@
                 app:layout_constraintVertical_bias="0.4" />
 
             <Button
-                android:id="@+id/btn_user_guide"
+                android:id="@+id/backto_guide_from_batching"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="59dp"
                 android:layout_height="43dp"

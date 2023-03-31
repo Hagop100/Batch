@@ -107,8 +107,8 @@ class MyGroupAdapter(
 
     //functions that are implemented in the MyGroupFragment for navigation
     interface GroupProfileViewEvent{
-        fun onItemClick(position: Int)
-        fun onCardViewClick(position: Int)
+        fun onItemClick(position: Int) //group profile
+        fun onCardViewClick(position: Int) //group chat
     }
 
 

@@ -103,7 +103,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                          Color.parseColor("#f0d01a"),
                          object:MyGroupAdapter.GroupProfileViewEvent {
                              override fun onItemClick(position: Int) {
-                                 buildDeleteAlertDialog(alertDialogBuilder!!, db, position, recyclerView)
+                                 //TODO:implement logic here
                              }
 
 
@@ -114,15 +114,15 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                          }
                      ))
 
-                 //report
+                 //mute group
                  buffer.add(SwipeButtons(requireActivity(),
                      "Report",
                      30,
-                     R.drawable.ic_baseline_report_24,
-                     Color.parseColor("#4E4035"),
+                     R.drawable.mute_btn,
+                     Color.parseColor("#134abf"),
                      object:MyGroupAdapter.GroupProfileViewEvent {
                          override fun onItemClick(position: Int) {
-                             buildReportAlertDialog(alertDialogBuilder!!, db, position)
+                            //TODO:implement logic here
                          }
 
                          override fun onCardViewClick(position: Int) {
