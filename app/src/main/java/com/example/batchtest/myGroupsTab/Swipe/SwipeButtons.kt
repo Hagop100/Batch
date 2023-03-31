@@ -5,6 +5,7 @@ import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.batchtest.myGroupsTab.MyGroupAdapter
 import io.grpc.internal.SharedResourceHolder.Resource
@@ -82,5 +83,9 @@ class SwipeButtons(
         d.setBounds(0, 0, canvas.width, canvas.height)
         d.draw(canvas)
         return bitmap
+    }
+
+    companion object {
+        const val TAG = "SwipeButtons"
     }
 }

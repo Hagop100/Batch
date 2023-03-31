@@ -193,7 +193,7 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
                 }
                 val buttonWidthTotal = buttonWidth
                 translationX = dX * buttonWidthTotal.toFloat() / itemView.width
-                drawRightButton(c, itemView, buffer.reversed() as MutableList<SwipeButtons>, pos, translationX)
+                drawRightButton(c, itemView, buffer, pos, translationX)
             }
         }
         super.onChildDraw(c, recyclerView, viewHolder, translationX, dY, actionState, isCurrentlyActive)
@@ -225,8 +225,8 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
 
     //Draws the buttons revealed via swiping
     private fun drawRightButton(c: Canvas, itemView: View, buffer: MutableList<SwipeButtons>, pos: Int, translationX: Float) {
-        var right = itemView.left.toFloat() //start from the left and swipe to right
         val dButtonWidth = -1*translationX
+        val right = itemView.left.toFloat() - dButtonWidth //start from the left and swipe to right
         //get cardView item because we will need its margin values to adjust the top and bottom of the rectangle
         val cardView: CardView = itemView.findViewById(R.id.group_card_view)
         //Top must be added with the margin
@@ -236,10 +236,9 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
         val bottom = itemView.bottom.toFloat() - cardView.marginBottom.toFloat()
 
         //only show primary button on the left - swipe to right
-        val button = buffer[2]
-            val left = right - dButtonWidth
-            button.onDraw(c, RectF(left, top, right, bottom), pos)
-            right = left
+        val button = buffer[0]
+        val left = itemView.left.toFloat()
+        button.onDraw(c, RectF(left, top, right, bottom), pos)
 
     }
 
