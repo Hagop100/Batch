@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AlertDialog.Builder
 import androidx.constraintlayout.widget.StateSet.TAG
 import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
@@ -66,6 +67,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
     private lateinit var auth: FirebaseAuth
     private lateinit var currUser: FirebaseUser
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         alertDialogBuilder = AlertDialog.Builder(requireActivity())
@@ -106,7 +108,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                          Color.parseColor("#f0d01a"),
                          object:MyGroupAdapter.GroupProfileViewEvent {
                              override fun onItemClick(position: Int) {
-                                 //TODO:implement logic here
+                                 buildPrimaryGroupDialog(alertDialogBuilder!!, db, position)
                              }
 
 
@@ -204,6 +206,27 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
         return binding.root
 
     }
+
+    /*
+    Builds teh alert dialog required to make a primary group
+    Also handles the database read and write to update the primary group of the user
+     */
+    private fun buildPrimaryGroupDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int){
+        alertDialogBuilder.setTitle("Confirm Action: Set Primary Group")
+            .setMessage("Are you sure you want to make this your primary group?")
+            .setCancelable(true)
+            .setPositiveButton("Primary") { _, _ ->
+                db.collection("users")
+                    .document(currUser.uid)
+                    .update( "primaryGroup", myGroupList[position])
+            }
+            .setNegativeButton("No") { dialogInterface, _ ->
+                dialogInterface.cancel()
+            }
+            .show()
+    }
+
+
 
     /*
    Builds the alert dialog required to report a group
