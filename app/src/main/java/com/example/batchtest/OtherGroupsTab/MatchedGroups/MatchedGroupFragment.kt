@@ -240,12 +240,12 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
 
     override fun onGroupPictureClick(position: Int) {
         val groupInfo = matchedGroupArrayList[position]
-        val bundle = bundleOf("fragmentNavigatedFrom" to TAG)
-
+        //val bundle = bundleOf("fragmentNavigatedFrom" to TAG)
+        // add group name and fragment to return to in shared view model
         sharedViewModel.setGName(groupInfo)
-
+        sharedViewModel.setReturnFragment("MatchedGroupFragment")
         //navigate action to the requesting fragment
-        findNavController().navigate(R.id.action_otherGroupTabFragment_to_viewGroupInfoFragment, bundle)
+        findNavController().navigate(R.id.action_otherGroupTabFragment_to_viewGroupInfoFragment)
     }
 
 }

@@ -27,7 +27,8 @@ data class User(
     val profileComplete: Boolean = false,
     val userToken: String? = null,
     val undoState: Boolean = false,
-    val primaryGroup: String? = null
+    val primaryGroup: String? = null,
+    val mutedGroups: ArrayList<String> = ArrayList()
 ) {
 
     // returns full name of user

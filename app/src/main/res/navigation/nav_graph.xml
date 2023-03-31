@@ -237,6 +237,12 @@
         <argument
             android:name="userEmail"
             app:argType="string"/>
+        <action
+            android:id="@+id/action_viewUserInfoFragment_to_otherGroupTabFragment"
+            app:destination="@id/otherGroupTabFragment" />
+        <action
+            android:id="@+id/action_viewUserInfoFragment_to_myGroupFragment"
+            app:destination="@id/myGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/userGuideFragment"

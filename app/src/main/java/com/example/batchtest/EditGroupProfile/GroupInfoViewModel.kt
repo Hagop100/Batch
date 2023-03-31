@@ -14,6 +14,7 @@ class GroupInfoViewModel: ViewModel() {
     val groupTags: MutableLiveData<ArrayList<String>> = MutableLiveData()
     var groupPic: MutableLiveData<String> = MutableLiveData()
     private val isInGroup: MutableLiveData<Boolean> = MutableLiveData()
+    private val returnFragment: MutableLiveData<String> = MutableLiveData()
 
 
     init{
@@ -54,5 +55,13 @@ class GroupInfoViewModel: ViewModel() {
     }
     fun getIsInGroup(): MutableLiveData<Boolean> {
         return isInGroup
+    }
+
+    // set and get return fragment
+    fun setReturnFragment(fragment: String) {
+        returnFragment.value = fragment
+    }
+    fun getReturnFragment(): MutableLiveData<String> {
+        return returnFragment
     }
 }

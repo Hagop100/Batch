@@ -218,13 +218,11 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
 
         //Exit to navigate back to the my groups page
         binding.exitViewBtn.setOnClickListener{
-            val result = arguments?.getString("fragmentNavigatedFrom")
-            // findNavController().popBackStack()
-            if(result == "MatchedGroupFragment") {
-                findNavController().navigate(R.id.action_viewGroupInfoFragment_to_otherGroupTabFragment)
-            }
-            else {
+            //val result = arguments?.getString("fragmentNavigatedFrom")
+            if(sharedViewModel.getReturnFragment().value == "MyGroupFragment") {
                 findNavController().navigate(R.id.action_viewGroupInfoFragment_to_myGroupFragment)
+            } else if (sharedViewModel.getReturnFragment().value == "MatchedGroupFragment"){
+                findNavController().navigate(R.id.action_viewGroupInfoFragment_to_otherGroupTabFragment)
             }
         }
         return binding.root
@@ -242,7 +240,8 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
         // if current user clicks on own profile picture, then navigate to their profile tab
         // else navigate to the clicked user's display page
         if (userEmail == currentUser?.email) {
-            findNavController().navigate(R.id.action_viewGroupInfoFragment_to_userProfileTabFragment)
+            val action = ViewGroupInfoFragmentDirections.actionViewGroupInfoFragmentToUserProfileTabFragment()
+            findNavController().navigate(action)
         } else {
             val action =
                 ViewGroupInfoFragmentDirections.actionViewGroupInfoFragmentToViewUserInfoFragment(

@@ -7,9 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -29,7 +31,8 @@ import org.w3c.dom.Text
 class MyGroupAdapter(
     val context: Context,
     private val listener: GroupProfileViewEvent,
-    private val groupNameList: ArrayList<Group>)
+    private val groupNameList: ArrayList<Group>,
+    private val mutedGroupList: ArrayList<String>)
     : RecyclerView.Adapter<MyGroupAdapter.MyViewHolder>() {
 
     //inflate the content of the card view
@@ -71,6 +74,8 @@ class MyGroupAdapter(
             listener.onCardViewClick(position)
         }
 
+        // make mute icon visible if the muted group list contains the group
+        holder.muteBtn.isVisible = mutedGroupList.contains(info.name)
     }
 
     //It returns the count of items present in the list.
@@ -85,6 +90,7 @@ class MyGroupAdapter(
         val aboutUs: TextView = itemView.findViewById(R.id.group_list_des)
         val groupPic : CircleImageView = itemView.findViewById(R.id.group_profile)
         val groupCardView: CardView = itemView.findViewById(R.id.group_card_view)
+        val muteBtn: ImageView = itemView.findViewById(R.id.mute_icon)
 
         init {
             groupPic.setOnClickListener(this)

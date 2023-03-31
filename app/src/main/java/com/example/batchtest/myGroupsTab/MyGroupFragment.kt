@@ -36,6 +36,7 @@ import com.google.firebase.ktx.Firebase
 import org.w3c.dom.Text
 
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -52,6 +53,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
 //  Card view variables that will be use to display in my group tab
     private lateinit var recyclerView: RecyclerView
     private lateinit var myGroupList: ArrayList<Group>
+    private lateinit var mutedGroupList: ArrayList<String>
     private lateinit var myAdapter: MyGroupAdapter
     private lateinit var db: FirebaseFirestore
     private val currentUser = Firebase.auth.currentUser
@@ -86,7 +88,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
         recyclerView.layoutManager = LinearLayoutManager(this.context)
         recyclerView.setHasFixedSize(true)
         myGroupList = arrayListOf()
-        myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList) }!!
+        mutedGroupList = arrayListOf()
+        myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList, mutedGroupList) }!!
 
 
         // add swipe buttons
@@ -118,11 +121,18 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                  buffer.add(SwipeButtons(requireActivity(),
                      "Report",
                      30,
-                     R.drawable.mute_btn,
+                     R.drawable.notifications_off,
                      Color.parseColor("#134abf"),
                      object:MyGroupAdapter.GroupProfileViewEvent {
                          override fun onItemClick(position: Int) {
-                            //TODO:implement logic here
+                             val groupName = myGroupList[position].name
+                             if (mutedGroupList.contains(groupName)) {
+                                 db.collection("users").document(currUser.uid)
+                                     .update("mutedGroups", FieldValue.arrayRemove(groupName))
+                             } else {
+                                 db.collection("users").document(currUser.uid)
+                                     .update("mutedGroups", FieldValue.arrayUnion(groupName))
+                             }
                          }
 
                          override fun onCardViewClick(position: Int) {
@@ -289,6 +299,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                             .addOnSuccessListener { result ->
                                 // convert the fetched user into a User object
                                 val user: User = result.toObject(User::class.java)!!
+                                mutedGroupList.clear()
+                                mutedGroupList.addAll(user.mutedGroups)
                                 // filter groups will store all group to remove from the match group pool
                                 val filterGroups: ArrayList<String> = ArrayList()
                                 // all groups the user is will be filtered out so the user cannot match with their own groups
@@ -361,7 +373,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
      */
     override fun onItemClick(position: Int) {
         val groupInfo =  myGroupList[position]
-        Toast.makeText(this.context, groupInfo.name, Toast.LENGTH_SHORT).show()
+        //Toast.makeText(this.context, groupInfo.name, Toast.LENGTH_SHORT).show()
 
         /**
          * navigate to the ViewGroupInfoFragment using the position of the group using Navigation Component
@@ -370,6 +382,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
         val groupName = sharedViewModel.setGName(groupInfo.name.toString())
         // user will be in group since we are in my group fragment so set to true
         sharedViewModel.setIsInGroup(true)
+        // set return fragment to my group fragment
+        sharedViewModel.setReturnFragment("MyGroupFragment")
         val direction = MyGroupFragmentDirections.actionMyGroupFragmentToViewGroupInfoFragment(
             groupName.toString()
         )

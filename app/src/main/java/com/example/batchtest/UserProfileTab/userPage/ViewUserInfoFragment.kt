@@ -1,6 +1,7 @@
 package com.example.batchtest.UserProfileTab.userPage
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ import com.google.firebase.ktx.Firebase
  * Use the [ViewUserInfoFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+private const val TAG = "ViewUserInfoFragment"
 class ViewUserInfoFragment : Fragment(), ViewUserInfoAdapter.GroupProfileViewEvent {
     private var _binding: FragmentViewUserInfoBinding? = null
     private val binding get() = _binding!!
@@ -48,7 +50,12 @@ class ViewUserInfoFragment : Fragment(), ViewUserInfoAdapter.GroupProfileViewEve
         mutualMatchedGroupsRV.layoutManager = LinearLayoutManager(context)
         // return to previous fragment
         binding.exitViewBtn.setOnClickListener {
-            findNavController().popBackStack()
+            // get return fragment value from shared viewmodel to return to
+            if(sharedViewModel.getReturnFragment().value == "MyGroupFragment") {
+                findNavController().navigate(R.id.action_viewUserInfoFragment_to_myGroupFragment)
+            } else if (sharedViewModel.getReturnFragment().value == "MatchedGroupFragment"){
+                findNavController().navigate(R.id.action_viewUserInfoFragment_to_otherGroupTabFragment)
+            }
         }
 
         // open dialog when clicking on more button
@@ -90,7 +97,7 @@ class ViewUserInfoFragment : Fragment(), ViewUserInfoAdapter.GroupProfileViewEve
         }
 
 
-        // fetch displayed user info
+        // fetch mutual joined groups and mutual matched groups
         db.collection("users").whereEqualTo("email", args.userEmail)
             .get()
             .addOnSuccessListener { result ->
@@ -112,7 +119,7 @@ class ViewUserInfoFragment : Fragment(), ViewUserInfoAdapter.GroupProfileViewEve
                                     }
                                 }
                                 mutualGroupsRV.adapter = ViewUserInfoAdapter(context, mutualGroups, this)
-                                for (group in user.matchedGroups) {
+                                for (group in user.myGroups) {
                                     if (!mutualMatchedGroups.contains(group) && currUserObj.matchedGroups.contains(group)) {
                                         mutualMatchedGroups.add(group)
                                     }
