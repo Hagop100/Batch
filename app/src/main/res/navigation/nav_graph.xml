@@ -199,6 +199,9 @@
         <action
             android:id="@+id/action_viewGroupInfoFragment_to_preferencesFragment"
             app:destination="@id/preferencesFragment" />
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_otherGroupTabFragment"
+            app:destination="@id/otherGroupTabFragment" />
     </fragment>
     <fragment
         android:id="@+id/joinGroupFragment"

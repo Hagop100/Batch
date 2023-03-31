@@ -218,8 +218,14 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
 
         //Exit to navigate back to the my groups page
         binding.exitViewBtn.setOnClickListener{
-           // findNavController().popBackStack()
-           findNavController().navigate(R.id.action_viewGroupInfoFragment_to_myGroupFragment)
+            val result = arguments?.getString("fragmentNavigatedFrom")
+            // findNavController().popBackStack()
+            if(result == "MatchedGroupFragment") {
+                findNavController().navigate(R.id.action_viewGroupInfoFragment_to_otherGroupTabFragment)
+            }
+            else {
+                findNavController().navigate(R.id.action_viewGroupInfoFragment_to_myGroupFragment)
+            }
         }
         return binding.root
     }
