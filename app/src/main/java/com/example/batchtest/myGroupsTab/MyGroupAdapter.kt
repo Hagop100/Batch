@@ -3,6 +3,7 @@ package com.example.batchtest.myGroupsTab
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,7 +33,8 @@ class MyGroupAdapter(
     val context: Context,
     private val listener: GroupProfileViewEvent,
     private val groupNameList: ArrayList<Group>,
-    private val mutedGroupList: ArrayList<String>)
+    private val mutedGroupList: ArrayList<String>,
+    private val primaryGroup: String?)
     : RecyclerView.Adapter<MyGroupAdapter.MyViewHolder>() {
 
     //inflate the content of the card view
@@ -76,6 +78,9 @@ class MyGroupAdapter(
 
         // make mute icon visible if the muted group list contains the group
         holder.muteBtn.isVisible = mutedGroupList.contains(info.name)
+
+        //make primary icon visible if primary group is set
+        holder.primaryBtn.isVisible = primaryGroup.equals(info.name)
     }
 
     //It returns the count of items present in the list.
@@ -91,6 +96,7 @@ class MyGroupAdapter(
         val groupPic : CircleImageView = itemView.findViewById(R.id.group_profile)
         val groupCardView: CardView = itemView.findViewById(R.id.group_card_view)
         val muteBtn: ImageView = itemView.findViewById(R.id.mute_icon)
+        val primaryBtn: ImageView = itemView.findViewById(R.id.primary_icon)
 
         init {
             groupPic.setOnClickListener(this)

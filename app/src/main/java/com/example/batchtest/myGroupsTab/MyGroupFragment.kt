@@ -55,6 +55,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
     private lateinit var recyclerView: RecyclerView
     private lateinit var myGroupList: ArrayList<Group>
     private lateinit var mutedGroupList: ArrayList<String>
+    private var primaryGroup: String? = ""
     private lateinit var myAdapter: MyGroupAdapter
     private lateinit var db: FirebaseFirestore
     private val currentUser = Firebase.auth.currentUser
@@ -91,7 +92,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
         recyclerView.setHasFixedSize(true)
         myGroupList = arrayListOf()
         mutedGroupList = arrayListOf()
-        myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList, mutedGroupList) }!!
+        myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList, mutedGroupList, primaryGroup) }!!
 
 
         // add swipe buttons
@@ -100,7 +101,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                 viewHolder: RecyclerView.ViewHolder,
                 buffer: MutableList<SwipeButtons>
             ) {
-                 //primary
+                 //primary button - to set this group for matching
                  buffer.add(
                      SwipeButtons(requireActivity(),
                          "Primary", 30,
@@ -110,6 +111,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                              override fun onItemClick(position: Int) {
                                  Log.d("print", "Primary Button pressed")
                                  buildPrimaryGroupDialog(alertDialogBuilder!!, db, position)
+                                 //Toast.makeText(requireContext(), "testing here", Toast.LENGTH_SHORT).show()
                              }
 
 
@@ -145,7 +147,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                      }
                  ))
 
-                 //delete button
+                 //delete button - to remove yourself from the group
                  buffer.add(
                      SwipeButtons(requireActivity(),
                          "Delete", 30,
@@ -271,7 +273,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
      */
     private fun buildDeleteAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int, recyclerView: RecyclerView) {
         alertDialogBuilder.setTitle("Confirm Action: Delete")
-            .setMessage("Are you sure you want to un-match this group? " +
+            .setMessage("Are you sure you want to leave this group? " +
                     "Other members of your group will not be affected. ")
             .setCancelable(true)
             .setPositiveButton("Delete") { _, _ ->

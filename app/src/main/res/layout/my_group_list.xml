@@ -59,6 +59,17 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"
                 app:tint="@color/gray"/>
+
+            <ImageView
+                android:id="@+id/primary_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/set_primary_btn"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="50dp"
+                app:tint="@color/gray"/>
+
         </RelativeLayout>
         <View
             android:id="@+id/horizontal_bar"
