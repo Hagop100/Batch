@@ -9,8 +9,8 @@ data class PendingGroup(
     val matchingGroup: String? = null,
     val pendingGroup: String? = null,
     val users: HashMap<String, HashMap<String, String>>? = null,
-    val isPending: Boolean? = null,
-    val isMatched: Boolean? = null
+    val pending: Boolean? = null,
+    val matched: Boolean? = null
 ) {
     var pendingGroupObj: Group? = null
     var matchingGroupObj: Group? = null

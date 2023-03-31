@@ -1,5 +1,6 @@
 package com.example.batchtest.MatchTab
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,13 +10,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Group
 import com.example.batchtest.R
-import com.example.batchtest.User
 import com.example.batchtest.databinding.MatchGroupCardBinding
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import java.util.*
 
 
@@ -32,6 +32,7 @@ private const val TAG = "CardStackAdapter"
 // keep state of undo button
 class CardStackAdapter(
     userId: String,
+    private val context: Context?,
     private val groups: ArrayList<Group>,
     private val listener: CardStackAdapterListener
     ) : RecyclerView.Adapter<CardStackAdapter.CardStackHolder>() {
@@ -39,7 +40,7 @@ class CardStackAdapter(
         private val db = Firebase.firestore
         private lateinit var binding: MatchGroupCardBinding
         // document reference in firebase of current user
-        val currentUserDocRef = db.collection("users").document(userId)
+        private val currentUserDocRef = db.collection("users").document(userId)
         // local variable to store undo state
         private var undoState: Boolean = false
         // inflate parent fragment with card item layout when ViewHolder is created
@@ -61,8 +62,8 @@ class CardStackAdapter(
                 // create block dialog button to add into the dialog layout dynamically
                 // using the dialog button layout
                 // inflate a text view to hold the block dialog
-                val blockDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, null, false) as TextView
-                blockDialogBtn.text = "Block Group"
+                val blockDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+                blockDialogBtn.text = context?.getString(R.string.block_group)
                 // perform action on click
                 blockDialogBtn.setOnClickListener {
                     // add block group logic
@@ -72,8 +73,8 @@ class CardStackAdapter(
                 view.addView(blockDialogBtn)
 
                 // inflate a text view to hold the block dialog
-                val reportDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, null, false) as TextView
-                reportDialogBtn.text = "Report Group"
+                val reportDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+                reportDialogBtn.text = context?.getString(R.string.report_group)
                 // perform action on click
                 reportDialogBtn.setOnClickListener {
                     // add block group logic
@@ -162,13 +163,13 @@ class CardStackAdapter(
             // accept button accepts group when clicked
             binding.acceptBtn.setOnClickListener {
                 // listener from MatchTabFragment listens when accept button is clicked and will call method
-                listener.onAcceptBtnClick(group)
+                listener.onAcceptBtnClick(group.name.toString())
             }
 
             // reject button rejects group when clicked
             binding.rejectBtn.setOnClickListener {
                 // listener from MatchTabFragment listens when reject button is clicked and will call method
-                listener.onRejectBtnClick(group)
+                listener.onRejectBtnClick(group.name.toString())
             }
         }
 
@@ -191,10 +192,10 @@ class CardStackAdapter(
             val undoBtn: ImageButton = binding.undoBtn
         }
 
-    // match tab fragment listens to when undo or more button is clicked
-    interface CardStackAdapterListener {
-        fun onUndoBtnClick(position: Int)
-        fun onAcceptBtnClick(group:Group)
-        fun onRejectBtnClick(group:Group)
-    }
+        // match tab fragment listens to when undo or more button is clicked
+        interface CardStackAdapterListener {
+            fun onUndoBtnClick(position: Int)
+            fun onAcceptBtnClick(acceptedGroup: String)
+            fun onRejectBtnClick(group:String)
+        }
 }

@@ -80,6 +80,9 @@
             app:exitAnim="@anim/slide_out_to_left"
             app:popEnterAnim="@anim/slide_in_from_left"
             app:popExitAnim="@anim/slide_out_to_right" />
+        <action
+            android:id="@+id/action_otherGroupTabFragment_to_viewGroupInfoFragment"
+            app:destination="@id/viewGroupInfoFragment" />
     </fragment>
     <fragment
         android:id="@+id/initialProfilePersonalizationFragment"
@@ -117,6 +120,21 @@
         <action
             android:id="@+id/action_userProfileTabFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_userProfileTabFragment_to_userGuideFragment"
+            app:destination="@id/userGuideFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/preferencesFragment"
+        android:name="com.example.batchtest.DiscoveryPreferences.PreferencesFragment"
+        android:label="fragment_preferences"
+        tools:layout="@layout/fragment_preferences" >
+        <action
+            android:id="@+id/action_preferencesFragment_to_viewGroupInfoFragment"
+            app:destination="@id/viewGroupInfoFragment" />
+        <argument
+            android:name="groupId"
+            app:argType="string" />
     </fragment>
 
 <!--   account setting -->
@@ -143,7 +161,7 @@
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
-        android:name="com.example.batchtest.EditProfileFragment"
+        android:name="com.example.batchtest.UserProfileTab.EditProfileFragment"
         android:label="fragment_edit_profile"
         tools:layout="@layout/fragment_edit_profile" >
         <action
@@ -175,7 +193,15 @@
             android:id="@+id/action_viewGroupInfoFragment_to_userProfileTabFragment"
             app:destination="@id/userProfileTabFragment"
             app:popUpTo="@id/myGroupFragment"
+            app:restoreState="true"
+            app:popUpToInclusive="true"
             app:popUpToSaveState="true"/>
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_preferencesFragment"
+            app:destination="@id/preferencesFragment" />
+        <action
+            android:id="@+id/action_viewGroupInfoFragment_to_otherGroupTabFragment"
+            app:destination="@id/otherGroupTabFragment" />
     </fragment>
     <fragment
         android:id="@+id/joinGroupFragment"
@@ -193,6 +219,9 @@
         <argument
             android:name="groupName"
             app:argType="string" />
+        <argument
+            android:name="currentFragmentName"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/previewGroupInfoFragment"
@@ -202,9 +231,27 @@
         android:id="@+id/viewUserInfoFragment"
         android:name="com.example.batchtest.UserProfileTab.userPage.ViewUserInfoFragment"
         android:label="ViewUserInfoFragment">
+        <action
+            android:id="@+id/action_viewUserInfoFragment_to_viewGroupInfoFragment"
+            app:destination="@id/viewGroupInfoFragment"/>
         <argument
             android:name="userEmail"
             app:argType="string"/>
+        <action
+            android:id="@+id/action_viewUserInfoFragment_to_otherGroupTabFragment"
+            app:destination="@id/otherGroupTabFragment" />
+        <action
+            android:id="@+id/action_viewUserInfoFragment_to_myGroupFragment"
+            app:destination="@id/myGroupFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/userGuideFragment"
+        android:name="com.example.batchtest.UserProfileTab.UserGuideFragment"
+        android:label="fragment_user_guide"
+        tools:layout="@layout/fragment_user_guide" >
+        <action
+            android:id="@+id/action_userGuideFragment_to_userProfileTabFragment"
+            app:destination="@id/userProfileTabFragment" />
     </fragment>
 
 </navigation>

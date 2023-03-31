@@ -1,4 +1,4 @@
-package com.example.batchtest
+package com.example.batchtest.UserProfileTab
 
 import android.Manifest
 import android.app.Activity
@@ -21,13 +21,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.batchtest.InitialProfilePersonalizationFragment
+import com.example.batchtest.R
+import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentEditProfileBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.IOException
-import java.net.URI
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap

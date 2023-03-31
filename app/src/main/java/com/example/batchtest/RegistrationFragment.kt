@@ -68,7 +68,8 @@ class RegistrationFragment : Fragment() {
             matchedGroups = ArrayList(),
             pendingGroups = ArrayList(),
             undoState = false,
-            primaryGroup = null
+            primaryGroup = null,
+            mutedGroups = ArrayList()
         )
     }
 
@@ -184,7 +185,7 @@ class RegistrationFragment : Fragment() {
                         if (task.isSuccessful) {
                             val userUID = Firebase.auth.currentUser?.uid //Grabs the userUID
                             val userInfo = User("", "", email, "", "", imageUrl = null, imageUri = null, "",
-                                "", phone_number, MFA_opt, user.myGroups, user.matchedGroups, user.pendingGroups) // assigns all info from user class to userInfo
+                                "", phone_number, MFA_opt, user.myGroups, user.matchedGroups, user.pendingGroups, mutedGroups = user.mutedGroups) // assigns all info from user class to userInfo
 
                             //Gigantic if block if MFA is not enrolled
                             if(MFA_opt != "Enrolled") {

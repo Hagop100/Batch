@@ -8,18 +8,19 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import androidx.fragment.app.Fragment
 import com.example.batchtest.Group
+import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupAdapter
 import com.example.batchtest.PendingGroup
+import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMatchTabBinding
-import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
-import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.firestoreSettings
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
 import java.util.*
@@ -35,21 +36,23 @@ private const val TAG = "MatchTabFragmentLog"
  * implements CardStackAdapterListener interface to listen to actions such as undo button clicks
  */
 // groups to pass into adapter and display on match tab
-private val groups = arrayListOf<Group>()
+private var groups = arrayListOf<Group>()
 // rejected groups
-private val removeGroups: ArrayList<Group> = ArrayList()
+private val removeGroups: ArrayList<Group> = arrayListOf()
 // store previous group
 private var prevGroup: Group? = null
-class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
+// store current card
+private var currGroup: Group? = null
+class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, CardStackListener {
     private var _binding: FragmentMatchTabBinding? = null
     private val binding get() = _binding!!
     // set layout manager to card stack view to arrange recycler view
     private lateinit var manager: CardStackLayoutManager
-    private val db = Firebase.firestore
+    private lateinit var db: FirebaseFirestore
     // get the authenticated logged in user
-    private val currentUser = Firebase.auth.currentUser
+    private lateinit var currentUser: FirebaseUser
     // fetches a user from firestore using the uid from the authenticated user
-    private val currentUserDocRef = db.collection("users").document(currentUser!!.uid)
+    private lateinit var currentUserDocRef: DocumentReference
     // primary group that user will be matching as
     private var primaryGroup: String? = null
     // inflate and bind the match tab fragment after view is created
@@ -57,9 +60,12 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        db = Firebase.firestore
+        currentUser = Firebase.auth.currentUser!!
+        currentUserDocRef = db.collection("users").document(currentUser.uid)
         // bind fragment
         _binding = FragmentMatchTabBinding.inflate(inflater, container, false)
-        manager = CardStackLayoutManager(context)
+        manager = CardStackLayoutManager(context, this)
         // get card stack view
         val cardStackView = binding.cardStackView
         // prevent users from swiping cards
@@ -77,17 +83,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         if (prevGroup == null) {
             currentUserDocRef.update("undoState", false)
         }
-        Log.v(TAG, "pendingGroup")
-        db.collection("pendingGroups")
-            .whereEqualTo("matchingGroup", "steven's group")
-            .whereEqualTo("pendingGroup", "Batch")
-            .get()
-            .addOnSuccessListener { result ->
-                for (doc in result) {
-                    val group = doc.toObject(PendingGroup::class.java)
-                    Log.v(TAG, group.toString())
-                }
-            }
+
         // get all potential groups of current user to match with
         currentUserDocRef
             .get()
@@ -97,57 +93,71 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 val user: User = result?.toObject(User::class.java)!!
                 // if user does not have a primary group, display message and return
                 if ((user.primaryGroup == null) || (user.primaryGroup == "")) {
-                    binding.matchTabMessage.text = "Set a primary group to start matching!"
+                    binding.matchTabMessage.text = getString(R.string.set_primary_group_message)
                     return@addOnSuccessListener
                 } else {
                     primaryGroup = user.primaryGroup
                 }
                 // if user is not a group, then display message and return
                 if (user.myGroups.isEmpty()) {
-                    binding.matchTabMessage.text = "Create or join a group to start matching!"
+                    binding.matchTabMessage.text = getString(R.string.join_group_message)
                     return@addOnSuccessListener
                 }
-                // if the groups has not been populated (is empty), fetch the groups from firebase
-                // else reuse the fetched groups
+                 //if the groups has not been populated (is empty), fetch the groups from firebase
+                 //else reuse the fetched groups
                 if (groups.isEmpty()) {
                     // fetch all pending groups of current user
                     val query1 = db.collection("pendingGroups")
-                        .whereEqualTo("users.${currentUser?.uid}.uid", currentUser?.uid) // get all pending groups where user exists in users
+                        .whereEqualTo("users.${currentUser.uid}.uid", currentUser.uid) // get all pending groups where user exists in users
                         .get()
                     // fetch all groups where user is not in
                     val query2 = db.collection("groups")
-                        .whereNotIn("users", arrayListOf(currentUser!!.uid))
+                        .whereArrayContains("users", currentUser.uid)
                         .get()
                     // once all queries are successful, add the groups to adapter to display
                     Tasks.whenAllSuccess<QuerySnapshot>(query1, query2)
                         .addOnSuccessListener { results ->
                             // store the names of the pending group
-                            val pendingGroupNames = arrayListOf<String?>()
+                            val filterGroups = arrayListOf<String?>()
                             // loop thru the pending groups query
                             for (query1Docs in results[0]) {
                                 // convert the query document snapshot into a pending group object to access variables
-                                val pendingGroupObj = query1Docs.toObject(PendingGroup::class.java)
+                                val pendingGroup: String? = query1Docs.getString("pendingGroup")
                                 // add the name of the pending group
-                                pendingGroupNames.add(pendingGroupObj.pendingGroup)
+                                if (!filterGroups.contains(pendingGroup)) {
+                                    filterGroups.add(pendingGroup)
+                                }
+
                             }
-                            // loop thru groups query and check if the group is a pending group of the user
+                            // loop thru groups containing current user and add to filter groups
                             for (query2Docs in results[1]) {
-                                // convert the query document snapshot into a group object to access variables
-                                val obj = query2Docs.toObject(Group::class.java)
-                                // if the group is apart of the user's pending groups, add to the list of groups to display in the match tab
-                                if (!pendingGroupNames.contains(obj.name)) {
-                                    groups.add(obj)
+                                // convert the query document snapshot into a pending group object to access variables
+                                val group: String? = query2Docs.getString("name")
+                                // add the name of the pending group
+                                if (!filterGroups.contains(group)) {
+                                    filterGroups.add(group)
                                 }
                             }
 
-                            // if groups is empty, display that the user needs to join a group
-                            if (groups.isEmpty()) {
-                                binding.matchTabMessage.text = "Create or join a group to start matching!"
-                            } else {
-                                // attach adapter and send groups and listener
-                                cardStackView.adapter =
-                                    CardStackAdapter(currentUser.uid, groups, this)
-                            }
+                            db.collection("groups").get()
+                                .addOnSuccessListener {
+                                    for (doc in it) {
+                                        // convert the query document snapshot into a group object to access variables
+                                        val obj = doc.toObject(Group::class.java)
+                                        // if the group is apart of the user's pending groups, add to the list of groups to display in the match tab
+                                        if (!filterGroups.contains(obj.name)) {
+                                            groups.add(obj)
+                                        }
+                                    }
+                                    // if groups is empty, display that the user needs to join a group
+                                    if (groups.isEmpty()) {
+                                        binding.matchTabMessage.text = getString(R.string.join_group_message)
+                                    } else {
+                                        // attach adapter and send groups and listener
+                                        cardStackView.adapter =
+                                            CardStackAdapter(currentUser.uid, context, groups, this)
+                                    }
+                                }
                         }
                         .addOnFailureListener { e ->
                             Log.v(TAG, "error getting pending groups and groups documents: ", e)
@@ -171,17 +181,16 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                             removeGroups.clear()
                         }
                         // recycler view will display the groups
-                        cardStackView.adapter = CardStackAdapter(currentUser!!.uid, groups, this)
+                        cardStackView.adapter = CardStackAdapter(currentUser.uid, requireContext(), groups, this)
                         if (prevGroup != null) {
                             // groups[0], the previous group, will be displayed so we will skip to groups[1]
                             manager.scrollToPosition(1)
                         }
                     }
                 }
-//        setPrimaryGroup("steven's group")
+        //setPrimaryGroup("PendingGroups")
         return binding.root
     }
-
 
     // rewind to previous card when undo button is clicked
     override fun onUndoBtnClick(position: Int) {
@@ -190,14 +199,13 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
         if (removeGroups.isNotEmpty()) {
             removeGroups.remove(prevGroup)
         }
-
         // reset previous group to null
         prevGroup = null
         // update undo state of current user
         currentUserDocRef.update("undoState", false)
     }
-
-    override fun onAcceptBtnClick(acceptedGroup:Group) {
+    // accept group when accept button is clicked
+    override fun onAcceptBtnClick(acceptedGrou: String) {
         // set animation card moving right for reject
         val setting = SwipeAnimationSetting.Builder()
             .setDirection(Direction.Right)
@@ -205,13 +213,13 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             .setInterpolator(AccelerateInterpolator())
             .build()
         manager.setSwipeAnimationSetting(setting)
-        // add the group to the list of pending groups for the user
-        db.collection("users").document(currentUser?.uid.toString())
-            .update("pendingGroups", FieldValue.arrayUnion(acceptedGroup.name))
-        // check if another user in the group has already initated matching
+//        // add the group to the list of pending groups for the user
+//        db.collection("users").document(currentUser?.uid.toString())
+//            .update("pendingGroups", FieldValue.arrayUnion(currGroup!!.name))
+        // check if another user in the group has already initiated matching
         db.collection("pendingGroups")
             .whereEqualTo("matchingGroup", primaryGroup)
-            .whereEqualTo("pendingGroup", acceptedGroup)
+            .whereEqualTo("pendingGroup", currGroup)
             .get()
             .addOnSuccessListener { result ->
                 var pendingGroupExists = false
@@ -227,15 +235,15 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 if (!pendingGroupExists) {
                     if (primaryGroup != null) {
                         db.collection("groups").document(primaryGroup!!).get()
-                            .addOnSuccessListener { result ->
-                                var users: HashMap<String, HashMap<String, String>> = hashMapOf()
+                            .addOnSuccessListener {
+                                val users: HashMap<String, HashMap<String, String>> = hashMapOf()
                                 var index = 1
-                                val primaryGroupObj = result.toObject(Group::class.java)
+                                val primaryGroupObj = it.toObject(Group::class.java)
                                 if (primaryGroupObj != null) {
                                     for (user in primaryGroupObj.users!!) {
                                         val userMap = hashMapOf<String, String>()
                                         userMap["uid"] = user
-                                        if (user == currentUser?.uid) {
+                                        if (user == currentUser.uid) {
                                             userMap["acceptor"] = "true"
                                             userMap["vote"] = "accept"
                                             userMap["index"] = "0"
@@ -248,31 +256,41 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                                         users[user] = userMap
                                     }
                                 }
-                                var pendingGroup = PendingGroup(
+                                val pendingGroup = PendingGroup(
                                     pendingGroupId = UUID.randomUUID().toString(),
                                     matchingGroup = primaryGroup,
-                                    pendingGroup = acceptedGroup.name,
+                                    pendingGroup = currGroup!!.name,
                                     users = users,
-                                    isPending = true,
-                                    isMatched = false
+                                    pending = true,
+                                    matched = false
                                 )
                                 // add pending group to firestore pendingGroups collection
                                 db.collection("pendingGroups")
                                     .document(pendingGroup.pendingGroupId.toString())
                                     .set(pendingGroup)
+                                    .addOnSuccessListener {
+                                        PendingGroupAdapter.voting(db, pendingGroup)
+                                        removeGroups.add(currGroup!!)
+                                        prevGroup = null
+                                        // update undo state of current user
+                                        currentUserDocRef.update("undoState", false)
+                                        //swipe the card
+                                        binding.cardStackView.swipe()
+                                    }
                             }
                     }
+                } else {
+                    removeGroups.add(currGroup!!)
+                    prevGroup = null
+                    // update undo state of current user
+                    currentUserDocRef.update("undoState", false)
+                    //swipe the card
+                    binding.cardStackView.swipe()
                 }
-                removeGroups.add(acceptedGroup)
-                prevGroup = null
-                // update undo state of current user
-                currentUserDocRef.update("undoState", false)
-                // swipe the card
-                binding.cardStackView.swipe()
             }
     }
-
-    override fun onRejectBtnClick(group: Group) {
+    // reject group when reject button is clicked
+    override fun onRejectBtnClick(group: String) {
         // set animation card moving left for reject
         val setting = SwipeAnimationSetting.Builder()
             .setDirection(Direction.Left)
@@ -280,17 +298,17 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
             .setInterpolator(AccelerateInterpolator())
             .build()
         manager.setSwipeAnimationSetting(setting)
-        removeGroups.add(group)
+        removeGroups.add(currGroup!!)
         if (prevGroup != null) {
             removeGroups.add(prevGroup!!)
         }
-        prevGroup = group
+        prevGroup = currGroup
         // update undo state of current user
         currentUserDocRef.update("undoState", true)
         // swipe the card
         binding.cardStackView.swipe()
     }
-
+    // set a primary group for testing
     private fun setPrimaryGroup(groupName: String) {
         // set the primary group variable
         this.primaryGroup = groupName
@@ -307,13 +325,36 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener {
                 }
             }
         // add to user to groups.users
-        db.collection("groups").document(groupName).update("users", FieldValue.arrayUnion(currentUser?.uid))
+        db.collection("groups").document(groupName).update("users", FieldValue.arrayUnion(currentUser.uid))
 
     }
-
     // free from memory
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCardDragging(direction: Direction?, ratio: Float) {
+        // do nothing
+    }
+
+    override fun onCardSwiped(direction: Direction?) {
+        // do nothing
+    }
+
+    override fun onCardRewound() {
+        // do nothing
+    }
+
+    override fun onCardCanceled() {
+        // do nothing
+    }
+
+    override fun onCardAppeared(view: View?, position: Int) {
+        currGroup = groups[position]
+    }
+
+    override fun onCardDisappeared(view: View?, position: Int) {
+        // do nothing
     }
 }

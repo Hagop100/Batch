@@ -7,75 +7,64 @@
     android:background="@color/app_background"
     android:id="@+id/group_card_view"
     android:backgroundTint="@color/app_background">
-
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:backgroundTint="@color/app_background">
-
-        <LinearLayout
+        android:orientation="vertical">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            >
-
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="15dp">
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/group_profile"
                 android:layout_width="65dp"
                 android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginBottom="20dp"
+                android:layout_centerVertical="true"
                 android:clickable="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/one_direction_photo"
                 app:civ_border_color="#FF000000"
-                android:focusable="true" />
-<!--            <ImageButton-->
-<!--                android:id="@+id/group_profile"-->
-<!--                android:layout_width="60dp"-->
-<!--                android:layout_height="60dp"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginBottom="20dp"-->
-<!--                android:layout_weight="0"-->
-<!--                android:background="@drawable/circular_shape"-->
-<!--                android:scaleType="centerCrop"-->
-<!--                tools:layout_editor_absoluteX="176dp" />-->
-
-            <LinearLayout
-                android:layout_width="match_parent"
+                android:focusable="true"
+                android:layout_marginEnd="10dp"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
+                android:layout_toEndOf="@id/group_profile"
+                android:layout_centerVertical="true">
                 <TextView
                     android:id="@+id/group_list_name"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
                     android:text="Group Name"
                     android:textSize="17sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/group_list_des"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
-
                     android:text="Group Description"
-                    android:textColor="@color/purple_500" />
-            </LinearLayout>
-        </LinearLayout>
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/purple_500"
+                    android:layout_below="@id/group_list_name" />
+            </RelativeLayout>
 
+            <ImageView
+                android:id="@+id/mute_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/notifications_off"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                app:tint="@color/gray"/>
+        </RelativeLayout>
         <View
             android:id="@+id/horizontal_bar"
             android:layout_width="wrap_content"
             android:layout_height="1dp"
-            android:background="@color/horizontal_line" />
-
+            android:background="@color/horizontal_line"/>
     </LinearLayout>
-
 
 </androidx.cardview.widget.CardView>

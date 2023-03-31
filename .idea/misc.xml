@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_forgot_password_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_group_chat.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_login.xml" value="0.2712962962962963" />
@@ -15,6 +16,7 @@
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/them_message_recycler_view_row.xml" value="0.365625" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/BatchTest/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/BatchTest/app/src/main/res/layout/fragment_input.xml" value="0.3314814814814815" />
+        <entry key="app/src/debug/res/drawable-mdpi/notifications_off-48px.xml" value="0.1" />
         <entry key="app/src/main/res/drawable-anydpi/close_icon.xml" value="0.1" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.167" />
         <entry key="app/src/main/res/drawable/accept_btn.xml" value="0.105" />
@@ -42,6 +44,7 @@
         <entry key="app/src/main/res/font/karla.xml" value="0.14722222222222223" />
         <entry key="app/src/main/res/layout/activity_group_creation.xml" value="0.1578125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/custom_dialog.xml" value="0.178125" />
         <entry key="app/src/main/res/layout/dialog_button.xml" value="0.14990942028985507" />
         <entry key="app/src/main/res/layout/dialog_layout.xml" value="0.22055385423743207" />
         <entry key="app/src/main/res/layout/fragment_account_setting.xml" value="0.22418478260869565" />
@@ -58,6 +61,7 @@
         <entry key="app/src/main/res/layout/fragment_my_groups.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_other_group_tab.xml" value="0.12092391304347826" />
         <entry key="app/src/main/res/layout/fragment_pending_group.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_preview_group_info.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/fragment_registration.xml" value="0.12454710144927536" />
         <entry key="app/src/main/res/layout/fragment_user_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_user_list2.xml" value="0.1105072463768116" />

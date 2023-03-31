@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
     android:fillViewport="false"
-    tools:context=".EditProfileFragment">
+    tools:context=".UserProfileTab.EditProfileFragment">
 
    <androidx.constraintlayout.widget.ConstraintLayout
        android:layout_width="match_parent"

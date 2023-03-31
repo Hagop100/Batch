@@ -15,9 +15,9 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.example.batchtest.Group
+import com.example.batchtest.R
 
 
 private const val TAG = "PendingGroupsLog"
@@ -36,7 +36,7 @@ class PendingGroupFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         // inflate the layout for pending group fragment
         _binding = FragmentPendingGroupBinding.inflate(inflater, container, false)
@@ -79,39 +79,47 @@ class PendingGroupFragment : Fragment() {
                         groupsFound = true
                         // convert pending group to an object
                         val pendingGroupObj = doc.toObject(PendingGroup::class.java)
-                        // create 2 queries for the matching and pending group to send to adapter
-                        val query1 = db.collection("groups").document(pendingGroupObj.matchingGroup!!).get()
-                        val query2 = db.collection("groups").document(pendingGroupObj.pendingGroup!!).get()
-                        // once all queries are successful, add the groups to adapter to display
-                        Tasks.whenAllSuccess<DocumentSnapshot>(query1, query2)
-                            .addOnSuccessListener { results ->
-                                // the matching group from query 1 will be stored in results[0]
-                                // convert it to a group object
-                                val matchingGroupDoc = results[0].toObject(Group::class.java)
-                                // the matching group from query 2 will be stored in results[1]
-                                // convert it to a group objet
-                                val pendingGroupDoc = results[1].toObject(Group::class.java)
-                                // if matching group or pending group is found, attach to pending group object
-                                // add to pending groups arraylist
-                                if (matchingGroupDoc != null && pendingGroupDoc != null) {
-                                    pendingGroupObj.matchingGroupObj = matchingGroupDoc
-                                    pendingGroupObj.pendingGroupObj = pendingGroupDoc
-                                    pendingGroups.add(pendingGroupObj)
+                        Log.v(TAG, pendingGroupObj.toString())
+                        // if the pending group has not completed the voting phase, display it in recyclerview
+                        if (pendingGroupObj.pending == true) {
+                            // create 2 queries for the matching and pending group to send to adapter
+                            val query1 =
+                                db.collection("groups").document(pendingGroupObj.matchingGroup!!)
+                                    .get()
+                            val query2 =
+                                db.collection("groups").document(pendingGroupObj.pendingGroup!!)
+                                    .get()
+                            // once all queries are successful, add the groups to adapter to display
+                            Tasks.whenAllSuccess<DocumentSnapshot>(query1, query2)
+                                .addOnSuccessListener { results ->
+                                    // the matching group from query 1 will be stored in results[0]
+                                    // convert it to a group object
+                                    val matchingGroupDoc = results[0].toObject(Group::class.java)
+                                    // the matching group from query 2 will be stored in results[1]
+                                    // convert it to a group objet
+                                    val pendingGroupDoc = results[1].toObject(Group::class.java)
+                                    // if matching group or pending group is found, attach to pending group object
+                                    // add to pending groups arraylist
+                                    if (matchingGroupDoc != null && pendingGroupDoc != null) {
+                                        pendingGroupObj.matchingGroupObj = matchingGroupDoc
+                                        pendingGroupObj.pendingGroupObj = pendingGroupDoc
+                                        pendingGroups.add(pendingGroupObj)
+                                    }
+                                    // send pending groups arraylist to adapter to display
+                                    pendingGroupRV.adapter =
+                                        PendingGroupAdapter(context, pendingGroups)
                                 }
-                                // send pending groups arraylist to adapter to display
-                                pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
-                            }
+                        }
                     }
                     // if there are no pending groups, display message
                     if (!groupsFound) {
-                        binding.pendingTabMessage.text = "No pending groups"
+                        binding.pendingTabMessage.text = getString(R.string.no_pending_groups)
                         pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
                     } else {
                         binding.pendingTabMessage.text = ""
                     }
                 }
             }
-        Log.v(TAG, " pending groups ")
         return binding.root
     }
 
