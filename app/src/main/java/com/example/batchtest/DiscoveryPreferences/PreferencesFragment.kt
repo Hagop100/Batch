@@ -2,6 +2,7 @@ package com.example.batchtest.DiscoveryPreferences
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -46,6 +47,8 @@ class PreferencesFragment : Fragment() {
         const val MIN_AGE: String = "minimumAge"
         const val MAX_AGE: String = "maxAge"
         const val MAX_DISTANCE: String = "maxDistance"
+        const val GENDER: String = "gender"
+        const val CITY: String = "city"
     }
 
     //View Model
@@ -55,7 +58,7 @@ class PreferencesFragment : Fragment() {
 
     private var _binding: FragmentPreferencesBinding? = null
     private val binding get() = _binding!!
-
+    private val database = FirebaseFirestore.getInstance()
     //Location Variables including fused variable
 //    private val locationHashMap = HashMap<String, Any>()
 //    private var minimumAge: Int = 18
@@ -94,7 +97,6 @@ class PreferencesFragment : Fragment() {
                 }
             }
         }
-
         //Initialize the Fused location provider
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
     }
@@ -111,7 +113,7 @@ class PreferencesFragment : Fragment() {
         //initialize modelview - using a viewModelFactory to pass in the group Name
         viewModel = ViewModelProvider(this, viewModelFactory).get(PreferencesViewModel::class.java)
 
-        //Observe the minimum age and update the viewModel hashMap in case the user saves the preferences
+        //Observe the minimum age, max age, distance and update the viewModel hashMap in case the user saves the preferences
         viewModel.minimumAge.observe(viewLifecycleOwner, Observer { newMinAge->
             viewModel.preferencesHash[MIN_AGE] = newMinAge
         })
@@ -122,12 +124,22 @@ class PreferencesFragment : Fragment() {
             viewModel.preferencesHash[MAX_DISTANCE] = newDistance
         })
 
+        viewModel.gender.observe(viewLifecycleOwner, Observer { gen ->
+            viewModel.preferencesHash[GENDER] = gen
+        })
+
+        viewModel.city.observe(viewLifecycleOwner, Observer { city->
+            viewModel.preferencesHash[CITY] = city
+        })
+
         //TODO add obsevers for deal breakers? - Latitude and Longitude
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        getGroupDatabase()
 
 
         //TODO button listener for btn_to_user_profile_tab
@@ -140,14 +152,15 @@ class PreferencesFragment : Fragment() {
         //Age range slider that determines the minimum and max ages of group members the other group can have
         binding.rsAge.addOnChangeListener { slider, value, fromUser ->
             binding.tvAgeSelected.text = "${slider.values[0].toInt()} - ${slider.values[1].toInt()}"
-            viewModel.minimumAge.value = slider.values[0].toInt()
-            viewModel.maxAge.value = slider.values[1].toInt()
+            viewModel.minimumAge.value = slider.values[0]
+            viewModel.maxAge.value = slider.values[1]
         }
 
         binding.rsDistance.addOnChangeListener { slider, value, fromUser ->
             binding.tvDistance.text = "${value.toInt()} Miles"
-            viewModel.distance.value = value.toInt()
+            viewModel.distance.value = value
         }
+
 
 
         //Button that gets the user location
@@ -173,17 +186,39 @@ class PreferencesFragment : Fragment() {
 
         }
 
-        //TODO get Max distance from current location
 
         //TODO implement tags, for deal breakers
 
-        //TODO set Gender of group to discover
-
+        binding.btnSavePreferences.setOnClickListener { view ->
+            setGender()
+            saveToDataBase()
+        }
         //TODO save changes
 
         //TODO send changes to firestore.
     }
 
+    /**
+     *
+     * */
+    private fun updateGroupViews()
+    {
+        binding.rsAge.setValues(viewModel.minimumAge.value, viewModel.maxAge.value )
+        //binding.rsAge.setValues(binding.rsAge.values[1],viewModel.maxAge.value)
+
+        binding.tvLocation.text = viewModel.group.city
+//        binding.rsDistance.values[1] = viewModel.distance.value
+        var gen = when(viewModel.gender.value)
+        {
+            "male"   -> binding.rbMale.id
+            "female" -> binding.rbFemale.id
+            else     -> binding.rbAll.id
+        }
+        binding.rsDistance.setValues(viewModel.distance.value)
+        binding.rgGender.check(gen)
+
+
+    }
 /**Check if location services are enabled
      * Such as GPS or Network Provider*/
 
@@ -197,15 +232,22 @@ class PreferencesFragment : Fragment() {
     }
 
     //object callback used in the requestLocationUpdate
+    //Result of getting the location will be placed here
     private val locationCallBack = object : LocationCallback()
     {
         override fun onLocationResult(result: LocationResult) {
             val lastLocation: Location? = result.lastLocation
             viewModel.latitude = lastLocation!!.latitude
             viewModel.longitude = lastLocation.longitude
+            viewModel.preferencesHash[LATITUDE] = viewModel.latitude
+            viewModel.preferencesHash[LONGITUDE] = viewModel.longitude
+
+            //Coroutine to get the city location
             viewLifecycleOwner.lifecycleScope.launch {
                 val addressGeocoder = GetAddressFromLatLng(requireContext(), viewModel.latitude, viewModel.longitude )
+                viewModel.city.value = addressGeocoder.getAddress()
                 binding.tvLocation.text = addressGeocoder.getAddress()
+
             }
 
         }
@@ -231,8 +273,6 @@ class PreferencesFragment : Fragment() {
     }
 
 /**Function sets the city name in the location text after calling the geo
-
-
 *Make sure location permission are enabled,
      * Otherwise Request Coarse and Fine Location permissions*/
 
@@ -253,6 +293,65 @@ class PreferencesFragment : Fragment() {
 
     }
 
+    private fun getGroupDatabase()
+    {
+        database.collection("groups").document(viewModel.gName as String).get().addOnSuccessListener { document->
 
+            Log.i("Preference", document.get("name").toString())
+            viewModel.group = document!!.toObject(Group::class.java)!!
+
+//            dBreakers = group.dealBreakers as ArrayList<String>
+            viewModel.minimumAge.value = viewModel.group.minimumAge as Float
+            viewModel.maxAge.value = viewModel.group.maxAge as Float
+            viewModel.latitude = viewModel.group.latitude as Double
+            viewModel.longitude = viewModel.group.longitude as Double
+            viewModel.city.value = viewModel.group.city as String
+            viewModel.distance.value = viewModel.group.maxDistance as Float
+            viewModel.gender.value = viewModel.group.gender as String
+
+            updateGroupViews()
+
+        }. addOnFailureListener {
+            Log.i("print", "error getting user from documents: ", it)
+        }
+    }
+
+
+
+    private fun setGender() {
+        viewModel.gender.value = when (binding.rgGender.checkedRadioButtonId) {
+            binding.rbMale.id -> "male"
+            binding.rbFemale.id -> "female"
+            else -> "All"
+        }
+    }
+
+    /**Save any changes to the database*/
+    //TODO check if user just deleted previous tags
+    private fun saveToDataBase()
+    {
+        if (viewModel.dBreakers.isNotEmpty())
+        {
+            database.collection("groups").document(viewModel.gName).update("dealBreakers", viewModel.dBreakers)
+                .addOnSuccessListener {
+
+                }.addOnFailureListener {
+                    Toast.makeText(context,"Failed To Update Group Preferences", Toast.LENGTH_SHORT).show()
+                }
+        }
+        //update preferences to the database
+        database.collection("groups")
+            .document(viewModel.gName)
+            .update(viewModel.preferencesHash).addOnSuccessListener {
+                findNavController().navigate(R.id.action_preferencesFragment_to_viewGroupInfoFragment)
+            }.addOnFailureListener {
+                Toast.makeText(context,"Failed To Update Group Preferences", Toast.LENGTH_SHORT).show()
+            }
+
+    }
 
 }
+
+
+
+

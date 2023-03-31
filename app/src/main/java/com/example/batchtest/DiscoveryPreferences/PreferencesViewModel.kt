@@ -1,5 +1,6 @@
 package com.example.batchtest.DiscoveryPreferences
 
+import android.app.Activity
 import android.content.Context
 import android.location.Geocoder
 import android.util.Log
@@ -7,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.findNavController
 import com.example.batchtest.Group
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -14,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
-class PreferencesViewModel(gId: String): ViewModel() {
+class PreferencesViewModel(groupName: String): ViewModel() {
 
     companion object
     {
@@ -23,52 +25,33 @@ class PreferencesViewModel(gId: String): ViewModel() {
         const val MIN_AGE: String = "minimumAge"
         const val MAX_AGE: String = "maxAge"
         const val MAX_DISTANCE: String = "maxDistance"
+        const val GENDER: String = "gender"
+        const val CITY: String = "city"
     }
 
-    val minimumAge = MutableLiveData<Int>()
-    val maxAge = MutableLiveData<Int>()
+    val minimumAge = MutableLiveData<Float>()
+    val maxAge = MutableLiveData<Float>()
     var latitude: Double = 0.0
     var longitude: Double = 0.0
-    var distance = MutableLiveData<Int>()
-    var groupId: String = ""
+    var distance = MutableLiveData<Float>()
+    var gName: String = ""
     var dBreakers = ArrayList<String>()
-    val database = FirebaseFirestore.getInstance()
+
+    val gender = MutableLiveData<String>()
+    var city = MutableLiveData<String>()
 
     //Use for check whether the group already has variables initialized
     var isDealBreakers: Boolean = false
     var isPrefs: Boolean = false
     //used for updating the groups discovery preferences
-    val preferencesHash = HashMap<String, Any>()
-    private lateinit var group: Group
+    var preferencesHash = HashMap<String, Any>()
+    lateinit var group: Group
 
 
     init {
-        groupId = gId
+        gName = groupName
 
-        database.collection("groups").document(groupId as String).get().addOnSuccessListener { document->
-
-            Log.i("Preference", document.get("name").toString())
-            group = document!!.toObject(Group::class.java)!!
-            if (group.dealBreakers != null )
-            {
-                dBreakers = group.dealBreakers as ArrayList<String>
-                isDealBreakers = true
-            }
-            if(group.discoverPrefs != null)
-            {
-                minimumAge.value = group.discoverPrefs?.get(MIN_AGE) as Int
-                maxAge.value = group.discoverPrefs?.get(MAX_AGE) as Int
-                latitude = group.discoverPrefs?.get(LATITUDE) as Double
-                longitude = group.discoverPrefs?.get(LONGITUDE) as Double
-                distance.value = group.discoverPrefs?.get(MAX_DISTANCE) as Int
-                isPrefs = true
-            }
-
-        }. addOnFailureListener {
-            Log.i("print", "error getting user from documents: ", it)
-        }
     }
-
 
     override fun onCleared() {
         super.onCleared()
