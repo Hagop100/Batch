@@ -16,7 +16,6 @@ data class Group(
     val image: String? = null,
     var reportCount: Int = 0,
     var matchedGroups: ArrayList<String> = ArrayList(),
-    val dealBreakers: ArrayList<String>? = null,
     val preferences: HashMap<String, Any>? = null,
     @ServerTimestamp
     var createdDate: Date? = Date(),

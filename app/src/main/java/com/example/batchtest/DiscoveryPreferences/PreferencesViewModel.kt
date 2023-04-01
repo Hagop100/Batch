@@ -35,14 +35,9 @@ class PreferencesViewModel(groupName: String): ViewModel() {
     var longitude = MutableLiveData<Double>()
     var distance = MutableLiveData<Double>()
     var gName: String = ""
-    var dBreakers = ArrayList<String>()
-
     val gender = MutableLiveData<String>()
     var city = MutableLiveData<String>()
 
-    //Use for check whether the group already has variables initialized
-    var isDealBreakers: Boolean = false
-    var isPrefs: Boolean = false
     //used for updating the groups discovery preferences
     var preferencesHash = HashMap<String, Any>()
     lateinit var group: Group

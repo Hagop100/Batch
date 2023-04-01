@@ -142,7 +142,6 @@ class PreferencesFragment : Fragment() {
         getGroupDatabase()
 
 
-        //TODO button listener for btn_to_user_profile_tab
         //Button returns user to their ViewGroupInfo page without saving info
         binding.btnToUserProfileTab.setOnClickListener {
             findNavController().navigate(R.id.action_preferencesFragment_to_viewGroupInfoFragment)
@@ -186,7 +185,7 @@ class PreferencesFragment : Fragment() {
         }
 
 
-
+        //Save the changes to the database
         binding.btnSavePreferences.setOnClickListener { view ->
             setGender()
             saveToDataBase()
@@ -195,7 +194,7 @@ class PreferencesFragment : Fragment() {
     }
 
     /**
-     *
+     *Update UI elements according to previous selection or initial selection
      * */
     private fun updateGroupViews()
     {
@@ -217,8 +216,6 @@ class PreferencesFragment : Fragment() {
     }
 /**Check if location services are enabled
      * Such as GPS or Network Provider*/
-
-    //TODO check that it works
     private fun isLocationServicesEnabled(): Boolean {
         val locationManager: LocationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE)!! as LocationManager
@@ -251,7 +248,6 @@ class PreferencesFragment : Fragment() {
 /** Function used to launch fused location client
      * Suppress Requirement to check for permission prior to using RequestLocationUpdates
      **/
-
     @SuppressLint("MissingPermission")
     private fun requestLocationData(){
         viewLifecycleOwner.lifecycleScope.launch{
@@ -269,7 +265,6 @@ class PreferencesFragment : Fragment() {
 /**Function sets the city name in the location text after calling the geo
 *Make sure location permission are enabled,
      * Otherwise Request Coarse and Fine Location permissions*/
-
     private fun launchUserLocation()
     {
 
@@ -344,15 +339,6 @@ class PreferencesFragment : Fragment() {
     //TODO check if user just deleted previous tags
     private fun saveToDataBase()
     {
-        if (viewModel.dBreakers.isNotEmpty())
-        {
-            database.collection("groups").document(viewModel.gName).update("dealBreakers", viewModel.dBreakers)
-                .addOnSuccessListener {
-
-                }.addOnFailureListener {
-                    Toast.makeText(context,"Failed To Update Group Preferences", Toast.LENGTH_SHORT).show()
-                }
-        }
         //update preferences to the database
         database.collection("groups")
             .document(viewModel.gName)
