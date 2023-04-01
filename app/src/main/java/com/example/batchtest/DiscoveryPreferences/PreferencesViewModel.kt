@@ -16,7 +16,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
+/**
+ * Preference View Model is used for storing the the values used in
+ * Preference Fragment
+ * */
 class PreferencesViewModel(groupName: String): ViewModel() {
+
 
     companion object
     {
@@ -29,6 +34,7 @@ class PreferencesViewModel(groupName: String): ViewModel() {
         const val CITY: String = "city"
     }
 
+    //Create Mutable Variables that allow the Fragment to observe changes
     val minimumAge = MutableLiveData<Double>()
     val maxAge = MutableLiveData<Double>()
     var latitude =  MutableLiveData<Double>()

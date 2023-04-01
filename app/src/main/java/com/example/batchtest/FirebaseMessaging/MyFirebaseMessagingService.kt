@@ -1,4 +1,4 @@
-/*
+
 package com.example.batchtest.FirebaseMessaging
 
 import android.app.Activity
@@ -34,9 +34,10 @@ import java.net.SocketTimeoutException
 import java.net.URL
 
 
-*/
 /**Firebase Messaging Service class must be created to send notifications to users using
- * Firebase*//*
+ * Firebase
+ * Class Will both implement Receiving Notifications and sending out notifications
+ * */
 
 class MyFirebaseMessagingService: FirebaseMessagingService() {
 
@@ -80,9 +81,9 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         }
     }
 
-    */
+
 /**Automatically called when a new token is created or updated
-     * Called when initially token is generated*//*
+     * Called when initially token is generated*/
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -98,9 +99,8 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         //TODO update the userToken in the database
     }
 
-    */
-/**Create a Notification and a notification channel and stream to cloud *//*
 
+/**Create a Notification and a notification channel  */
     private fun sendNotification(title: String , messageBody: String )
     {
         //TODO Check whether user is logged in.
@@ -148,21 +148,20 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
     }
 
 
-    */
+
 /**
      * Creates an object to output stream a notification
-     **//*
-
+     **/
     inner class SendNotificationToUserAsyncTask(val title: String, private val message: String, val token: String ): AsyncTask<Any, Void, String>(){
 
-        */
+
 /**
          * Creates an object to output stream a notification
          * @title title of notification
          * @message message of the notification
          * @token the user who will receive the token
          *
-         * @return result result of the connection*//*
+         * @return result result of the connection*/
 
         override fun doInBackground(vararg p0: Any?): String {
             var result:String
@@ -254,4 +253,4 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         //TODO when calling this class, one must call execute()
 
     }
-}*/
+}

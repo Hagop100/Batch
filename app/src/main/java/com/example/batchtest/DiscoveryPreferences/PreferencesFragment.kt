@@ -35,9 +35,19 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 /**
- * A simple [Fragment] subclass.
- * Use the [PreferencesFragment.newInstance] factory method to
- * create an instance of this fragment.*/
+ * UI controller that instantiates a view Model and factory to populate
+ * UI elements with Group Discovery Preferences
+ * Discovery Preferences are use to limit the range of groups that will show up
+ * during the swiping phase
+ * Important Values
+ * 1. Age Range of Other Group Members
+ * 2. Location of Group
+ * 3. Distance of potential Groups
+ * 4. Gender of other Groups
+ *
+ * Will populate UI if Group has set up preferences before,
+ * Otherwise will populate with Default Values.
+ * */
 private const val TAG = "PreferencesFragment"
 class PreferencesFragment : Fragment() {
 
