@@ -261,6 +261,7 @@ class GroupChatFragment : Fragment() {
             }
     }
 
+    //when user clicks send, it will write the message to firestore
     private fun writeMessageToFirestore(db: FirebaseFirestore) {
         val chatDocRef = chatId?.let { db.collection("chats").document(it) }
         chatDocRef?.update("messages", messagesArrayList)

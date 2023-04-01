@@ -20,6 +20,7 @@ import com.google.firebase.ktx.Firebase
 class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
                        private var mContext: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    //ReceivedMessageHolder is going to be when you receive a message in a group chat
     inner class ReceivedMessageHolder(val binding: ThemMessageRecyclerViewRowBinding): RecyclerView.ViewHolder(binding.root) {
         val messageContent = binding.gcMessageContentTv
         val timeText = binding.gcTimeStampTv
@@ -27,6 +28,7 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
         val date = binding.gcDateTv
         val profileImage = binding.gcProiflePicIv
 
+        //bind function handles setting all the views in the received message holder
         @SuppressLint("SetTextI18n")
         fun bind(message: Message) {
             messageContent.text = message.content
@@ -45,11 +47,13 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
         }
     }
 
+    //SentMessageHolder is going to be when you send a message in a group chat
     inner class SentMessageHolder(val binding: MeMessageRecyclerViewRowBinding): RecyclerView.ViewHolder(binding.root) {
         val messageContent = binding.gcMeMessageContentTv
         val timeText = binding.gcMeTimeStampTv
         val date = binding.gcMeDateTv
 
+        //bind function handles setting all the views in the sent message holder
         @SuppressLint("SetTextI18n")
         fun bind(message: Message) {
             messageContent.text = message.content
@@ -66,7 +70,8 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
         }
     }
 
-
+    //This returns the item view type
+    //Are we sending a message or receiving it
     override fun getItemViewType(position: Int): Int {
         val message = mMessageList[position]
 
@@ -79,7 +84,7 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-
+        //This will inflate the proper recycler view row whether we send or receive
         return if(viewType == 0) {
             val inflater = LayoutInflater.from(parent.context)
             val binding = MeMessageRecyclerViewRowBinding.inflate(inflater, parent, false)

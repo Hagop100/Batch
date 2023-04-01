@@ -213,6 +213,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
         }
     }
 
+    //This manually deletes a row from the recycler view
     private fun deleteItemFromRecyclerView(position: Int, matchedGroupRV: RecyclerView) {
         matchedGroupArrayList.removeAt(position)
         matchedGroupRV.adapter?.notifyItemChanged(position)
@@ -238,6 +239,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
         findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment, bundle)
     }
 
+    //Clicking on the group photo in the recycler view will take you to the group's info page
     override fun onGroupPictureClick(position: Int) {
         val groupInfo = matchedGroupArrayList[position]
         //val bundle = bundleOf("fragmentNavigatedFrom" to TAG)
