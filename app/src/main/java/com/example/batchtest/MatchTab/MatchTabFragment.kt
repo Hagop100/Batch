@@ -13,6 +13,7 @@ import com.example.batchtest.PendingGroup
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMatchTabBinding
+import com.example.batchtest.myGroupsTab.MyGroupFragment
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -38,7 +39,7 @@ private const val TAG = "MatchTabFragmentLog"
 // groups to pass into adapter and display on match tab
 private var groups = arrayListOf<Group>()
 // rejected groups
-private val removeGroups: ArrayList<Group> = arrayListOf()
+private val removeGroups = arrayListOf<Group>()
 // store previous group
 private var prevGroup: Group? = null
 // store current card
@@ -96,6 +97,13 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                     binding.matchTabMessage.text = getString(R.string.set_primary_group_message)
                     return@addOnSuccessListener
                 } else {
+                    if (primaryGroup == user.primaryGroup) {
+                        Log.v(TAG, "true")
+                    } else {
+                        Log.v(TAG, "false")
+                    }
+                    Log.v(TAG, primaryGroup.toString())
+                    Log.v(TAG, user.primaryGroup.toString())
                     primaryGroup = user.primaryGroup
                 }
                 // if user is not a group, then display message and return
@@ -106,49 +114,76 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                  //if the groups has not been populated (is empty), fetch the groups from firebase
                  //else reuse the fetched groups
                 if (groups.isEmpty()) {
-                    // fetch all pending groups of current user
-                    val query1 = db.collection("pendingGroups")
-                        .whereEqualTo("users.${currentUser.uid}.uid", currentUser.uid) // get all pending groups where user exists in users
-                        .get()
                     // fetch all groups where user is not in
-                    val query2 = db.collection("groups")
+                    val query1 = db.collection("groups")
                         .whereArrayContains("users", currentUser.uid)
+                        .get()
+                    // fetch all pending groups of current user
+                    val query2 = db.collection("pendingGroups")
+                        .whereEqualTo("users.${currentUser.uid}.uid", currentUser.uid) // get all pending groups where user exists in users
                         .get()
                     // once all queries are successful, add the groups to adapter to display
                     Tasks.whenAllSuccess<QuerySnapshot>(query1, query2)
                         .addOnSuccessListener { results ->
+                            var primaryGroupObj: Group? = null
                             // store the names of the pending group
                             val filterGroups = arrayListOf<String?>()
-                            // loop thru the pending groups query
+                            // loop thru groups containing current user and add to filter groups
                             for (query1Docs in results[0]) {
                                 // convert the query document snapshot into a pending group object to access variables
-                                val pendingGroup: String? = query1Docs.getString("pendingGroup")
+                                val group: String? = query1Docs.getString("name")
+                                if (group == user.primaryGroup) {
+                                    primaryGroupObj = query1Docs.toObject(Group::class.java)
+                                }
+                                // add the name of the pending group
+                                if (!filterGroups.contains(group)) {
+                                    filterGroups.add(group)
+                                }
+                            }
+                            // loop thru the pending groups query
+                            for (query2Docs in results[1]) {
+                                // convert the query document snapshot into a pending group object to access variables
+                                val pendingGroup: String? = query2Docs.getString("pendingGroup")
                                 // add the name of the pending group
                                 if (!filterGroups.contains(pendingGroup)) {
                                     filterGroups.add(pendingGroup)
                                 }
 
                             }
-                            // loop thru groups containing current user and add to filter groups
-                            for (query2Docs in results[1]) {
-                                // convert the query document snapshot into a pending group object to access variables
-                                val group: String? = query2Docs.getString("name")
-                                // add the name of the pending group
-                                if (!filterGroups.contains(group)) {
-                                    filterGroups.add(group)
-                                }
-                            }
 
                             db.collection("groups").get()
                                 .addOnSuccessListener {
+                                    var interestTags = arrayListOf<String>()
+                                    if (primaryGroupObj != null) {
+                                        interestTags = primaryGroupObj.interestTags!!.map { it -> it.lowercase() } as ArrayList<String>
+                                    }
+                                    val interestGroups = arrayListOf<Group>()
+                                    val noInterestGroups = arrayListOf<Group>()
                                     for (doc in it) {
                                         // convert the query document snapshot into a group object to access variables
                                         val obj = doc.toObject(Group::class.java)
                                         // if the group is apart of the user's pending groups, add to the list of groups to display in the match tab
                                         if (!filterGroups.contains(obj.name)) {
-                                            groups.add(obj)
+                                            // check if groups have a common interest
+                                            for (tag in obj.interestTags!!) {
+                                                // if a common interest is found, add to interestGroups and break
+                                                if (interestTags.contains(tag.lowercase().trim()) && !interestGroups.contains(obj)) {
+                                                    interestGroups.add(obj)
+                                                    break
+                                                }
+                                            }
+                                            // if not an interest group, add to noInterestGroups
+                                            if (!interestGroups.contains(obj) && !noInterestGroups.contains(obj)) {
+                                                noInterestGroups.add(obj)
+                                            }
                                         }
                                     }
+                                    // add interest groups to groups first to be in the front
+                                    // then add non interests to after
+//                                    Log.v(TAG, "interest groups$interestGroups")
+//                                    Log.v(TAG, "no interest groups$noInterestGroups")
+                                    groups.addAll(interestGroups)
+                                    groups.addAll(noInterestGroups)
                                     // if groups is empty, display that the user needs to join a group
                                     if (groups.isEmpty()) {
                                         binding.matchTabMessage.text = getString(R.string.join_group_message)
@@ -192,6 +227,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         return binding.root
     }
 
+    fun orderGroupByInterests(unorderedGroups: ArrayList<Group>) {
+
+    }
     // rewind to previous card when undo button is clicked
     override fun onUndoBtnClick(position: Int) {
         // rewind function

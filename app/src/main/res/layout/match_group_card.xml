@@ -9,7 +9,8 @@ used to populate the cardStackView recycler -->
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        android:background="@color/app_background">
+        android:background="@color/app_background"
+        android:overScrollMode="always">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -149,22 +150,20 @@ used to populate the cardStackView recycler -->
     android:layout_height="wrap_content"
     android:padding="30dp"
     android:layout_alignParentBottom="true">
-
-    <ImageButton
-        android:id="@+id/reject_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:contentDescription="@string/reject_button"
-        android:src="@drawable/reject_btn" />
-
-    <ImageButton
-        android:id="@+id/accept_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:background="@null"
-        android:contentDescription="@string/accept_button"
-        android:src="@drawable/accept_btn" />
+        <ImageButton
+            android:id="@+id/reject_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:contentDescription="@string/reject_button"
+            android:src="@drawable/reject_btn" />
+        <ImageButton
+            android:id="@+id/accept_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@null"
+            android:contentDescription="@string/accept_button"
+            android:src="@drawable/accept_btn" />
     </RelativeLayout>
 </RelativeLayout>

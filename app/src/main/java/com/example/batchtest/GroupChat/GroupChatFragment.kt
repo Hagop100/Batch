@@ -117,7 +117,6 @@ class GroupChatFragment : Fragment() {
         //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
         //--------------------------------------------------
 
-
         binding.fragmentGroupChatSendBtn.setOnClickListener {
             //create message Object from the edit text
             val message = Message(
