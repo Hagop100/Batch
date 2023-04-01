@@ -56,8 +56,6 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
          * group name, profile picture, tags, and about us
          */
         binding.groupName.text = sharedViewModel.getGName().value
-        // check if user is in group to grant certain actions in more dialog box
-        val isInGroup = sharedViewModel.getIsInGroup().value
 
         val groupName = binding.groupName.text
 
@@ -141,7 +139,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
             // to edit the group profile or invite a user
             // else if the user is not in the group, then the user will be able
             // to report or block the group
-            if (isInGroup == true) {
+            if (sharedViewModel.getReturnFragment().value == "MyGroupFragment") {
                 // inflate a text view to hold the edit profile dialog
                 val editProfileDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
                 editProfileDialogBtn.text = getString(R.string.edit_group_profile)

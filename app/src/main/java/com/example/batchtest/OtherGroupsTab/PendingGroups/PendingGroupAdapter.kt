@@ -22,6 +22,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
+import java.lang.reflect.Field
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -219,6 +220,11 @@ class PendingGroupAdapter(
                                         // check if they had voted to match
                                         if (otherPendingGroup != null) {
                                             if (otherPendingGroup.matched == true) {
+                                                // add to matched groups of both matched groups
+                                                db.collection("groups").document(otherPendingGroup.pendingGroup.toString())
+                                                    .update("matchedGroups", FieldValue.arrayUnion(otherPendingGroup.matchingGroup))
+                                                db.collection("groups").document(otherPendingGroup.matchingGroup.toString())
+                                                    .update("matchedGroups", FieldValue.arrayUnion(otherPendingGroup.pendingGroup))
                                                 // add the user's group to the matched groups of all users in the other pending group
                                                 otherPendingGroup.users?.forEach { (key, _) ->
                                                     db.collection("users").document(key)
@@ -250,10 +256,9 @@ class PendingGroupAdapter(
                                                         }
                                                 }
                                                 // create a chat object
-                                                val messages = arrayListOf<Message>()
                                                 val chat = Chat(
                                                     0,
-                                                    messages,
+                                                    arrayListOf(),
                                                     otherPendingGroup.matchingGroup,
                                                     otherPendingGroup.pendingGroup,
                                                     Date()

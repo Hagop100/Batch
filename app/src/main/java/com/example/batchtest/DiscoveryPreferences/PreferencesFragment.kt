@@ -38,6 +38,7 @@ import kotlinx.coroutines.launch
  * A simple [Fragment] subclass.
  * Use the [PreferencesFragment.newInstance] factory method to
  * create an instance of this fragment.*/
+private const val TAG = "PreferencesFragment"
 class PreferencesFragment : Fragment() {
 
     companion object
@@ -145,7 +146,6 @@ class PreferencesFragment : Fragment() {
         //TODO button listener for btn_to_user_profile_tab
         //Button returns user to their ViewGroupInfo page without saving info
         binding.btnToUserProfileTab.setOnClickListener {
-
             findNavController().navigate(R.id.action_preferencesFragment_to_viewGroupInfoFragment)
         }
 
@@ -244,10 +244,9 @@ class PreferencesFragment : Fragment() {
 
             //Coroutine to get the city location
             viewLifecycleOwner.lifecycleScope.launch {
-                val addressGeocoder = GetAddressFromLatLng(requireContext(), viewModel.latitude, viewModel.longitude )
+                val addressGeocoder = GetAddressFromLatLng(requireContext(), viewModel.latitude, viewModel.longitude)
                 viewModel.city.value = addressGeocoder.getAddress()
                 binding.tvLocation.text = addressGeocoder.getAddress()
-
             }
 
         }
@@ -259,7 +258,6 @@ class PreferencesFragment : Fragment() {
 
     @SuppressLint("MissingPermission")
     private fun requestLocationData(){
-
         viewLifecycleOwner.lifecycleScope.launch{
             //must create location request first
             var locationRequest = LocationRequest()
@@ -342,7 +340,7 @@ class PreferencesFragment : Fragment() {
         //update preferences to the database
         database.collection("groups")
             .document(viewModel.gName)
-            .update(viewModel.preferencesHash).addOnSuccessListener {
+            .update("preferences", viewModel.preferencesHash).addOnSuccessListener {
                 findNavController().navigate(R.id.action_preferencesFragment_to_viewGroupInfoFragment)
             }.addOnFailureListener {
                 Toast.makeText(context,"Failed To Update Group Preferences", Toast.LENGTH_SHORT).show()
