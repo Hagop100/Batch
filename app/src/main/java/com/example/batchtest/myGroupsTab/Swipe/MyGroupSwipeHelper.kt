@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.RectF
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -47,7 +48,11 @@ abstract class MyGroupSwipeHelper(context: Context, private val recyclerView: Re
         if(swipePosition < 0) return@OnTouchListener false
         val point = Point(motionEvent.rawX.toInt(), motionEvent.rawY.toInt())
         val swipeViewHolder = recyclerView.findViewHolderForAdapterPosition(swipePosition)
-        val swipedItem = swipeViewHolder!!.itemView
+             // handle the case when the view holder is null
+        if (swipeViewHolder == null){
+            return@OnTouchListener false
+        }
+        val swipedItem = swipeViewHolder.itemView
         val rect = Rect()
         swipedItem.getGlobalVisibleRect(rect)
 

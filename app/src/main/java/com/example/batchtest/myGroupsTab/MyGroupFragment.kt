@@ -92,7 +92,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
         recyclerView.setHasFixedSize(true)
         myGroupList = arrayListOf()
         mutedGroupList = arrayListOf()
-        myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList, mutedGroupList, primaryGroup) }!!
+//        myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList, mutedGroupList, primaryGroup) }!!
 
 
         // add swipe buttons
@@ -353,7 +353,17 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                             }
 
                                             // attach adapter and send groups and listener
-                                            recyclerView.adapter = myAdapter
+                                            if (recyclerView.adapter == null){
+                                                // attach adapter and send groups
+                                                myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList, mutedGroupList, primaryGroup) }!!
+                                                recyclerView.adapter = myAdapter
+                                            }
+                                            else {
+                                                recyclerView.adapter?.notifyDataSetChanged()
+                                                Log.i(TAG, "adapter is already set")
+                                            }
+
+//                                            recyclerView.adapter = myAdapter
 
                                             Log.i("print", "AM I HERE 1")
                                             //     EventChangeListener()
@@ -375,7 +385,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                 Log.i(TAG, "error getting user from documents: ", e)
                             }
                         // Update the adapter by notify changes
-                        myAdapter.notifyDataSetChanged()
+//                        recyclerView.adapter?.notifyDataSetChanged()
                     }
 
                 }
