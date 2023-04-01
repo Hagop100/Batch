@@ -50,6 +50,7 @@ class PreferencesFragment : Fragment() {
         const val MAX_DISTANCE: String = "maxDistance"
         const val GENDER: String = "gender"
         const val CITY: String = "city"
+        const val PREFERENCES: String = "preferences"
     }
 
     //View Model
@@ -60,13 +61,6 @@ class PreferencesFragment : Fragment() {
     private var _binding: FragmentPreferencesBinding? = null
     private val binding get() = _binding!!
     private val database = FirebaseFirestore.getInstance()
-    //Location Variables including fused variable
-//    private val locationHashMap = HashMap<String, Any>()
-//    private var minimumAge: Int = 18
-//    private var maxAge: Int = 100
-//    private var latitude: Double = 0.0
-//    private var longitude: Double = 0.0
-//    private var distance: Int = 0
 
     //used for location
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -133,7 +127,12 @@ class PreferencesFragment : Fragment() {
             viewModel.preferencesHash[CITY] = city
         })
 
-        //TODO add obsevers for deal breakers? - Latitude and Longitude
+        viewModel.latitude.observe(viewLifecycleOwner, Observer { lat ->
+            viewModel.preferencesHash[LATITUDE] = lat
+        })
+        viewModel.longitude.observe(viewLifecycleOwner, Observer { long ->
+            viewModel.preferencesHash[LONGITUDE] = long
+        })
         return binding.root
     }
 
@@ -152,13 +151,13 @@ class PreferencesFragment : Fragment() {
         //Age range slider that determines the minimum and max ages of group members the other group can have
         binding.rsAge.addOnChangeListener { slider, value, fromUser ->
             binding.tvAgeSelected.text = "${slider.values[0].toInt()} - ${slider.values[1].toInt()}"
-            viewModel.minimumAge.value = slider.values[0]
-            viewModel.maxAge.value = slider.values[1]
+            viewModel.minimumAge.value = slider.values[0].toDouble()
+            viewModel.maxAge.value = slider.values[1].toDouble()
         }
 
         binding.rsDistance.addOnChangeListener { slider, value, fromUser ->
             binding.tvDistance.text = "${value.toInt()} Miles"
-            viewModel.distance.value = value
+            viewModel.distance.value = value.toDouble()
         }
 
 
@@ -187,15 +186,12 @@ class PreferencesFragment : Fragment() {
         }
 
 
-        //TODO implement tags, for deal breakers
 
         binding.btnSavePreferences.setOnClickListener { view ->
             setGender()
             saveToDataBase()
         }
-        //TODO save changes
 
-        //TODO send changes to firestore.
     }
 
     /**
@@ -203,10 +199,10 @@ class PreferencesFragment : Fragment() {
      * */
     private fun updateGroupViews()
     {
-        binding.rsAge.setValues(viewModel.minimumAge.value, viewModel.maxAge.value )
+        binding.rsAge.setValues(viewModel.minimumAge.value?.toFloat(), viewModel.maxAge.value?.toFloat() )
         //binding.rsAge.setValues(binding.rsAge.values[1],viewModel.maxAge.value)
 
-        binding.tvLocation.text = viewModel.group.city
+        binding.tvLocation.text = viewModel.city.value as String
 //        binding.rsDistance.values[1] = viewModel.distance.value
         var gen = when(viewModel.gender.value)
         {
@@ -214,7 +210,7 @@ class PreferencesFragment : Fragment() {
             "female" -> binding.rbFemale.id
             else     -> binding.rbAll.id
         }
-        binding.rsDistance.setValues(viewModel.distance.value)
+        binding.rsDistance.setValues(viewModel.distance.value?.toFloat())
         binding.rgGender.check(gen)
 
 
@@ -237,14 +233,14 @@ class PreferencesFragment : Fragment() {
     {
         override fun onLocationResult(result: LocationResult) {
             val lastLocation: Location? = result.lastLocation
-            viewModel.latitude = lastLocation!!.latitude
-            viewModel.longitude = lastLocation.longitude
-            viewModel.preferencesHash[LATITUDE] = viewModel.latitude
-            viewModel.preferencesHash[LONGITUDE] = viewModel.longitude
+            viewModel.latitude.value = lastLocation!!.latitude
+            viewModel.longitude.value  = lastLocation.longitude
+            viewModel.preferencesHash[LATITUDE] = viewModel.latitude.value!!
+            viewModel.preferencesHash[LONGITUDE] = viewModel.longitude.value!!
 
             //Coroutine to get the city location
             viewLifecycleOwner.lifecycleScope.launch {
-                val addressGeocoder = GetAddressFromLatLng(requireContext(), viewModel.latitude, viewModel.longitude)
+                val addressGeocoder = GetAddressFromLatLng(requireContext(), viewModel.latitude.value!!, viewModel.longitude.value!!)
                 viewModel.city.value = addressGeocoder.getAddress()
                 binding.tvLocation.text = addressGeocoder.getAddress()
             }
@@ -295,17 +291,37 @@ class PreferencesFragment : Fragment() {
     {
         database.collection("groups").document(viewModel.gName as String).get().addOnSuccessListener { document->
 
-            Log.i("Preference", document.get("name").toString())
-            viewModel.group = document!!.toObject(Group::class.java)!!
 
-//            dBreakers = group.dealBreakers as ArrayList<String>
-            viewModel.minimumAge.value = viewModel.group.minimumAge as Float
-            viewModel.maxAge.value = viewModel.group.maxAge as Float
-            viewModel.latitude = viewModel.group.latitude as Double
-            viewModel.longitude = viewModel.group.longitude as Double
-            viewModel.city.value = viewModel.group.city as String
-            viewModel.distance.value = viewModel.group.maxDistance as Float
-            viewModel.gender.value = viewModel.group.gender as String
+            viewModel.group = document!!.toObject(Group::class.java)!!
+            Log.i("Preference", viewModel.group.preferences.toString())
+
+            if (viewModel.group.preferences == null)
+            {
+                viewModel.minimumAge.value = 18.0
+                viewModel.maxAge.value = 100.0
+                viewModel.distance.value = 0.0
+                viewModel.longitude.value = 0.0
+                viewModel.latitude.value = 0.0
+                viewModel.gender.value = "all"
+                viewModel.city.value = "Location"
+            }
+            else
+            {
+                Log.i(TAG,viewModel.group.preferences?.get(MIN_AGE).toString() )
+                viewModel.city.value = viewModel.group.preferences?.get(CITY) as String
+                viewModel.gender.value = viewModel.group.preferences?.get(GENDER) as String
+                viewModel.latitude.value = viewModel.group.preferences?.get(LATITUDE) as Double
+                viewModel.longitude.value  = viewModel.group.preferences?.get(LONGITUDE) as Double
+
+
+                viewModel.minimumAge.value =  viewModel.group.preferences?.get(MIN_AGE) as Double
+                viewModel.maxAge.value = viewModel.group.preferences?.get(MAX_AGE) as Double
+                viewModel.distance.value = viewModel.group.preferences?.get(MAX_DISTANCE) as Double
+
+            }
+
+
+
 
             updateGroupViews()
 

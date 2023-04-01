@@ -17,13 +17,7 @@ data class Group(
     var reportCount: Int = 0,
     var matchedGroups: ArrayList<String> = ArrayList(),
     val dealBreakers: ArrayList<String>? = null,
-    val city: String = "",
-    val gender: String = "",
-    val latitude: Double = 0.0,
-    val longitude: Double = 0.0,
-    val minimumAge: Float = 18f,
-    val maxAge: Float = 100f,
-    val maxDistance: Float= 0f,
+    val preferences: HashMap<String, Any>? = null,
     @ServerTimestamp
     var createdDate: Date? = Date(),
 

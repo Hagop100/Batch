@@ -29,11 +29,11 @@ class PreferencesViewModel(groupName: String): ViewModel() {
         const val CITY: String = "city"
     }
 
-    val minimumAge = MutableLiveData<Float>()
-    val maxAge = MutableLiveData<Float>()
-    var latitude: Double = 0.0
-    var longitude: Double = 0.0
-    var distance = MutableLiveData<Float>()
+    val minimumAge = MutableLiveData<Double>()
+    val maxAge = MutableLiveData<Double>()
+    var latitude =  MutableLiveData<Double>()
+    var longitude = MutableLiveData<Double>()
+    var distance = MutableLiveData<Double>()
     var gName: String = ""
     var dBreakers = ArrayList<String>()
 
