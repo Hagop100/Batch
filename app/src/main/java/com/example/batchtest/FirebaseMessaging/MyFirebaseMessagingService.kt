@@ -12,11 +12,15 @@ import android.media.RingtoneManager
 import android.os.AsyncTask
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.batchtest.UserProfileTab.EditProfileFragment
 import com.example.batchtest.LoginFragment
 import com.example.batchtest.MainActivity
 import com.example.batchtest.R
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -39,12 +43,12 @@ import java.net.URL
  * Class Will both implement Receiving Notifications and sending out notifications
  * */
 
-class MyFirebaseMessagingService: FirebaseMessagingService() {
+class MyFirebaseMessagingService(): FirebaseMessagingService() {
 
+    private var userToken: String = ""
 
     companion object
     {
-        var token = FirebaseMessaging.getInstance().token
         const val TAG: String = "Firebase Messaging"
         const val FCM_BASE_URL: String = "https://fcm.googleapis.com/fcm/send"
         const val FCM_AUTHORIZATION: String = "authorization"
@@ -53,7 +57,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         const val FCM_KEY_TITLE: String = "title"
         const val FCM_KEY_MESSAGE: String = "message"
         const val FCM_KEY_DATA: String = "data"
-        const val FCM_KEY_TO: String = "to"
+        const val FCM_KEY_TO: String = "token"
     }
     //Called when a message is received while application is in the foreground
     //Deals with data message - Google Cloud Messaging
@@ -90,19 +94,26 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
 
         //Debugging
         Log.e(TAG, "New Token Created: $token")
+        userToken = token
         //update token in the user profile in the database
-        updateUserProfileToken(token)
     }
 
-    private fun updateUserProfileToken(token: String?)
-    {
-        //TODO update the userToken in the database
-    }
+//    fun updateUserProfileToken(database: FirebaseFirestore,token: String?)
+//    {
+//        database.collection("users").document(currentUser.uid)
+//            .update("userToken", token).addOnSuccessListener {
+//                Log.i(TAG, "new Token updated")
+//            }.addOnFailureListener{
+//                Log.i(TAG, "Failed to update token")
+//            }
+//    }
 
 
 /**Create a Notification and a notification channel  */
     private fun sendNotification(title: String , messageBody: String )
     {
+
+        val fireToken = FirebaseMessaging.getInstance().token
         //TODO Check whether user is logged in.
         val intent = Intent(this, LoginFragment::class.java)
         //Flags puts activity on the top of the stack
@@ -136,7 +147,7 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
         //Notification channel is needed for android 8 and above
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
-            val channel = NotificationChannel(channeId, "Matching",
+            val channel = NotificationChannel(channeId, "Message",
             NotificationManager.IMPORTANCE_DEFAULT)
 
             //Manager creates channel
@@ -149,108 +160,122 @@ class MyFirebaseMessagingService: FirebaseMessagingService() {
 
 
 
-/**
-     * Creates an object to output stream a notification
-     **/
-    inner class SendNotificationToUserAsyncTask(val title: String, private val message: String, val token: String ): AsyncTask<Any, Void, String>(){
 
-
-/**
-         * Creates an object to output stream a notification
-         * @title title of notification
-         * @message message of the notification
-         * @token the user who will receive the token
-         *
-         * @return result result of the connection*/
-
-        override fun doInBackground(vararg p0: Any?): String {
-            var result:String
-            var connection: HttpURLConnection?= null
-            try {
-                //set the connection necessary to output the notification
-                val url = URL(FCM_BASE_URL)
-                connection = url.openConnection() as HttpURLConnection
-                connection.doOutput = true
-                connection.doInput = true
-                connection.instanceFollowRedirects = false
-                connection.requestMethod= "POST"
-
-                //These are the typical request settings
-                connection.setRequestProperty("Content_Type", "application/json")
-                connection.setRequestProperty("charset", "utf-8")
-                connection.setRequestProperty("Accept", "application/json")
-
-
-                connection.setRequestProperty(
-                    FCM_AUTHORIZATION, "${FCM_KEY}=${FCM_SERVER_KEY}"
-                )
-                connection.useCaches = false
-
-                val outputStream = DataOutputStream(connection.outputStream)
-                val jsonRequest = JSONObject()
-                val dataObject = JSONObject()
-
-                //Create a Json with the notification data
-                dataObject.put(FCM_KEY_TITLE, title)
-                dataObject.put(FCM_KEY_MESSAGE, message)
-
-                //Now we put the data into the request
-                //and the token of the user we are sending to.
-                jsonRequest.put(FCM_KEY_DATA,dataObject)
-                jsonRequest.put(FCM_KEY_TO, token)
-
-                outputStream.writeBytes(jsonRequest.toString())
-                outputStream.flush()
-                outputStream.close()
-
-                //get the result of the http connection
-                val httpResult: Int = connection.responseCode
-
-                if(httpResult == HttpURLConnection.HTTP_OK)
-                {
-                    val inputStream = connection.inputStream
-
-                    val reader = BufferedReader(InputStreamReader(inputStream))
-
-                    val stringBuilder = StringBuilder()
-                    var line: String?
-                    try
-                    {
-                        while(reader.readLine().also{line= it} != null)
-                        {
-                            stringBuilder.append(line+"\n")
-                        }
-                    }catch (e: IOException)
-                    {
-                        e.printStackTrace()
-                    }finally {
-                        try {
-                            inputStream.close()
-                        }catch (e: IOException)
-                        {
-                            e.printStackTrace()
-                        }
-                    }
-                    result = stringBuilder.toString()
-                }
-                else{
-                    result = connection.responseMessage
-                }
-
-            }catch (e: SocketTimeoutException)
-            {
-                result = "Connection Timeout"
-            }catch (e: java.lang.Exception)
-            {
-                result = "Error: " + e.message
-            }finally {
-                //if a connection exists- close it
-                connection?.disconnect()
-            }
-
-            return result
-        }
+///**
+//     * Creates an object to output stream a notification
+////     **/
+//    inner class SendNotificationToUserAsyncTask( val database: FirebaseFirestore,
+//    val title: String, private val message: String, val groupName: String )
+//        : AsyncTask<Any, Void, String>(){
+//
+//
+///**
+//         * Creates an object to output stream a notification
+//         * @title title of notification
+//         * @message message of the notification
+//         * @token the user who will receive the token
+//         *
+//         * @return result result of the connection*/
+//
+//        override fun doInBackground(vararg p0: Any?): String {
+//
+//            var result: String= ""
+//
+//            database.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
+//                val users: ArrayList<*> = document.get("users") as ArrayList<*>
+//
+//
+//
+//                for (user in users) {
+//                        database.collection("users").document(user.toString()).get()
+//                            .addOnSuccessListener { document ->
+//                                var connection: HttpURLConnection? = null
+//
+//                                val token = "c-I4mBi7TFyDoKcc8ghfEH:APA91bEbUYT_vdQEx0-kGtFQochISe8dOcwMf2K3SRUiGyRoZqG3rfLDu89zAlVmPxPDiGaH7IX8AeqxPq1g2CXBzA913-4cWxgXHuRwecyQd0g-Q2uCTx7q4E8GwZBtASLgDP26jRdN"
+//                                //Log.i(TAG, "$token")
+//                                //set the connection necessary to output the notification
+//                                val url = URL(FCM_BASE_URL)
+//
+//                                try {
+//                                    connection = url.openConnection() as HttpURLConnection
+//                                    connection.doOutput = true
+//                                    connection.doInput = true
+//                                    connection.instanceFollowRedirects = false
+//                                    connection.requestMethod = "POST"
+//
+//                                    //These are the typical request settings
+//                                    connection.setRequestProperty("Content_Type", "application/json")
+//                                    connection.setRequestProperty("charset", "utf-8")
+//                                    connection.setRequestProperty("Accept", "application/json")
+//
+//
+//                                    connection.setRequestProperty(
+//                                        FCM_AUTHORIZATION, "$FCM_KEY=${FCM_SERVER_KEY}"
+//                                    )
+//                                    //connection.useCaches = false
+//
+//
+//                                    val outputStream = DataOutputStream(connection.outputStream)
+//                                    val jsonRequest = JSONObject()
+//                                    val dataObject = JSONObject()
+//
+//                                    //Create a Json with the notification data
+//                                    dataObject.put(FCM_KEY_TITLE, title)
+//                                    dataObject.put(FCM_KEY_MESSAGE, message)
+//
+//                                    //Now we put the data into the request
+//                                    //and the token of the user we are sending to.
+//                                    jsonRequest.put(FCM_KEY_DATA, dataObject)
+//                                    jsonRequest.put(FCM_KEY_TO, token)
+//
+//                                    outputStream.writeBytes(jsonRequest.toString())
+//                                    outputStream.flush()
+//                                    outputStream.close()
+//
+//                                    //get the result of the http connection
+//                                    val httpResult: Int = connection.responseCode
+//
+//                                    if (httpResult == HttpURLConnection.HTTP_OK) {
+//                                        val inputStream = connection.inputStream
+//
+//                                        val reader = BufferedReader(InputStreamReader(inputStream))
+//
+//                                        val stringBuilder = StringBuilder()
+//                                        var line: String?
+//                                        try {
+//                                            while (reader.readLine().also { line = it } != null) {
+//                                                stringBuilder.append(line + "\n")
+//                                            }
+//                                        } catch (e: IOException) {
+//                                            Log.i(TAG, "failed connection")
+//                                            e.printStackTrace()
+//                                        } finally {
+//                                            try {
+//                                                inputStream.close()
+//                                            } catch (e: IOException) {
+//                                                Log.i(TAG, "failed connection")
+//                                                e.printStackTrace()
+//                                            }
+//                                        }
+//                                        result = stringBuilder.toString()
+//                                    } else {
+//                                        result = connection.responseMessage
+//                                    }
+//                                }catch (e: IOException){
+//                                    Log.i(TAG, "failed connection")
+//                                }
+//                                finally {
+//                                    connection?.disconnect()
+//                                }
+//                            }.addOnFailureListener { Log.i("FirebaseMessage", "Failed to get User") }
+//                }
+//            }.addOnFailureListener { Log.i("FirebaseMessage", "Failed to get Group")  }
+//
+//            return result
+//        }
         //TODO when calling this class, one must call execute()
 
-    }
+   // }
+
+
 }
