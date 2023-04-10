@@ -179,31 +179,6 @@ class CardStackAdapter(
             return groups.size
         }
 
-        fun updateGroups(newGroups: ArrayList<Group>) {
-            if (newGroups.isNotEmpty()) {
-                Log.v("MatchTabAdapter", "groups in adapter:" + groups.size)
-                Log.v("MatchTabAdapter", "new groups:" + newGroups.size.toString())
-                //groups.addAll(newGroups)
-                Log.v("MatchTabAdapter", "groups in adapter after add:" + groups.size)
-                notifyItemRangeChanged(0, newGroups.size)
-            } else {
-                Log.v("MatchTabAdapter", "groups is empty")
-            }
-        }
-
-        fun addGroup(newGroup: Group) {
-            groups.add(newGroup)
-            notifyItemInserted(groups.size - 1)
-        }
-
-        fun clearGroup() {
-            val size = groups.size
-            Log.v("MatchTabAdapter", "groups in adapter before clear:" + groups.size)
-            groups.clear()
-            Log.v("MatchTabAdapter", "groups in adapter after clear:" + groups.size)
-            //notifyItemRangeChanged(0, size)
-        }
-
         // holder class for each group card
         class CardStackHolder(val binding: MatchGroupCardBinding) : RecyclerView.ViewHolder(binding.root) {
             // get the views of card

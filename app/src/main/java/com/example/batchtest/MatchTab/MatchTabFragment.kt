@@ -13,18 +13,15 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.batchtest.Group
-import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupAdapter
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupFragment.Companion.voting
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMatchTabBinding
-import com.example.batchtest.myGroupsTab.MyGroupFragment
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
@@ -44,7 +41,6 @@ private const val TAG = "MatchTabFragmentLog"
  * extends Fragment class
  * implements CardStackAdapterListener interface to listen to actions such as undo button clicks
  */
-
 @RequiresApi(Build.VERSION_CODES.O)
 class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, CardStackListener {
     private var _binding: FragmentMatchTabBinding? = null
@@ -131,6 +127,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                 //else reuse the fetched groups
                 if (groups.isEmpty()) {
                     fetchGroups(cardStackView)
+                    //setAdapter(cardStackView)
                 } else {
                     /*
                     * when the match tab fragment gets rebuilt, we use the groups that was fetched
@@ -149,7 +146,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         removeGroups.clear()
                     }
                     // recycler view will display the groups
-                    cardStackView.adapter = CardStackAdapter(currentUser.uid, requireContext(), groups, this)
+                    setAdapter(cardStackView)
                     if (prevGroup != null) {
                         // groups[0], the previous group, will be displayed so we will skip to groups[1]
                         manager.scrollToPosition(1)
@@ -159,7 +156,30 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         //setPrimaryGroup("PendingGroups")
         return binding.root
     }
-
+    // if adapter has not been set, set it
+    // otherwise notify the adapter that groups has changed
+    private fun setAdapter(cardStackView: CardStackView) {
+        if (cardStackView.adapter == null) {
+            cardStackView.adapter = CardStackAdapter(currentUser.uid, requireContext(), groups, this)
+        } else {
+            cardStackView.adapter?.notifyDataSetChanged()
+        }
+    }
+    // add a filter group and update groups
+    private fun addFilterGroup(cardStackView: CardStackView, filterGroups: ArrayList<String?>, groups: ArrayList<Group>, group: Group) {
+        if (!filterGroups.contains(group.name)) {
+            filterGroups.add(group.name.toString())
+            val position = groups.indexOf(group)
+            groups.remove(group)
+            if (cardStackView.adapter == null) {
+                cardStackView.adapter =
+                    CardStackAdapter(currentUser.uid, requireContext(), groups, this)
+            } else {
+                cardStackView.adapter?.notifyItemRemoved(position)
+            }
+        }
+    }
+    // fetches groups from firebase
     private fun fetchGroups(cardStackView: CardStackView) {
         Log.v(TAG, "fetching groups")
         // fetch all groups where user is not in
@@ -209,7 +229,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         var minAge: Number? = null
                         var maxDistance: Number? = null
                         var genderPref: String? = null
-
+                        // if the preferences of group is not null, set the values
+                        // if the preferences is null, groups will be fetched via interests and noninterests
                         if (primaryGroupObj.preferences != null) {
                             Log.v(TAG, "preferences != null")
                             longitude = primaryGroupObj.preferences?.get("longitude") as Number
@@ -237,53 +258,40 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             }
                             // float array stores results from distanceBetween function
                             val distanceBetweenArray = FloatArray(3)
-                            if ((longitude != null) && (latitude != null) && (maxDistance != null) && (obj.preferences != null)) {
-                                val objLongitude = obj.preferences["longitude"] as Double
-                                val objLatitude = obj.preferences["latitude"] as Double
-                                if (!objLatitude.isNaN() && !objLongitude.isNaN()) {
-                                    distanceBetween(
-                                        longitude as Double,
-                                        latitude as Double,
-                                        objLongitude,
-                                        objLatitude,
-                                        distanceBetweenArray
-                                    )
-                                    val distanceBetweenMiles =
-                                        distanceBetweenArray[0] * 0.000621371192
-                                    if (distanceBetweenMiles > maxDistance.toDouble()) {
-                                        Log.v(TAG, "group ${obj.name} not in range")
-                                        if (!filterGroups.contains(obj.name)) {
-                                            filterGroups.add(obj.name)
-                                            val position = groups.indexOf(obj)
-                                            groups.remove(obj)
-                                            // attach adapter and send groups and listener
-                                            if (cardStackView.adapter == null) {
-                                                cardStackView.adapter = CardStackAdapter(currentUser.uid, context, groups, this)
-                                            } else {
-                                                cardStackView.adapter?.notifyItemRemoved(position)
-                                            }
+                            // if distance preferences are set, then filter out groups based on distance
+                            if ((longitude != null) && (latitude != null) && (maxDistance != null)) {
+                                // if the other groups has their longitude or latitude set, check if the group should be filtered
+                                // else filter it
+                                if (obj.preferences?.get("longitude") != null && obj.preferences["latitude"] != null) {
+                                    val objLongitude = obj.preferences["longitude"] as Double
+                                    val objLatitude = obj.preferences["latitude"] as Double
+                                    if (!objLatitude.isNaN() && !objLongitude.isNaN()) {
+                                        // get distance between 2 coordinates and store into distanceBetweenArray
+                                        distanceBetween(
+                                            longitude as Double,
+                                            latitude as Double,
+                                            objLongitude,
+                                            objLatitude,
+                                            distanceBetweenArray
+                                        )
+                                        // convert to miles
+                                        val distanceBetweenMiles =
+                                            distanceBetweenArray[0] * 0.000621371192
+                                        // check if in range, if not then filter it
+                                        if (distanceBetweenMiles > maxDistance.toDouble()) {
+                                            addFilterGroup(cardStackView, filterGroups,groups, obj)
+                                            continue
                                         }
+                                    } else {
+                                        // if the other group does not have longitude or latitude set, filter it
+                                        addFilterGroup(cardStackView, filterGroups,groups, obj)
                                         continue
                                     }
                                 } else {
-                                    if (!filterGroups.contains(obj.name)) {
-                                        filterGroups.add(obj.name)
-                                        groups.remove(obj)
-                                        // attach adapter and send groups and listener
-                                        cardStackView.adapter =
-                                            CardStackAdapter(currentUser.uid, context, groups, this)
-                                    }
+                                    // filter out other group if longitude or latitude it not set
+                                    addFilterGroup(cardStackView, filterGroups,groups, obj)
                                     continue
                                 }
-                            } else {
-                                if (!filterGroups.contains(obj.name)) {
-                                    filterGroups.add(obj.name)
-                                    groups.remove(obj)
-                                    // attach adapter and send groups and listener
-                                    cardStackView.adapter =
-                                        CardStackAdapter(currentUser.uid, context, groups, this)
-                                }
-                                continue
                             }
                             // loop through each user in the group to get age, gender,
                             obj.users?.forEach { user ->
@@ -304,24 +312,12 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                                     "gender"
                                                 ) == "male")
                                             ) {
-                                                if (!filterGroups.contains(obj.name)) {
-                                                    filterGroups.add(obj.name)
-                                                    groups.remove(obj)
-                                                    // attach adapter and send groups and listener
-                                                    cardStackView.adapter =
-                                                        CardStackAdapter(currentUser.uid, context, groups, this)
-                                                }
+                                                addFilterGroup(cardStackView, filterGroups,groups, obj)
                                                 Log.v(TAG, "group not correct gender")
                                                 return@addOnSuccessListener
                                             }
                                         } else {
-                                            if (!filterGroups.contains(obj.name)) {
-                                                filterGroups.add(obj.name)
-                                                groups.remove(obj)
-                                                // attach adapter and send groups and listener
-                                                cardStackView.adapter =
-                                                    CardStackAdapter(currentUser.uid, context, groups, this)
-                                            }
+                                            addFilterGroup(cardStackView, filterGroups,groups, obj)
                                             //Log.v(TAG, "group does not have gender pref set:" + filterGroups.toString())
                                             return@addOnSuccessListener
                                         }
@@ -341,23 +337,11 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                             // if age is less than the minimum age or
                                             // greater than the maximum age, filter the group
                                             if (age < minAge.toInt() || age > maxAge.toInt()) {
-                                                if (!filterGroups.contains(obj.name)) {
-                                                    filterGroups.add(obj.name)
-                                                    groups.remove(obj)
-                                                    // attach adapter and send groups and listener
-                                                    cardStackView.adapter =
-                                                        CardStackAdapter(currentUser.uid, context, groups, this)
-                                                }
+                                                addFilterGroup(cardStackView, filterGroups,groups, obj)
                                                 return@addOnSuccessListener
                                             }
                                         } else {
-                                            if (!filterGroups.contains(obj.name)) {
-                                                filterGroups.add(obj.name)
-                                                groups.remove(obj)
-                                                // attach adapter and send groups and listener
-                                                cardStackView.adapter =
-                                                    CardStackAdapter(currentUser.uid, context, groups, this)
-                                            }
+                                            addFilterGroup(cardStackView, filterGroups, groups, obj)
                                             Log.v(TAG, "group ${obj.name} not have min age or max age or birthdate of user set")
                                             return@addOnSuccessListener
                                         }
@@ -391,10 +375,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         } else {
                             Log.v(TAG, "groups:" + groups.size.toString())
                             // attach adapter and send groups and listener
-                            cardStackView.adapter =
-                                CardStackAdapter(currentUser.uid, context, groups, this)
+                            setAdapter(cardStackView)
                         }
-                        // add adapter here
                     }
             }
             .addOnFailureListener { e ->
@@ -425,13 +407,11 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
             .setInterpolator(AccelerateInterpolator())
             .build()
         manager.setSwipeAnimationSetting(setting)
-//        // add the group to the list of pending groups for the user
-//        db.collection("users").document(currentUser?.uid.toString())
-//            .update("pendingGroups", FieldValue.arrayUnion(currGroup!!.name))
+        val tag = "AcceptBtn"
         // check if another user in the group has already initiated matching
         db.collection("pendingGroups")
             .whereEqualTo("matchingGroup", primaryGroup)
-            .whereEqualTo("pendingGroup", currGroup)
+            .whereEqualTo("pendingGroup", currGroup?.name)
             .get()
             .addOnSuccessListener { result ->
                 var pendingGroupExists = false
@@ -484,8 +464,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                         voting(db, pendingGroup)
                                         removeGroups.add(currGroup!!)
                                         prevGroup = null
+                                        matchTabViewModel.removeGroups.value = removeGroups
+                                        matchTabViewModel.prevGroup.value = prevGroup
                                         // update undo state of current user
-                                        //currentUserDocRef.update("undoState", false)
                                         matchTabViewModel.undoState.value = false
                                         //swipe the card
                                         binding.cardStackView.swipe()
