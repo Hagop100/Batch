@@ -47,6 +47,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     private val binding get() = _binding!!
     // view model to restore state
     private val matchTabViewModel: MatchTabViewModel by activityViewModels()
+    private lateinit var cardStackView: CardStackView
     // set layout manager to card stack view to arrange recycler view
     private lateinit var manager: CardStackLayoutManager
     private lateinit var db: FirebaseFirestore
@@ -76,7 +77,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         _binding = FragmentMatchTabBinding.inflate(inflater, container, false)
         manager = CardStackLayoutManager(context, this)
         // get card stack view
-        val cardStackView = binding.cardStackView
+        cardStackView = binding.cardStackView
         // prevent users from swiping cards
         manager.setCanScrollHorizontal(false)
         manager.setCanScrollVertical(false)
@@ -113,7 +114,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                 } else {
                     // if primary group has changed, clear the groups arraylist
                     if (primaryGroup != user.primaryGroup) {
+                        primaryGroup = user.primaryGroup
                         matchTabViewModel.setPrimaryGroup(user.primaryGroup)
+                        Log.v(TAG, "set primary group: $primaryGroup")
                         groups.clear()
                         matchTabViewModel.groups.value = groups
                     }
@@ -153,7 +156,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                     }
                 }
             }
-        //setPrimaryGroup("PendingGroups")
         return binding.root
     }
     // if adapter has not been set, set it
@@ -171,6 +173,11 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
             filterGroups.add(group.name.toString())
             val position = groups.indexOf(group)
             groups.remove(group)
+            if (groups.isEmpty()) {
+                binding.matchTabMessage.text = getString(R.string.no_group_found)
+            } else {
+                binding.matchTabMessage.text = ""
+            }
             if (cardStackView.adapter == null) {
                 cardStackView.adapter =
                     CardStackAdapter(currentUser.uid, requireContext(), groups, this)
@@ -181,7 +188,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     }
     // fetches groups from firebase
     private fun fetchGroups(cardStackView: CardStackView) {
-        Log.v(TAG, "fetching groups")
         // fetch all groups where user is not in
         val query1 = db.collection("groups")
             .whereArrayContains("users", currentUser.uid)
@@ -232,7 +238,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         // if the preferences of group is not null, set the values
                         // if the preferences is null, groups will be fetched via interests and noninterests
                         if (primaryGroupObj.preferences != null) {
-                            Log.v(TAG, "preferences != null")
                             longitude = primaryGroupObj.preferences?.get("longitude") as Number
                             latitude = primaryGroupObj.preferences?.get("latitude") as Number
                             maxAge = primaryGroupObj.preferences?.get("maxAge") as Number
@@ -312,13 +317,11 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                                     "gender"
                                                 ) == "male")
                                             ) {
-                                                addFilterGroup(cardStackView, filterGroups,groups, obj)
-                                                Log.v(TAG, "group not correct gender")
+                                                addFilterGroup(cardStackView, filterGroups, groups, obj)
                                                 return@addOnSuccessListener
                                             }
                                         } else {
-                                            addFilterGroup(cardStackView, filterGroups,groups, obj)
-                                            //Log.v(TAG, "group does not have gender pref set:" + filterGroups.toString())
+                                            addFilterGroup(cardStackView, filterGroups, groups, obj)
                                             return@addOnSuccessListener
                                         }
 
@@ -337,12 +340,11 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                             // if age is less than the minimum age or
                                             // greater than the maximum age, filter the group
                                             if (age < minAge.toInt() || age > maxAge.toInt()) {
-                                                addFilterGroup(cardStackView, filterGroups,groups, obj)
+                                                addFilterGroup(cardStackView, filterGroups, groups, obj)
                                                 return@addOnSuccessListener
                                             }
                                         } else {
                                             addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                            Log.v(TAG, "group ${obj.name} not have min age or max age or birthdate of user set")
                                             return@addOnSuccessListener
                                         }
                                     }
@@ -370,10 +372,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         groups.addAll(noInterestGroups)
                         // if groups is empty, display that the user needs to join a group
                         if (groups.isEmpty()) {
-                            Log.v(TAG, "empty groups:")
                             binding.matchTabMessage.text = getString(R.string.no_group_found)
                         } else {
-                            Log.v(TAG, "groups:" + groups.size.toString())
                             // attach adapter and send groups and listener
                             setAdapter(cardStackView)
                         }
@@ -386,7 +386,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     // rewind to previous card when undo button is clicked
     override fun onUndoBtnClick(position: Int) {
         // rewind function
-        binding.cardStackView.rewind()
+        cardStackView.rewind()
         if (removeGroups.isNotEmpty()) {
             removeGroups.remove(prevGroup)
             matchTabViewModel.removeGroups.value = removeGroups
@@ -407,7 +407,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
             .setInterpolator(AccelerateInterpolator())
             .build()
         manager.setSwipeAnimationSetting(setting)
-        val tag = "AcceptBtn"
         // check if another user in the group has already initiated matching
         db.collection("pendingGroups")
             .whereEqualTo("matchingGroup", primaryGroup)
@@ -422,11 +421,33 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                     // update the existing pending groups vote for current user to accept
                     db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString())
                         .update("users.$id.vote", "accept")
+                    if (groups[groups.size - 1] == currGroup) {
+                        val size = groups.size
+                        groups.clear()
+                        cardStackView.adapter?.notifyItemRangeRemoved(0, size)
+                        removeGroups.clear()
+                        prevGroup = null
+                        matchTabViewModel.groups.value = groups
+                        matchTabViewModel.removeGroups.value = removeGroups
+                        matchTabViewModel.prevGroup.value = prevGroup
+                        matchTabViewModel.undoState.value = false
+                        fetchGroups(cardStackView)
+                    } else {
+                        removeGroups.add(currGroup!!)
+                        prevGroup = null
+                        // update undo state of current user
+                        matchTabViewModel.undoState.value = false
+                        matchTabViewModel.removeGroups.value = removeGroups
+                        matchTabViewModel.prevGroup.value = prevGroup
+                    }
+                    //swipe the card
+                    cardStackView.swipe()
                 }
                 // if the pending group does not exist in the database then create a new pending group
                 if (!pendingGroupExists) {
                     if (primaryGroup != null) {
-                        db.collection("groups").document(primaryGroup!!).get()
+                        Log.v(TAG, "primary group: $primaryGroup")
+                        db.collection("groups").document(primaryGroup.toString()).get()
                             .addOnSuccessListener {
                                 val users: HashMap<String, HashMap<String, String>> = hashMapOf()
                                 var index = 1
@@ -451,7 +472,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                 val pendingGroup = PendingGroup(
                                     pendingGroupId = UUID.randomUUID().toString(),
                                     matchingGroup = primaryGroup,
-                                    pendingGroup = currGroup!!.name,
+                                    pendingGroup = currGroup?.name,
                                     users = users,
                                     pending = true,
                                     matched = false
@@ -462,26 +483,40 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                     .set(pendingGroup)
                                     .addOnSuccessListener {
                                         voting(db, pendingGroup)
-                                        removeGroups.add(currGroup!!)
-                                        prevGroup = null
-                                        matchTabViewModel.removeGroups.value = removeGroups
-                                        matchTabViewModel.prevGroup.value = prevGroup
-                                        // update undo state of current user
-                                        matchTabViewModel.undoState.value = false
+                                        // if last group was accepted, fetch groups again
+                                        if (groups[groups.size - 1] == currGroup) {
+                                            val size = groups.size
+                                            groups.clear()
+                                            cardStackView.adapter?.notifyItemRangeRemoved(0, size)
+                                            removeGroups.clear()
+                                            prevGroup = null
+                                            matchTabViewModel.groups.value = groups
+                                            matchTabViewModel.removeGroups.value = removeGroups
+                                            matchTabViewModel.prevGroup.value = prevGroup
+                                            matchTabViewModel.undoState.value = false
+                                            fetchGroups(cardStackView)
+                                        } else {
+                                            removeGroups.add(currGroup!!)
+                                            prevGroup = null
+                                            matchTabViewModel.removeGroups.value = removeGroups
+                                            matchTabViewModel.prevGroup.value = prevGroup
+                                            // update undo state of current user
+                                            matchTabViewModel.undoState.value = false
+                                        }
                                         //swipe the card
-                                        binding.cardStackView.swipe()
+                                        cardStackView.swipe()
                                     }
                             }
                     }
-                } else {
-                    removeGroups.add(currGroup!!)
-                    prevGroup = null
-                    // update undo state of current user
-                    //currentUserDocRef.update("undoState", false)
-                    matchTabViewModel.undoState.value = false
-                    //swipe the card
-                    binding.cardStackView.swipe()
                 }
+//                else {
+//                    removeGroups.add(currGroup!!)
+//                    prevGroup = null
+//                    // update undo state of current user
+//                    matchTabViewModel.undoState.value = false
+//                    //swipe the card
+//                    cardStackView.swipe()
+//                }
             }
     }
     // reject group when reject button is clicked
@@ -493,30 +528,31 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
             .setInterpolator(AccelerateInterpolator())
             .build()
         manager.setSwipeAnimationSetting(setting)
-        // swipe the card
-        binding.cardStackView.swipe()
         if (groups[groups.size - 1] == currGroup) {
             val size = groups.size
             groups.clear()
-            binding.cardStackView.adapter?.notifyItemRangeRemoved(0, size)
+            cardStackView.adapter?.notifyItemRangeRemoved(0, size)
             removeGroups.clear()
             prevGroup = null
             matchTabViewModel.groups.value = groups
             matchTabViewModel.removeGroups.value = removeGroups
             matchTabViewModel.prevGroup.value = prevGroup
             matchTabViewModel.undoState.value = false
+            fetchGroups(cardStackView)
         } else {
             removeGroups.add(currGroup!!)
             if (prevGroup != null) {
                 removeGroups.add(prevGroup!!)
             }
             prevGroup = currGroup
+            // update view model values
             matchTabViewModel.removeGroups.value = removeGroups
             matchTabViewModel.prevGroup.value = prevGroup
             // update undo state of current user
-            //currentUserDocRef.update("undoState", true)
             matchTabViewModel.undoState.value = true
         }
+        // swipe the card
+        cardStackView.swipe()
     }
 
     override fun observeUndoState(undoBtn: ImageButton) {

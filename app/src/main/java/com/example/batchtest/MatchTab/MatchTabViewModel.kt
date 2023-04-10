@@ -11,8 +11,6 @@ class MatchTabViewModel: ViewModel() {
     val prevGroup: MutableLiveData<Group?> = MutableLiveData(null)
     val currGroup: MutableLiveData<Group?> = MutableLiveData(null)
     val undoState: MutableLiveData<Boolean> = MutableLiveData()
-    val fetchState: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isAdapterSet: MutableLiveData<Boolean> = MutableLiveData(false)
 
     init {
         primaryGroupVM.value = null

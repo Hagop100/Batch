@@ -106,25 +106,8 @@ class CardStackAdapter(
             // set group description
             holder.description.text = group.aboutUsDescription
 
-            listener.observeUndoState(holder.undoBtn)
             // change ui of button dynamically based on undo state of user
-//            currentUserDocRef.addSnapshotListener { snapshot, e ->
-//                if (e != null) {
-//                    Log.w(TAG, "listen failed.", e)
-//                    return@addSnapshotListener
-//                }
-//
-//                if (snapshot != null && snapshot.exists()) {
-//                    undoState = snapshot["undoState"] as Boolean
-//                    if (undoState) {
-//                        holder.undoBtn.alpha = 1F
-//                    } else {
-//                        holder.undoBtn.alpha = .1F
-//                    }
-//                } else {
-//                    Log.d(TAG, "user not found in database")
-//                }
-//            }
+            listener.observeUndoState(holder.undoBtn)
 
             // inflate the interest tag container
             val inflater: LayoutInflater = LayoutInflater.from(holder.interestTags.context)
