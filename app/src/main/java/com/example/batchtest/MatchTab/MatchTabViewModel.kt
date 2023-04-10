@@ -22,7 +22,7 @@ class MatchTabViewModel: ViewModel() {
         primaryGroupVM.value = newPrimaryGroup
     }
 
-    fun getPrimaryGroup(): MutableLiveData<String?> {
-        return primaryGroupVM
+    fun getPrimaryGroup(): String {
+        return primaryGroupVM.value.toString()
     }
 }
