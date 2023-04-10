@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,12 +22,17 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.batchtest.FirebaseMessaging.MyFirebaseMessagingService
 import com.example.batchtest.InitialProfilePersonalizationFragment
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentEditProfileBinding
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.IOException
@@ -54,7 +60,9 @@ class EditProfileFragment : Fragment() {
     private var tempUri: Uri? = null
     private lateinit var user: User
     private lateinit var progressDialog: Dialog
-
+    private lateinit var firebaseUser: FirebaseUser
+    private lateinit var token: String
+    private var isToken: Boolean = false
     private val userHashMap = HashMap<String, Any>()
     //variable used to check whether URI has been set
     private var uriSet = false
@@ -77,6 +85,7 @@ class EditProfileFragment : Fragment() {
         const val LASTNAME: String ="lastName"
         const val EMAIL: String = "email"
         const val PROFILECOMPLETE = "profileComplete"
+        const val TOKEN = "userToken"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,6 +130,37 @@ class EditProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener {
+            if (!it.isSuccessful)
+            {
+                Log.i("EditFragment","Fetching FCM token failed", it.exception)
+
+                return@OnCompleteListener
+            }
+            else
+            {
+                token = it.result
+                Log.i("Token",token)
+
+            }
+
+        })
+//
+//        firebaseUser = FirebaseAuth.getInstance().currentUser!!
+//        firebaseUser.getIdToken(true).addOnCompleteListener { task ->
+//            if (task.isSuccessful)
+//            {
+//                token = task.result.token.toString()
+//                isToken = true
+//            }
+//            else
+//            {
+//                Toast.makeText(requireContext(),"Could Not get token", Toast.LENGTH_SHORT).show()
+//                isToken = false
+//            }
+//
+//        }
         //Update the screen with the basic configuration
         updateEmptyProfilePage()
 
@@ -146,6 +186,19 @@ class EditProfileFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    /**Temp function to update token */
+    fun updateUserProfileToken(token: String)
+    {
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        FirebaseFirestore.getInstance().collection("users").document(currentUser!!.uid)
+            .update("userToken", token).addOnSuccessListener {
+                Log.i(MyFirebaseMessagingService.TAG, "new Token updated")
+            }.addOnFailureListener{
+                Log.i(MyFirebaseMessagingService.TAG, "Failed to update token")
+            }
     }
     /**
      * populate the edit text views with the user's current information.
@@ -179,8 +232,9 @@ class EditProfileFragment : Fragment() {
             "female" -> binding.femaleRadioButton.id
             else -> binding.nonBinaryRadioButton.id
         })
-        binding.etBio.setText(user.personalBio)
+        //binding.etBio.setText(user.personalBio)
         //set the retrieved data as the default values
+
         initializeDefaultValues(user)
     }
 
@@ -250,6 +304,9 @@ class EditProfileFragment : Fragment() {
         userHashMap[BIRTHDATE] = birthday
         userHashMap[PERSONALBIO] = personalBio
         userHashMap[PROFILECOMPLETE] = true
+
+        userHashMap["userToken"] = token
+
 
         if (uriSet)
         {
