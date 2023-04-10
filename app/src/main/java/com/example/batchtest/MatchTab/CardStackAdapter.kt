@@ -1,12 +1,14 @@
 package com.example.batchtest.MatchTab
 
 import android.content.Context
+import android.media.Image
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Group
 import com.example.batchtest.R
@@ -17,6 +19,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 private const val TAG = "CardStackAdapter"
@@ -41,8 +44,6 @@ class CardStackAdapter(
         private lateinit var binding: MatchGroupCardBinding
         // document reference in firebase of current user
         private val currentUserDocRef = db.collection("users").document(userId)
-        // local variable to store undo state
-        private var undoState: Boolean = false
         // inflate parent fragment with card item layout when ViewHolder is created
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardStackHolder {
             // inflater from parent fragment
@@ -105,24 +106,25 @@ class CardStackAdapter(
             // set group description
             holder.description.text = group.aboutUsDescription
 
+            listener.observeUndoState(holder.undoBtn)
             // change ui of button dynamically based on undo state of user
-            currentUserDocRef.addSnapshotListener { snapshot, e ->
-                if (e != null) {
-                    Log.w(TAG, "listen failed.", e)
-                    return@addSnapshotListener
-                }
-
-                if (snapshot != null && snapshot.exists()) {
-                    undoState = snapshot["undoState"] as Boolean
-                    if (undoState) {
-                        holder.undoBtn.alpha = 1F
-                    } else {
-                        holder.undoBtn.alpha = .1F
-                    }
-                } else {
-                    Log.d(TAG, "user not found in database")
-                }
-            }
+//            currentUserDocRef.addSnapshotListener { snapshot, e ->
+//                if (e != null) {
+//                    Log.w(TAG, "listen failed.", e)
+//                    return@addSnapshotListener
+//                }
+//
+//                if (snapshot != null && snapshot.exists()) {
+//                    undoState = snapshot["undoState"] as Boolean
+//                    if (undoState) {
+//                        holder.undoBtn.alpha = 1F
+//                    } else {
+//                        holder.undoBtn.alpha = .1F
+//                    }
+//                } else {
+//                    Log.d(TAG, "user not found in database")
+//                }
+//            }
 
             // inflate the interest tag container
             val inflater: LayoutInflater = LayoutInflater.from(holder.interestTags.context)
@@ -152,11 +154,9 @@ class CardStackAdapter(
 
             // undo on click listener
             binding.undoBtn.setOnClickListener {
-                if (undoState) {
+                if (holder.undoBtn.alpha == 1F) {
                     // listener from MatchTabFragment listens when undo button is clicked and will call method
                     listener.onUndoBtnClick(position)
-                    // reset undo state
-                    undoState = false
                 }
             }
 
@@ -168,6 +168,7 @@ class CardStackAdapter(
 
             // reject button rejects group when clicked
             binding.rejectBtn.setOnClickListener {
+                Log.v(TAG, "group name in reject" + group.name.toString())
                 // listener from MatchTabFragment listens when reject button is clicked and will call method
                 listener.onRejectBtnClick(group.name.toString())
             }
@@ -177,6 +178,32 @@ class CardStackAdapter(
         override fun getItemCount(): Int {
             return groups.size
         }
+
+        fun updateGroups(newGroups: ArrayList<Group>) {
+            if (newGroups.isNotEmpty()) {
+                Log.v("MatchTabAdapter", "groups in adapter:" + groups.size)
+                Log.v("MatchTabAdapter", "new groups:" + newGroups.size.toString())
+                //groups.addAll(newGroups)
+                Log.v("MatchTabAdapter", "groups in adapter after add:" + groups.size)
+                notifyItemRangeChanged(0, newGroups.size)
+            } else {
+                Log.v("MatchTabAdapter", "groups is empty")
+            }
+        }
+
+        fun addGroup(newGroup: Group) {
+            groups.add(newGroup)
+            notifyItemInserted(groups.size - 1)
+        }
+
+        fun clearGroup() {
+            val size = groups.size
+            Log.v("MatchTabAdapter", "groups in adapter before clear:" + groups.size)
+            groups.clear()
+            Log.v("MatchTabAdapter", "groups in adapter after clear:" + groups.size)
+            //notifyItemRangeChanged(0, size)
+        }
+
         // holder class for each group card
         class CardStackHolder(val binding: MatchGroupCardBinding) : RecyclerView.ViewHolder(binding.root) {
             // get the views of card
@@ -197,5 +224,6 @@ class CardStackAdapter(
             fun onUndoBtnClick(position: Int)
             fun onAcceptBtnClick(acceptedGroup: String)
             fun onRejectBtnClick(group:String)
+            fun observeUndoState(undoBtn:ImageButton)
         }
 }

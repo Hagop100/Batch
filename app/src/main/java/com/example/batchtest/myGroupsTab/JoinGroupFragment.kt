@@ -12,6 +12,8 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.batchtest.Group
+import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupFragment.Companion.voting
+import com.example.batchtest.PendingGroup
 import com.example.batchtest.R
 import com.example.batchtest.databinding.FragmentJoinGroupBinding
 import com.google.firebase.auth.ktx.auth
@@ -131,6 +133,25 @@ class JoinGroupFragment : Fragment() {
                         .update("users", FieldValue.arrayUnion(currentUser!!.uid))
                     db.collection("users").document(currentUser.uid)
                         .update("myGroups", FieldValue.arrayUnion(group?.name))
+                    // add user to all pending groups of joined group
+                    db.collection("pendingGroups")
+                        .whereEqualTo("matchingGroup", group?.name.toString())
+                        .get()
+                        .addOnSuccessListener {
+                            for (doc in it) {
+                                val pendingGroup = doc.toObject(PendingGroup::class.java)
+                                val users = pendingGroup.users
+                                if (users != null) {
+                                    users[currentUser.uid] = hashMapOf("acceptor" to "false", "index" to users.size.toString(), "uid" to currentUser.uid, "vote" to "pending")
+                                }
+                                // add current user to pending group with a pending vote
+                                db.collection("pendingGroups")
+                                    .document(doc.getString("pendingGroupId").toString())
+                                    .update("users", users)
+                                // recalculate the vote
+                                // voting(db,pendingGroup)
+                            }
+                        }
                     findNavController().navigate(R.id.action_joinGroupFragment_to_myGroupFragment)
                 }
             }

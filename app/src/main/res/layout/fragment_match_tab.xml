@@ -18,7 +18,7 @@
     <!--    display message that user needse to join a group-->
     <TextView
         android:id="@+id/match_tab_message"
-        android:layout_width="200dp"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textSize="20sp"

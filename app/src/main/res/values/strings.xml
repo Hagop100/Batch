@@ -59,6 +59,7 @@
     <string name="about_us">About us</string>
     <string name="set_primary_group_message">Set a primary group to start matching!</string>
     <string name="join_group_message">Create or join a group to start matching!</string>
+    <string name="no_group_found">No groups found with specified preferences!</string>
 
     <!--    other groups tab -->
     <string name="matched">Matched</string>
@@ -72,12 +73,12 @@
     <!--    preferences -->
     <string name="preferences_title">Preferences</string>
     <string name="general_info">General Information</string>
-    <string name="set_age">Set Age Range</string>
+    <string name="set_age">Age Range</string>
     <string name="set_location">Set Location</string>
     <string name="location">Location</string>
     <string name="set_tags">Set Tags</string>
     <string name="deal_breaker">Deal Breakers</string>
-    <string name="max_distance">Max Distance from Current Location</string>
+    <string name="max_distance">Max Distance</string>
     <string name="gender">Gender</string>
     <string name="save_preferences_btn">Save</string>
 

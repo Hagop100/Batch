@@ -134,7 +134,7 @@
         android:id="@+id/tv_set_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/set_location"
+        android:text="@string/location"
         android:textColor="@color/gray"
         android:textStyle="bold"/>
 

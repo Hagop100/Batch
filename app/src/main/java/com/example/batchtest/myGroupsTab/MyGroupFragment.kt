@@ -22,6 +22,7 @@ import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
 import com.example.batchtest.Group
 import com.example.batchtest.MatchTab.CardStackAdapter
+import com.example.batchtest.MatchTab.MatchTabViewModel
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMyGroupBinding
@@ -318,6 +319,9 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                         return@addSnapshotListener
                     }
 
+                    if (_binding == null) {
+                        return@addSnapshotListener
+                    }
                     //check for null, whether there is any changes in the current user collection on firebase
                     if (snapshot != null && snapshot.exists()) {
                         currentUserDocRef
@@ -338,7 +342,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                 Log.i(TAG, "fetch group")
 
                                 // display groups that the users are currently in.
-                                if (filterGroups.size != 0) {
+                                if (filterGroups.isNotEmpty()) {
                                     groupsDocRef.whereIn("name", filterGroups)
                                         .get()
                                         .addOnSuccessListener {
