@@ -162,10 +162,6 @@ class PendingGroupFragment : Fragment() {
                         Log.v(TAG, "$key:"+map["vote"].toString())
                     }
                 }
-                val accept = (acceptCount.toFloat() / memberCount.toFloat())
-                Log.v(TAG, "accept:"+accept.toString())
-                val reject = (rejectCount.toFloat() / memberCount.toFloat())
-                Log.v(TAG, "reject:"+reject.toString())
                 // if majority of group members vote to accept the group:
                 // update pending to be false so the pending group will not be displayed anymore
                 // update matched to be true indicating the group accepted the group

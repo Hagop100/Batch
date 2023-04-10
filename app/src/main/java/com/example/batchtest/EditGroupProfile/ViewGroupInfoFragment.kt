@@ -48,7 +48,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
         savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
-        _binding = FragmentViewGroupInfoBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentViewGroupInfoBinding.inflate(inflater, container, false)
 
         /**
          * Retrieve data from MyGroupFragment using arguments

@@ -162,7 +162,10 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     // otherwise notify the adapter that groups has changed
     private fun setAdapter(cardStackView: CardStackView) {
         if (cardStackView.adapter == null) {
-            cardStackView.adapter = CardStackAdapter(currentUser.uid, requireContext(), groups, this)
+            if (context != null) {
+                cardStackView.adapter =
+                    CardStackAdapter(currentUser.uid, requireContext(), groups, this)
+            }
         } else {
             cardStackView.adapter?.notifyDataSetChanged()
         }
@@ -174,13 +177,15 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
             val position = groups.indexOf(group)
             groups.remove(group)
             if (groups.isEmpty()) {
-                binding.matchTabMessage.text = getString(R.string.no_group_found)
+                if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
             } else {
-                binding.matchTabMessage.text = ""
+                if (_binding != null) binding.matchTabMessage.text = ""
             }
             if (cardStackView.adapter == null) {
-                cardStackView.adapter =
-                    CardStackAdapter(currentUser.uid, requireContext(), groups, this)
+                if (context != null) {
+                    cardStackView.adapter =
+                        CardStackAdapter(currentUser.uid, requireContext(), groups, this)
+                }
             } else {
                 cardStackView.adapter?.notifyItemRemoved(position)
             }
