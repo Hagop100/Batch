@@ -278,12 +278,34 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                     "Other members of your group will not be affected. ")
             .setCancelable(true)
             .setPositiveButton("Delete") { _, _ ->
+                //removes the group from the user class of groups
                 db.collection("users")
                     .document(currUser.uid)
                     .update(
                         "myGroups",
                         FieldValue.arrayRemove(myGroupList[position].name)
                     )
+                Log.d("print", "User Removed from Group")
+
+                //removes the user from the group class of users
+                db.collection("groups")
+                    .whereEqualTo("name", myGroupList[position])
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents){
+                            Log.d("print", "${document.id} => ${document.data}")
+                            val group: Group = document.toObject<Group>()
+                            val currGroup = db.collection("groups").document(document.id)
+                            currGroup
+                                .update("users",
+                                FieldValue.arrayRemove(currUser.uid))
+                                .addOnSuccessListener { Log.d("print", "DocumentSnapshot successfully updated!") }
+                                .addOnFailureListener { e -> Log.w("print", "Error updating document", e) }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d("print", "Error getting documents: ", exception)
+                    }
                 //manually delete the item from the application
                 //previously we were listening to the database for real-time updates
                 //for some reason this was causing the application to crash
