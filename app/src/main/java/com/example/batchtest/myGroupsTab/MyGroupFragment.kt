@@ -282,7 +282,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                     .document(currUser.uid)
                     .update(
                         "myGroups",
-                        FieldValue.arrayRemove(myGroupList[position])
+                        FieldValue.arrayRemove(myGroupList[position].name)
                     )
                 //manually delete the item from the application
                 //previously we were listening to the database for real-time updates
