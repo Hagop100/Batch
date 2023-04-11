@@ -69,23 +69,23 @@
             android:textSize="17sp"
             android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/round_corner"
-            android:orientation="vertical"
-            android:padding="20dp">
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginStart="15dp"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginEnd="15dp"-->
+<!--            android:background="@drawable/round_corner"-->
+<!--            android:orientation="vertical"-->
+<!--            android:padding="20dp">-->
 
-            <Switch
-                android:id="@+id/all_notification"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="All Notifications"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
-        </LinearLayout>
+<!--            <Switch-->
+<!--                android:id="@+id/all_notification"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="All Notifications"-->
+<!--                tools:ignore="UseSwitchCompatOrMaterialXml" />-->
+<!--        </LinearLayout>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -111,7 +111,7 @@
                 android:background="@color/horizontal_line" />
 
             <Switch
-                android:id="@+id/new_messages_notif"
+                android:id="@+id/new_Messages_notif"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -139,14 +139,26 @@
                 android:background="@color/horizontal_line" />
 
             <Switch
-                android:id="@+id/report_notif"
+                android:id="@+id/new_groupMem_notif"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="Reports"
+                android:text="New Group Members"
                 tools:ignore="UseSwitchCompatOrMaterialXml" />
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_update_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="50dp"
+            android:text="Update Notifications"
+            android:textColor="@color/off_white"
+            android:textStyle="bold"
+            />
 
         <TextView
             android:layout_width="match_parent"
