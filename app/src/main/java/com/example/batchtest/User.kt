@@ -22,7 +22,6 @@ data class User(
     val MFA_Opt: String = "",
     val myGroups: ArrayList<String> = ArrayList(),
     val matchedGroups: ArrayList<String> = ArrayList(),
-    val pendingGroups: ArrayList<String> = ArrayList(),
     val notificationPrefs: HashMap<String, Boolean>? = null,
     val profileComplete: Boolean = false,
     val userToken: String? = null,

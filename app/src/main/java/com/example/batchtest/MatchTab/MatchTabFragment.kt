@@ -174,21 +174,12 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     private fun addFilterGroup(cardStackView: CardStackView, filterGroups: ArrayList<String?>, groups: ArrayList<Group>, group: Group) {
         if (!filterGroups.contains(group.name)) {
             filterGroups.add(group.name.toString())
-            val position = groups.indexOf(group)
             groups.remove(group)
-            if (groups.isEmpty()) {
-                if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
-            } else {
-                if (_binding != null) binding.matchTabMessage.text = ""
-            }
-            if (cardStackView.adapter == null) {
-                if (context != null) {
-                    cardStackView.adapter =
-                        CardStackAdapter(currentUser.uid, requireContext(), groups, this)
-                }
-            } else {
-                cardStackView.adapter?.notifyItemRemoved(position)
-            }
+//            if (groups.isEmpty()) {
+//                if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
+//            } else {
+//                if (_binding != null) binding.matchTabMessage.text = ""
+//            }
         }
     }
     // fetches groups from firebase
@@ -323,11 +314,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                                 ) == "male")
                                             ) {
                                                 addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                                return@addOnSuccessListener
                                             }
                                         } else {
                                             addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                            return@addOnSuccessListener
                                         }
 
                                         val birthdate = user.getString("birthdate")
@@ -346,11 +335,17 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                             // greater than the maximum age, filter the group
                                             if (age < minAge.toInt() || age > maxAge.toInt()) {
                                                 addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                                return@addOnSuccessListener
                                             }
                                         } else {
                                             addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                            return@addOnSuccessListener
+                                        }
+                                        if (cardStackView.adapter == null) {
+                                            if (context != null) {
+                                                cardStackView.adapter =
+                                                    CardStackAdapter(currentUser.uid, requireContext(), groups, this)
+                                            }
+                                        } else {
+                                            cardStackView.adapter?.notifyDataSetChanged()
                                         }
                                     }
                             }
