@@ -19,6 +19,7 @@ import com.example.batchtest.UserProfileTab.EditProfileFragment
 import com.example.batchtest.LoginFragment
 import com.example.batchtest.MainActivity
 import com.example.batchtest.R
+import com.example.batchtest.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -29,6 +30,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.coroutineScope
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.DataOutputStream
@@ -41,51 +43,85 @@ import java.net.SocketTimeoutException
 import java.net.URL
 
 
-/**Firebase Messaging Service class must be created to send notifications to users using
- * Firebase
- * Class Will both implement Receiving Notifications and sending out notifications
+/**
+ * Function is required to allow application to receive notifications from the firebase database
+ *
+ * Must override the following Methods, These will be automatically called when received data
+ * -onMessageReceived
+ * -onNewToken
  * */
 
 class MyFirebaseMessagingService(): FirebaseMessagingService() {
 
     private var userToken: String = ""
-
+    private val currentUser = FirebaseAuth.getInstance().currentUser
     companion object
     {
         const val TAG: String = "Firebase Messaging"
         const val FCM_KEY_TITLE: String = "title"
         const val FCM_KEY_MESSAGE: String = "message"
+        const val FCM_KEY_DATATYPE: String = "dataType"
+        const val NEW_MATCHES= "matches"
+        const val NEW_MESSAGES = "messages"
+        const val VOTING = "voting"
+        const val NEW_GROUP_MEMBERS = "members"
 
     }
-    //Called when a message is received while application is in the foreground
-    //Deals with data message - Google Cloud Messaging
+   /**
+    * Called when the application Receives and incoming data packet
+    *
+    *
+    * */
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
         //For Debugging
-        Log.d(TAG, "From: ${message.from}")
+        //Log.d(TAG, "From: ${message.from}")
 
         //For Debugging
-        message.data.isNotEmpty().let {
-            Log.d(TAG, "Message Data Payload: ${message.data}")
+        //message.data.isNotEmpty().let {
+         //   Log.d(TAG, "Message Data Payload: ${message.data}")
 
-            val title = message.data[FCM_KEY_TITLE]!!
-            val messageReceived = message.data[FCM_KEY_MESSAGE]!!
+       //Values received in the data payload
+       val messageType = message.data[FCM_KEY_DATATYPE]
+       val title = message.data[FCM_KEY_TITLE]!!
+       val messageReceived = message.data[FCM_KEY_MESSAGE]!!
 
-            if(!isAppInForeground(this))
-            {
-                //sending the notification to the user with the incoming message
-                sendNotification(title, messageReceived)
-            }
-            //sending the notification to the user with the incoming message
+       //Check that the app is even in the background
+       //If the app is in the foreground then a notification is not required
+       if(!isAppInForeground(this))
+       {
+           //Get the user's notification preferences from the database
+           FirebaseFirestore.getInstance().collection("users").document(currentUser!!.uid)
+               .get().addOnSuccessListener { doc ->
+                   val user = doc.toObject(User::class.java)!!
+                   //Check the type of message received and check whether the user has given permission
+                   //for that type of notification.
+                   if (messageType == "chat" && user.notificationPrefs?.get(NEW_MESSAGES)!!){
+                       //sending the notification to the user with the incoming message
+                       sendNotification(title, messageReceived)
+                   }
+                   else if(messageType == "match" && user.notificationPrefs?.get(NEW_MATCHES)!!)
+                   {
+                       sendNotification(title, messageReceived)
+                   }
+                   else if(messageType == "voting" && user.notificationPrefs?.get(VOTING)!!)
+                   {
+                       sendNotification(title, messageReceived)
+                   }
+                   else if(messageType == "new_member" && user.notificationPrefs?.get(
+                           NEW_GROUP_MEMBERS)!!){
+                       sendNotification(title, messageReceived)
+                   }
 
-        }
-
-        //For Debugging
-        message.notification?.let {
-            Log.d(TAG, "Message Notification Body: ${it.body}")
-        }
+               }
+       }
     }
+
+        //For Debugging
+//        message.notification?.let {
+//            Log.d(TAG, "Message Notification Body: ${it.body}")
+
 
 
 /**Automatically called when a new token is created or updated
@@ -102,7 +138,7 @@ class MyFirebaseMessagingService(): FirebaseMessagingService() {
 
     fun updateUserProfileToken(token: String)
     {
-        val currentUser = FirebaseAuth.getInstance().currentUser
+
         FirebaseFirestore.getInstance().collection("users").document(currentUser!!.uid)
             .update("userToken", token).addOnSuccessListener {
                 Log.i(TAG, "new Token updated")
