@@ -235,7 +235,7 @@ class RegistrationFragment : Fragment() {
                                                                 else if (e is FirebaseTooManyRequestsException){
                                                                     Log.d("print", "SMS quota has been exceeded")
                                                                 }
-                                                                Toast.makeText(activity, "Verification Failed", Toast.LENGTH_SHORT).show()
+                                                                //Toast.makeText(activity, "Verification Failed", Toast.LENGTH_SHORT).show()
                                                             }
 
                                                             override fun onCodeSent( verificationID: String, forceResendingToken: ForceResendingToken){
