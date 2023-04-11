@@ -210,7 +210,7 @@ class PreferencesFragment : Fragment() {
     {
         binding.rsAge.setValues(viewModel.minimumAge.value?.toFloat(), viewModel.maxAge.value?.toFloat() )
         //binding.rsAge.setValues(binding.rsAge.values[1],viewModel.maxAge.value)
-
+        binding.tvAgeSelected.text = "${viewModel.minimumAge.value?.toInt()} - ${viewModel.maxAge.value?.toInt()}"
         binding.tvLocation.text = viewModel.city.value as String
 //        binding.rsDistance.values[1] = viewModel.distance.value
         var gen = when(viewModel.gender.value)
@@ -359,6 +359,12 @@ class PreferencesFragment : Fragment() {
             }
 
     }
+    //Must Unbind the View
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 
 }
 
