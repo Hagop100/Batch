@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.batchtest.Group
 import com.example.batchtest.R
@@ -19,13 +20,16 @@ import com.example.batchtest.databinding.FragmentAccountSettingBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 
 class AccountSettingFragment : Fragment() {
+
 
     private var _binding: FragmentAccountSettingBinding? = null
     private val binding get() = _binding!!
@@ -33,6 +37,8 @@ class AccountSettingFragment : Fragment() {
 
     private lateinit var group: Group
     private val db = Firebase.firestore
+
+    private val notificationPrefs = HashMap<String, Any>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +51,40 @@ class AccountSettingFragment : Fragment() {
     ): View? {
         _binding = FragmentAccountSettingBinding.inflate(layoutInflater, container, false)
 
+        updateNotificationView()
+        /**
+         * Notification Checks
+         * Check all switch buttons and update hashmap
+         * ****REMOVED ALL NOTIFICATIONS**** required to many checks
+         * */
+        binding.newGroupMemNotif.setOnCheckedChangeListener { newGroupMem, isChecked ->
+            notificationPrefs[NEW_GROUP_MEMBERS] = isChecked
+        }
+        binding.votingNotif.setOnCheckedChangeListener { newGroupMem, isChecked ->
+            notificationPrefs[VOTING] = isChecked
+        }
+        binding.newMatchesNotif.setOnCheckedChangeListener { newGroupMem, isChecked ->
+            notificationPrefs[NEW_MATCHES] = isChecked
+        }
+        binding.newMessagesNotif.setOnCheckedChangeListener { newGroupMem, isChecked ->
+            notificationPrefs[NEW_MESSAGES] = isChecked
+        }
+
+        /**Updates the Users preferences*/
+        binding.btnUpdateNotif.setOnClickListener { view ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                val userId = auth.currentUser!!.uid
+                FirebaseFirestore.getInstance().collection("users").document(userId)
+                    .update(NOTIFICATION_PREFS, notificationPrefs).addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Notification Updated", Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+                        Toast.makeText(requireContext(), "Notification Update Failed", Toast.LENGTH_SHORT).show()
+                    }
+            }
+        }
+
+
+
         /**
          * Navigate back to the user profile tab fragment
          */
@@ -52,6 +92,7 @@ class AccountSettingFragment : Fragment() {
 
             findNavController().navigate(R.id.action_accountSettingFragment_to_userProfileTabFragment)
         }
+
 
 
         /**
@@ -195,7 +236,11 @@ class AccountSettingFragment : Fragment() {
     }
     companion object {
         private const val TAG = "print" //for logcat debugging
-
+        const val NEW_MATCHES= "matches"
+        const val NEW_MESSAGES = "messages"
+        const val VOTING = "voting"
+        const val NEW_GROUP_MEMBERS = "members"
+        const val NOTIFICATION_PREFS = "notificationPrefs"
     }
 
 
@@ -205,6 +250,38 @@ class AccountSettingFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    /**
+     * Update the notification selection according to user preferences
+     * Function retrieves current user and sets the switch buttons according to preferences
+     * set in the database
+     * */
+    private fun updateNotificationView()
+    {
+        /**Using a coroutine to gather the user's data*/
+        viewLifecycleOwner.lifecycleScope.launch {
+            FirebaseFirestore.getInstance().collection("users").document(auth.currentUser!!.uid).get()
+                .addOnSuccessListener {
+                    val user = it.toObject(User::class.java)!!
+                    val notifPrefs = user.notificationPrefs
+                    Log.i(TAG, notifPrefs.toString())
+
+                    /**Set switches according to user notification preferences*/
+                    binding.votingNotif.isChecked = notifPrefs?.get(VOTING)!!
+                    binding.newMessagesNotif.isChecked = notifPrefs.get(NEW_MESSAGES)!!
+                    binding.newGroupMemNotif.isChecked = notifPrefs.get(NEW_GROUP_MEMBERS)!!
+                    binding.newMatchesNotif.isChecked = notifPrefs.get(NEW_MATCHES)!!
+
+                    /**Initialize the notificationPrefs in case the user decides to update*/
+                    notificationPrefs[VOTING] = notifPrefs.get(VOTING)!!
+                    notificationPrefs[NEW_MESSAGES] = notifPrefs.get(NEW_MESSAGES)!!
+                    notificationPrefs[NEW_GROUP_MEMBERS] = notifPrefs.get(NEW_GROUP_MEMBERS)!!
+                    notificationPrefs[NEW_MATCHES]= notifPrefs.get(NEW_MATCHES)!!
+                }.addOnFailureListener{
+                    Toast.makeText(requireContext(), "Failed to get user Data", Toast.LENGTH_SHORT).show()
+                }
+        }
     }
 
 }
