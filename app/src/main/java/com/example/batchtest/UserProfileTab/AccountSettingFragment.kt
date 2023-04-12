@@ -264,20 +264,38 @@ class AccountSettingFragment : Fragment() {
             FirebaseFirestore.getInstance().collection("users").document(auth.currentUser!!.uid).get()
                 .addOnSuccessListener {
                     val user = it.toObject(User::class.java)!!
-                    val notifPrefs = user.notificationPrefs
-                    Log.i(TAG, notifPrefs.toString())
+                    if(user.notificationPrefs != null)
+                    {
+                        val notifPrefs = user.notificationPrefs
 
-                    /**Set switches according to user notification preferences*/
-                    binding.votingNotif.isChecked = notifPrefs?.get(VOTING)!!
-                    binding.newMessagesNotif.isChecked = notifPrefs.get(NEW_MESSAGES)!!
-                    binding.newGroupMemNotif.isChecked = notifPrefs.get(NEW_GROUP_MEMBERS)!!
-                    binding.newMatchesNotif.isChecked = notifPrefs.get(NEW_MATCHES)!!
+                        Log.i(TAG, notifPrefs.toString())
 
-                    /**Initialize the notificationPrefs in case the user decides to update*/
-                    notificationPrefs[VOTING] = notifPrefs.get(VOTING)!!
-                    notificationPrefs[NEW_MESSAGES] = notifPrefs.get(NEW_MESSAGES)!!
-                    notificationPrefs[NEW_GROUP_MEMBERS] = notifPrefs.get(NEW_GROUP_MEMBERS)!!
-                    notificationPrefs[NEW_MATCHES]= notifPrefs.get(NEW_MATCHES)!!
+                        /**Set switches according to user notification preferences*/
+                        binding.votingNotif.isChecked = notifPrefs?.get(VOTING)!!
+                        binding.newMessagesNotif.isChecked = notifPrefs.get(NEW_MESSAGES)!!
+                        binding.newGroupMemNotif.isChecked = notifPrefs.get(NEW_GROUP_MEMBERS)!!
+                        binding.newMatchesNotif.isChecked = notifPrefs.get(NEW_MATCHES)!!
+
+                        /**Initialize the notificationPrefs in case the user decides to update*/
+                        notificationPrefs[VOTING] = notifPrefs.get(VOTING)!!
+                        notificationPrefs[NEW_MESSAGES] = notifPrefs.get(NEW_MESSAGES)!!
+                        notificationPrefs[NEW_GROUP_MEMBERS] = notifPrefs.get(NEW_GROUP_MEMBERS)!!
+                        notificationPrefs[NEW_MATCHES]= notifPrefs.get(NEW_MATCHES)!!
+                    }
+                    else
+                    {
+                        binding.votingNotif.isChecked = false
+                        binding.newMessagesNotif.isChecked = false
+                        binding.newGroupMemNotif.isChecked = false
+                        binding.newMatchesNotif.isChecked = false
+
+                        /**Initialize the notificationPrefs in case the user decides to update*/
+                        notificationPrefs[VOTING] = false
+                        notificationPrefs[NEW_MESSAGES] = false
+                        notificationPrefs[NEW_GROUP_MEMBERS] = false
+                        notificationPrefs[NEW_MATCHES]= false
+                    }
+
                 }.addOnFailureListener{
                     Toast.makeText(requireContext(), "Failed to get user Data", Toast.LENGTH_SHORT).show()
                 }
