@@ -231,6 +231,15 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         var minAge: Number? = null
                         var maxDistance: Number? = null
                         var genderPref: String? = null
+
+                        // filter by interest tags
+                        val interestTags = primaryGroupObj.interestTags!!.map { it -> it.lowercase() } as ArrayList<String>
+                        // arraylist of groups with common interest tags will be displayed first
+                        val interestGroups = arrayListOf<Group>()
+                        // once all groups with common interest tags have been swiped
+                        // display groups with no common interest tags
+                        val noInterestGroups = arrayListOf<Group>()
+
                         // if the preferences of group is not null, set the values
                         // if the preferences is null, groups will be fetched via interests and noninterests
                         if (primaryGroupObj.preferences != null) {
@@ -241,14 +250,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             maxDistance = primaryGroupObj.preferences?.get("maxDistance") as Number
                             genderPref = primaryGroupObj.preferences?.get("gender") as String
                         }
-
-                        // filter by interest tags
-                        val interestTags = primaryGroupObj.interestTags!!.map { it -> it.lowercase() } as ArrayList<String>
-                        // arraylist of groups with common interest tags will be displayed first
-                        val interestGroups = arrayListOf<Group>()
-                        // once all groups with common interest tags have been swiped
-                        // display groups with no common interest tags
-                        val noInterestGroups = arrayListOf<Group>()
                         // loop through groups
                         for (doc in it) {
                             // convert the query document snapshot into a group object to access variables
@@ -257,97 +258,122 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             if (filterGroups.contains(obj.name)) {
                                 continue
                             }
-                            // float array stores results from distanceBetween function
-                            val distanceBetweenArray = FloatArray(3)
-                            // if distance preferences are set, then filter out groups based on distance
-                            if ((longitude != null) && (latitude != null) && (maxDistance != null)) {
-                                // if the other groups has their longitude or latitude set, check if the group should be filtered
-                                // else filter it
-                                if (obj.preferences?.get("longitude") != null && obj.preferences["latitude"] != null) {
-                                    val objLongitude = obj.preferences["longitude"] as Double
-                                    val objLatitude = obj.preferences["latitude"] as Double
-                                    if (!objLatitude.isNaN() && !objLongitude.isNaN()) {
-                                        // get distance between 2 coordinates and store into distanceBetweenArray
-                                        distanceBetween(
-                                            longitude as Double,
-                                            latitude as Double,
-                                            objLongitude,
-                                            objLatitude,
-                                            distanceBetweenArray
-                                        )
-                                        // convert to miles
-                                        val distanceBetweenMiles =
-                                            distanceBetweenArray[0] * 0.000621371192
-                                        // check if in range, if not then filter it
-                                        if (distanceBetweenMiles > maxDistance.toDouble()) {
-                                            addFilterGroup(cardStackView, filterGroups,groups, obj)
+                            if (primaryGroupObj.preferences != null) {
+                                // float array stores results from distanceBetween function
+                                val distanceBetweenArray = FloatArray(3)
+                                // if distance preferences are set, then filter out groups based on distance
+                                if ((longitude != null) && (latitude != null) && (maxDistance != null)) {
+                                    // if the other groups has their longitude or latitude set, check if the group should be filtered
+                                    // else filter it
+                                    if (obj.preferences?.get("longitude") != null && obj.preferences["latitude"] != null) {
+                                        val objLongitude = obj.preferences["longitude"] as Double
+                                        val objLatitude = obj.preferences["latitude"] as Double
+                                        if (!objLatitude.isNaN() && !objLongitude.isNaN()) {
+                                            // get distance between 2 coordinates and store into distanceBetweenArray
+                                            distanceBetween(
+                                                longitude as Double,
+                                                latitude as Double,
+                                                objLongitude,
+                                                objLatitude,
+                                                distanceBetweenArray
+                                            )
+                                            // convert to miles
+                                            val distanceBetweenMiles =
+                                                distanceBetweenArray[0] * 0.000621371192
+                                            // check if in range, if not then filter it
+                                            if (distanceBetweenMiles > maxDistance.toDouble()) {
+                                                addFilterGroup(
+                                                    cardStackView,
+                                                    filterGroups,
+                                                    groups,
+                                                    obj
+                                                )
+                                                continue
+                                            }
+                                        } else {
+                                            // if the other group does not have longitude or latitude set, filter it
+                                            addFilterGroup(cardStackView, filterGroups, groups, obj)
                                             continue
                                         }
                                     } else {
-                                        // if the other group does not have longitude or latitude set, filter it
-                                        addFilterGroup(cardStackView, filterGroups,groups, obj)
+                                        // filter out other group if longitude or latitude it not set
+                                        addFilterGroup(cardStackView, filterGroups, groups, obj)
                                         continue
                                     }
-                                } else {
-                                    // filter out other group if longitude or latitude it not set
-                                    addFilterGroup(cardStackView, filterGroups,groups, obj)
-                                    continue
                                 }
-                            }
-                            // loop through each user in the group to get age, gender,
-                            obj.users?.forEach { user ->
-                                if (filterGroups.contains(obj.name)) {
-                                    return@forEach
-                                }
-                                // query user
-                                db.collection("users").document(user)
-                                    .get()
-                                    .addOnSuccessListener { user ->
-                                        // if genderPref is not set, ignore
-                                        if (genderPref != null) {
-                                            if ((genderPref == "male" && user.getString(
-                                                    "gender"
-                                                ) == "female")
-                                                ||
-                                                (genderPref == "female" && user.getString(
-                                                    "gender"
-                                                ) == "male")
-                                            ) {
-                                                addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                            }
-                                        } else {
-                                            addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                        }
-
-                                        val birthdate = user.getString("birthdate")
-                                        // if birthdate, minAge, or maxAge is not null
-                                        // check if a user is not within age limits
-                                        //      else filter out group
-                                        if (!birthdate.isNullOrEmpty() && minAge != null && maxAge != null) {
-                                            // get birth date
-                                            val birthdateSplit = birthdate.split("/")
-                                            val month = birthdateSplit[0].toInt()
-                                            val day = birthdateSplit[1].toInt()
-                                            val year = birthdateSplit[2].toInt()
-                                            // get age based on birth date
-                                            val age = getAge(year, month, day)
-                                            // if age is less than the minimum age or
-                                            // greater than the maximum age, filter the group
-                                            if (age < minAge.toInt() || age > maxAge.toInt()) {
-                                                addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                            }
-                                        } else {
-                                            addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                        }
-                                        if (cardStackView.adapter == null) {
-                                            if (context != null) {
-                                                cardStackView.adapter =
-                                                    CardStackAdapter(currentUser.uid, requireContext(), groups, this)
-                                            }
-                                        } else {
-                                            cardStackView.adapter?.notifyDataSetChanged()
-                                        }
+                                // loop through each user in the group to get age, gender,
+                                obj.users?.forEach { user ->
+                                    if (filterGroups.contains(obj.name)) {
+                                        return@forEach
                                     }
+                                    // query user
+                                    db.collection("users").document(user)
+                                        .get()
+                                        .addOnSuccessListener { user ->
+                                            // if genderPref is not set, ignore
+                                            if (genderPref != null) {
+                                                if ((genderPref == "male" && user.getString(
+                                                        "gender"
+                                                    ) == "female")
+                                                    ||
+                                                    (genderPref == "female" && user.getString(
+                                                        "gender"
+                                                    ) == "male")
+                                                ) {
+                                                    addFilterGroup(
+                                                        cardStackView,
+                                                        filterGroups,
+                                                        groups,
+                                                        obj
+                                                    )
+                                                }
+                                            }
+
+                                            val birthdate = user.getString("birthdate")
+                                            // if birthdate, minAge, or maxAge is not null
+                                            // check if a user is not within age limits
+                                            //      else filter out group
+                                            if (!birthdate.isNullOrEmpty() && minAge != null && maxAge != null) {
+                                                // get birth date
+                                                val birthdateSplit = birthdate.split("/")
+                                                val month = birthdateSplit[0].toInt()
+                                                val day = birthdateSplit[1].toInt()
+                                                val year = birthdateSplit[2].toInt()
+                                                // get age based on birth date
+                                                val age = getAge(year, month, day)
+                                                // if age is less than the minimum age or
+                                                // greater than the maximum age, filter the group
+                                                if (age < minAge.toInt() || age > maxAge.toInt()) {
+                                                    addFilterGroup(
+                                                        cardStackView,
+                                                        filterGroups,
+                                                        groups,
+                                                        obj
+                                                    )
+                                                }
+                                            } else {
+                                                addFilterGroup(
+                                                    cardStackView,
+                                                    filterGroups,
+                                                    groups,
+                                                    obj
+                                                )
+                                            }
+                                            if (cardStackView.adapter == null) {
+                                                if (context != null) {
+                                                    cardStackView.adapter =
+                                                        CardStackAdapter(
+                                                            currentUser.uid,
+                                                            requireContext(),
+                                                            groups,
+                                                            this
+                                                        )
+                                                }
+                                            } else {
+                                                cardStackView.adapter?.notifyDataSetChanged()
+                                            }
+                                        }
+                                }
                             }
                             // if the group is not filtered out, check if there are matching interests
                             // add the group based on interest or no interests

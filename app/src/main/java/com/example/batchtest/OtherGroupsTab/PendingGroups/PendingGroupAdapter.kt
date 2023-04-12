@@ -10,11 +10,8 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
-import com.example.batchtest.Chat
-import com.example.batchtest.Message
+import com.example.batchtest.*
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupFragment.Companion.voting
-import com.example.batchtest.PendingGroup
-import com.example.batchtest.R
 import com.example.batchtest.databinding.VoteGroupCardBinding
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
@@ -50,6 +47,9 @@ class PendingGroupAdapter(
         // get the views of card
         // name of pending group
         val pendingGroupName: TextView = binding.pendingGroupName
+
+        // name of pending group
+        val matchingGroupName: TextView = binding.matchingGroupName
 
         // profile picture of user's group that initiated voting
         val matchingGroupImg: CircleImageView = binding.myGroupImg
@@ -92,6 +92,7 @@ class PendingGroupAdapter(
         val pendingGroupObj = group.pendingGroupObj
 
         if (matchingGroupObj != null) {
+            holder.matchingGroupName.text = matchingGroupObj.name
             if (matchingGroupObj.image.isNullOrEmpty()) {
                 holder.matchingGroupImg.setImageResource(R.drawable.placeholder)
             } else {
@@ -122,6 +123,21 @@ class PendingGroupAdapter(
                     toggleButtonUI(holder, true)
                 } else if (map["vote"] == "reject") {
                     toggleButtonUI(holder, false)
+                }
+            }
+            db.collection("users").document(user).get().addOnSuccessListener {
+                val fetchedUser = it.toObject(User::class.java)
+                if (fetchedUser != null) {
+                    if (fetchedUser.imageUrl.isNullOrEmpty()) {
+                        holder.members[map["index"]]?.setImageResource(R.drawable.placeholder)
+                    } else {
+                        if (context != null) {
+                            holder.members[map["index"]]?.let { it1 ->
+                                Glide.with(context).load(fetchedUser.imageUrl)
+                                    .into(it1)
+                            }
+                        }
+                    }
                 }
             }
             holder.members[map["index"]]?.isVisible = true
@@ -190,7 +206,7 @@ class PendingGroupAdapter(
 
     // color of icon
     private fun setIconColor(holder: PendingGroupHolder, index: String, color: String) {
-        holder.members[index]?.setColorFilter(Color.parseColor(color))
+        holder.members[index]?.borderColor = Color.parseColor(color)
     }
 
     // returns number of pending groups

@@ -13,6 +13,7 @@ import androidx.core.view.isNotEmpty
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.databinding.MatchGroupCardBinding
@@ -111,10 +112,11 @@ class CardStackAdapter(
             holder.description.text = group.aboutUsDescription
             // group image for group
             if (group.image.isNullOrEmpty()){
-                binding.groupPicture.setImageResource(R.drawable.placeholder)
+                holder.groupPicture.setImageResource(R.drawable.placeholder)
             } else {
                 if (context != null) {
-                    Glide.with(context).load(group.image)
+                    Glide.with(context)
+                        .load(group.image)
                         .into(holder.groupPicture)
                 }
             }
