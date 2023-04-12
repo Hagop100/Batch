@@ -201,7 +201,7 @@ class EditProfileFragment : Fragment() {
         binding.etEmail.setText(user.email)
         binding.etEmail.isEnabled = false
         binding.btnBirthday.text = user.birthdate
-        binding.btnBirthday.isEnabled = false
+
         binding.etFirstName.setText(user.firstName)
         binding.etLastName.setText(user.lastName)
         binding.etDisplayName.setText(user.displayName)
