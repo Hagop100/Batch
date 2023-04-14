@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
 import java.time.LocalDate
@@ -124,7 +125,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                     if (primaryGroup != user.primaryGroup) {
                         primaryGroup = user.primaryGroup
                         matchTabViewModel.setPrimaryGroup(user.primaryGroup)
-                        Log.v(TAG, "set primary group: $primaryGroup")
                         groups.clear()
                         matchTabViewModel.groups.value = groups
                     }
@@ -182,7 +182,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         }
     }
     // add a filter group and update groups
-    private fun addFilterGroup(cardStackView: CardStackView, filterGroups: ArrayList<String?>, groups: ArrayList<Group>, group: Group) {
+    private fun addFilterGroup(filterGroups: ArrayList<String?>, groups: ArrayList<Group>, group: Group) {
         if (!filterGroups.contains(group.name)) {
             filterGroups.add(group.name.toString())
             groups.remove(group)
@@ -195,9 +195,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     }
     // fetches groups from firebase
     private fun fetchGroups(cardStackView: CardStackView) {
-        // fetch all groups where user is not in
+        // fetch primary group of user
         val query1 = db.collection("groups")
-            .whereArrayContains("users", currentUser.uid)
+            .whereEqualTo("name", primaryGroup)
             .get()
         // fetch all pending groups of current user
         val query2 = db.collection("pendingGroups")
@@ -206,22 +206,22 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         // once all queries are successful, add the groups to adapter to display
         Tasks.whenAllSuccess<QuerySnapshot>(query1, query2)
             .addOnSuccessListener { results ->
-                var primaryGroupObj: Group? = null
                 // store the names of the pending group
                 val filterGroups = arrayListOf<String?>()
                 // loop thru groups containing current user and add to filter groups
-                for (query1Docs in results[0]) {
-                    // convert the query document snapshot into a pending group object to access variables
-                    val group: String? = query1Docs.getString("name")
-                    if (group == matchTabViewModel.getPrimaryGroup()) {
-                        primaryGroupObj = query1Docs.toObject(Group::class.java)
-                    }
+                // get primary group object and filter it out
+                val primaryGroupObj: Group? = results[0].documents[0].toObject(Group::class.java)
+                if (primaryGroupObj != null) {
                     // add the name of the pending group
-                    if (!filterGroups.contains(group)) {
-                        filterGroups.add(group)
+                    if (!filterGroups.contains(primaryGroupObj.name)) {
+                        filterGroups.add(primaryGroupObj.name)
                     }
+                } else {
+                    if (_binding != null) {
+                        binding.matchTabMessage.text = getString(R.string.set_primary_group_message)
+                    }
+                    return@addOnSuccessListener
                 }
-                if (primaryGroupObj == null) return@addOnSuccessListener
                 // loop thru the pending groups query
                 for (query2Docs in results[1]) {
                     // convert the query document snapshot into a pending group object to access variables
@@ -230,9 +230,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                     if (!filterGroups.contains(pendingGroup)) {
                         filterGroups.add(pendingGroup)
                     }
-
                 }
-
                 db.collection("groups").get()
                     .addOnSuccessListener {
                         // preferences
@@ -254,14 +252,13 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         // if the preferences of group is not null, set the values
                         // if the preferences is null, groups will be fetched via interests and noninterests
                         if (primaryGroupObj.preferences != null) {
-                            longitude = primaryGroupObj.preferences?.get("longitude") as Number
-                            latitude = primaryGroupObj.preferences?.get("latitude") as Number
-                            maxAge = primaryGroupObj.preferences?.get("maxAge") as Number
-                            minAge = primaryGroupObj.preferences?.get("minimumAge") as Number
-                            maxDistance = primaryGroupObj.preferences?.get("maxDistance") as Number
-                            genderPref = primaryGroupObj.preferences?.get("gender") as String
+                            longitude = primaryGroupObj.preferences["longitude"] as Number
+                            latitude = primaryGroupObj.preferences["latitude"] as Number
+                            maxAge = primaryGroupObj.preferences["maxAge"] as Number
+                            minAge = primaryGroupObj.preferences["minimumAge"] as Number
+                            maxDistance = primaryGroupObj.preferences["maxDistance"] as Number
+                            genderPref = primaryGroupObj.preferences["gender"] as String
                         }
-                        Log.v(TAG, matchedGroups.toString())
                         // loop through groups
                         for (doc in it) {
                             // convert the query document snapshot into a group object to access variables
@@ -272,7 +269,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             }
                             // if group is matched, remove it
                             if (matchedGroups.contains(obj.name)) {
-                                Log.v(TAG, "matched group contains: ${obj.name}")
                                 if (!filterGroups.contains(obj.name)) {
                                     filterGroups.add(obj.name)
                                 }
@@ -301,22 +297,17 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                                 distanceBetweenArray[0] * 0.000621371192
                                             // check if in range, if not then filter it
                                             if (distanceBetweenMiles > maxDistance.toDouble()) {
-                                                addFilterGroup(
-                                                    cardStackView,
-                                                    filterGroups,
-                                                    groups,
-                                                    obj
-                                                )
+                                                addFilterGroup(filterGroups, groups, obj)
                                                 continue
                                             }
                                         } else {
                                             // if the other group does not have longitude or latitude set, filter it
-                                            addFilterGroup(cardStackView, filterGroups, groups, obj)
+                                            addFilterGroup(filterGroups, groups, obj)
                                             continue
                                         }
                                     } else {
                                         // filter out other group if longitude or latitude it not set
-                                        addFilterGroup(cardStackView, filterGroups, groups, obj)
+                                        addFilterGroup(filterGroups, groups, obj)
                                         continue
                                     }
                                 }
@@ -339,12 +330,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                                         "gender"
                                                     ) == "male")
                                                 ) {
-                                                    addFilterGroup(
-                                                        cardStackView,
-                                                        filterGroups,
-                                                        groups,
-                                                        obj
-                                                    )
+                                                    addFilterGroup(filterGroups, groups, obj)
                                                 }
                                             }
 
@@ -363,34 +349,12 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                                 // if age is less than the minimum age or
                                                 // greater than the maximum age, filter the group
                                                 if (age < minAge.toInt() || age > maxAge.toInt()) {
-                                                    addFilterGroup(
-                                                        cardStackView,
-                                                        filterGroups,
-                                                        groups,
-                                                        obj
-                                                    )
+                                                    addFilterGroup(filterGroups, groups, obj)
                                                 }
                                             } else {
-                                                addFilterGroup(
-                                                    cardStackView,
-                                                    filterGroups,
-                                                    groups,
-                                                    obj
-                                                )
+                                                addFilterGroup(filterGroups, groups, obj)
                                             }
-                                            if (cardStackView.adapter == null) {
-                                                if (context != null) {
-                                                    cardStackView.adapter =
-                                                        CardStackAdapter(
-                                                            currentUser.uid,
-                                                            requireContext(),
-                                                            groups,
-                                                            this
-                                                        )
-                                                }
-                                            } else {
-                                                cardStackView.adapter?.notifyDataSetChanged()
-                                            }
+                                            setAdapter(cardStackView)
                                         }
                                 }
                             }
@@ -444,7 +408,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         matchTabViewModel.undoState.value = false
     }
     // accept group when accept button is clicked
-    override fun onAcceptBtnClick(acceptedGrou: String) {
+    override fun onAcceptBtnClick() {
         // set animation card moving right for reject
         val setting = SwipeAnimationSetting.Builder()
             .setDirection(Direction.Right)

@@ -163,7 +163,7 @@ class CardStackAdapter(
             // accept button accepts group when clicked
             binding.acceptBtn.setOnClickListener {
                 // listener from MatchTabFragment listens when accept button is clicked and will call method
-                listener.onAcceptBtnClick(group.name.toString())
+                listener.onAcceptBtnClick()
             }
 
             // reject button rejects group when clicked
@@ -198,7 +198,7 @@ class CardStackAdapter(
         // match tab fragment listens to when undo or more button is clicked
         interface CardStackAdapterListener {
             fun onUndoBtnClick(position: Int)
-            fun onAcceptBtnClick(acceptedGroup: String)
+            fun onAcceptBtnClick()
             fun onRejectBtnClick(group:String)
             fun observeUndoState(undoBtn:ImageButton)
         }
