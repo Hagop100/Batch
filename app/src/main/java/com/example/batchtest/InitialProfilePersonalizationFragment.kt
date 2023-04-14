@@ -26,13 +26,15 @@ import com.example.batchtest.databinding.FragmentInitialProfilePersonalizationBi
 import java.text.SimpleDateFormat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
 
-//TODO add a skip button,
+
 
 /**
  * Use Case 3 Initial Profile Personalization page.
@@ -152,24 +154,9 @@ class InitialProfilePersonalizationFragment : Fragment() {
 
         //User profile will skip the intial profile setup and move to group creation fragment.
         binding.btnSkip.setOnClickListener {
-            findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_groupCreationFragment)
+            findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_myGroupFragment)
         }
     }
-
-    /**
-     * Get the user from the database
-     *
-     * */
-//    private fun getUser()
-//    {
-//        FirebaseFirestore.getInstance().collection("users")
-//            .document(getCurrentUserID()).get().addOnSuccessListener { document ->
-//                userDetails = document.toObject(User::class.java)!!
-//                email = userDetails.email.toString()
-//            }.addOnFailureListener{ e ->
-//                Toast.makeText(context, "Unable to retrieve User Info $e", Toast.LENGTH_SHORT).show()
-//            }
-//    }
 
     /**
      * Gathers the user's input and places it in a hashmap
@@ -177,6 +164,8 @@ class InitialProfilePersonalizationFragment : Fragment() {
      * */
     private fun updateUserProfileDatabase()
     {
+
+        //val token = FirebaseAuth.getInstance().currentUser!!.getIdToken(true)
 
         //Get the values the user has input
         //Save values in a Hashmap that will be used to update the user's information
@@ -200,6 +189,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
         userHasMap[BIRTHDATE] = birthday
         userHasMap[PERSONALBIO] = personalBio
         userHasMap[PROFILECOMPLETE] = true
+        //userHasMap["userToken"]= token
         if(uriSet)
         {
             userHasMap[IMAGEURI] = imageUri!!
@@ -213,7 +203,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
             .update(userHasMap).addOnSuccessListener {
                 Toast.makeText(context,"Successfully Updated Profile", Toast.LENGTH_SHORT).show()
                 //Will navigate to the next fragment, Currently not in use should put
-                findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_groupCreationFragment)
+                findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_myGroupFragment)
             }.addOnFailureListener{
                 Toast.makeText(context,"Failed to Update Profile", Toast.LENGTH_SHORT).show()
             }
@@ -378,7 +368,9 @@ class InitialProfilePersonalizationFragment : Fragment() {
         if(currentUser != null)
         {
             currentUserId = currentUser.uid
+
         }
+        Toast.makeText(requireContext(), currentUser!!.uid.toString(),Toast.LENGTH_LONG).show()
         return currentUser!!.uid
     }
 
