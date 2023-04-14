@@ -65,6 +65,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     private var currGroup: Group? = null
     // primary group that user will be matching as
     private var primaryGroup: String? = null
+    // matched groups of a user
+    private var matchedGroups: ArrayList<String> = arrayListOf()
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,6 +92,12 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         removeGroups = matchTabViewModel.removeGroups.value!!
         primaryGroup = matchTabViewModel.getPrimaryGroup()
         prevGroup = matchTabViewModel.prevGroup.value
+        matchedGroups = matchTabViewModel.matchedGroups.value!!
+        matchTabViewModel.matchedGroups.observe(viewLifecycleOwner) { newMatchedGroups ->
+            if (newMatchedGroups != null) {
+                matchedGroups = newMatchedGroups
+            }
+        }
         /*
         * fetch all possible groups to match based on logged in user
         * and send to adapter which will display the groups in a recycler view
@@ -120,6 +128,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         groups.clear()
                         matchTabViewModel.groups.value = groups
                     }
+                }
+                if (user.matchedGroups.isNotEmpty()) {
+                    matchTabViewModel.matchedGroups.value = user.matchedGroups
                 }
                 // if user is not a group, then display message and return
                 if (user.myGroups.isEmpty()) {
@@ -250,6 +261,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             maxDistance = primaryGroupObj.preferences?.get("maxDistance") as Number
                             genderPref = primaryGroupObj.preferences?.get("gender") as String
                         }
+                        Log.v(TAG, matchedGroups.toString())
                         // loop through groups
                         for (doc in it) {
                             // convert the query document snapshot into a group object to access variables
@@ -257,6 +269,13 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             // if group is already filtered, continue
                             if (filterGroups.contains(obj.name)) {
                                 continue
+                            }
+                            // if group is matched, remove it
+                            if (matchedGroups.contains(obj.name)) {
+                                Log.v(TAG, "matched group contains: ${obj.name}")
+                                if (!filterGroups.contains(obj.name)) {
+                                    filterGroups.add(obj.name)
+                                }
                             }
                             if (primaryGroupObj.preferences != null) {
                                 // float array stores results from distanceBetween function
@@ -508,7 +527,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                     .document(pendingGroup.pendingGroupId.toString())
                                     .set(pendingGroup)
                                     .addOnSuccessListener {
-                                        voting(db, pendingGroup)
+                                        voting(db, pendingGroup, matchTabViewModel)
                                         // if last group was accepted, fetch groups again
                                         if (groups[groups.size - 1] == currGroup) {
                                             val size = groups.size

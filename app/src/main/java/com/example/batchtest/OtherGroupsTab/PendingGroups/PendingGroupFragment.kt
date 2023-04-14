@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.batchtest.Chat
@@ -18,6 +19,7 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.example.batchtest.Group
+import com.example.batchtest.MatchTab.MatchTabViewModel
 import com.example.batchtest.R
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,6 +35,8 @@ private const val TAG = "PendingGroupFragment"
 class PendingGroupFragment : Fragment() {
     private var _binding: FragmentPendingGroupBinding? = null
     private val binding get() = _binding!!
+    // view model to restore state
+    private val matchTabViewModel: MatchTabViewModel by activityViewModels()
     private val db = Firebase.firestore
     // get the authenticated logged in user
     private val currentUser = Firebase.auth.currentUser
@@ -83,7 +87,7 @@ class PendingGroupFragment : Fragment() {
                         groupsFound = true
                         // convert pending group to an object
                         val pendingGroupObj = doc.toObject(PendingGroup::class.java)
-                        voting(db, pendingGroupObj)
+                        voting(db, pendingGroupObj, matchTabViewModel)
                         // if the pending group has not completed the voting phase, display it in recyclerview
                         if (pendingGroupObj.pending == true) {
                             // create 2 queries for the matching and pending group to send to adapter
@@ -145,7 +149,7 @@ class PendingGroupFragment : Fragment() {
         // if a majority vote (accept or reject) has occurred, then check if both groups have
         // decided to match. if one group rejects, then delete the pending group from the db
         // if voting is still pending, do nothing
-        fun voting(db: FirebaseFirestore, pendingGroup: PendingGroup) {
+        fun voting(db: FirebaseFirestore, pendingGroup: PendingGroup, matchTabViewModel: MatchTabViewModel) {
             var acceptCount = 0
             var rejectCount = 0
             val memberCount = pendingGroup.users?.size
@@ -220,6 +224,12 @@ class PendingGroupFragment : Fragment() {
                                                                 e
                                                             )
                                                         }
+                                                }
+                                                // update view model matched groups for current user
+                                                val matchedGroups = matchTabViewModel.matchedGroups.value
+                                                if (otherPendingGroup.pendingGroup != null) {
+                                                    matchedGroups?.add(otherPendingGroup.pendingGroup)
+                                                    matchTabViewModel.matchedGroups.value = matchedGroups
                                                 }
                                                 // create a chat object
                                                 val chat = Chat(
