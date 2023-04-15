@@ -2,6 +2,7 @@ package com.example.batchtest.GroupChat
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,9 +35,11 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
             messageContent.text = message.content
             timeText.text = message.createdDate?.hours.toString() + ":" + message.createdDate?.minutes.toString()
             nameText.text = message.username
-            if(mMessageList.size > 0 &&
-                mMessageList[mMessageList.size - 1].createdDate?.month == message.createdDate?.month &&
-                mMessageList[mMessageList.size - 1].createdDate?.date == message.createdDate?.date) {
+
+            val index = mMessageList.indexOf(message)
+            if(index > 0 &&
+                mMessageList[index - 1].createdDate?.month == message.createdDate?.month &&
+                mMessageList[index - 1].createdDate?.date == message.createdDate?.date) {
                 date.visibility = View.GONE
             }
             else {
@@ -58,9 +61,11 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
         fun bind(message: Message) {
             messageContent.text = message.content
             timeText.text = message.createdDate?.hours.toString() + ":" + message.createdDate?.minutes.toString()
-            if(mMessageList.size > 0 &&
-                mMessageList[mMessageList.size - 1].createdDate?.month == message.createdDate?.month &&
-                mMessageList[mMessageList.size - 1].createdDate?.date == message.createdDate?.date) {
+
+            val index = mMessageList.indexOf(message)
+            if(index > 0 &&
+                mMessageList[index - 1].createdDate?.month == message.createdDate?.month &&
+                mMessageList[index - 1].createdDate?.date == message.createdDate?.date) {
                 date.visibility = View.GONE
             }
             else {
