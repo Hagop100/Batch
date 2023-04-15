@@ -36,7 +36,7 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
             timeText.text = message.createdDate?.hours.toString() + ":" + message.createdDate?.minutes.toString()
             nameText.text = message.username
 
-            val index = mMessageList.indexOf(message)
+            val index = absoluteAdapterPosition
             if(index > 0 &&
                 mMessageList[index - 1].createdDate?.month == message.createdDate?.month &&
                 mMessageList[index - 1].createdDate?.date == message.createdDate?.date) {
@@ -62,7 +62,7 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
             messageContent.text = message.content
             timeText.text = message.createdDate?.hours.toString() + ":" + message.createdDate?.minutes.toString()
 
-            val index = mMessageList.indexOf(message)
+            val index = absoluteAdapterPosition
             if(index > 0 &&
                 mMessageList[index - 1].createdDate?.month == message.createdDate?.month &&
                 mMessageList[index - 1].createdDate?.date == message.createdDate?.date) {
