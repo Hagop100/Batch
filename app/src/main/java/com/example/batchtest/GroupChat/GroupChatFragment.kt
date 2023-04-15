@@ -61,24 +61,6 @@ class GroupChatFragment : Fragment() {
 
         val db = Firebase.firestore
 
-
-        /*val group1 = "Big Chungus"
-        val group2 = "Batch test"
-
-        val message1 = Message("Hello", "kylebatch491b@gmail.com", Date())
-        val message2 = Message("Welcome", "goofy", Date())
-        messagesArrayList.add(message1)
-        messagesArrayList.add(message2)
-        val chat = Chat(0, messagesArrayList, group1, group2, Date())
-
-        db.collection("chats").add(chat)
-            .addOnSuccessListener { doc ->
-
-            }
-            .addOnFailureListener {e ->
-
-            }*/
-
         val groupChatRV = binding.fragmentGroupChatRecyclerView
         //This will set the recyclerview layout to be like a chat
         //Starting bottom moving up
@@ -185,11 +167,8 @@ class GroupChatFragment : Fragment() {
      * retrieve messages for specific group and display them in recyclerview
      *
      */
-    private fun queryChatFromMyGroups(
-        db: FirebaseFirestore,
-        groupChatRV: RecyclerView,
-        currentGroupName: String
-    ) {
+    @SuppressLint("NotifyDataSetChanged")
+    private fun queryChatFromMyGroups(db: FirebaseFirestore, groupChatRV: RecyclerView, currentGroupName: String) {
         db.collection("chats")
                 .whereEqualTo("group1Name", currentGroupName)
                 .whereEqualTo("group2Name", "")
@@ -203,24 +182,26 @@ class GroupChatFragment : Fragment() {
                     messagesArrayList.clear()
                     setMyGroupChatTitle(currentGroupName)
 
-                for (d in doc!!){
-                    chatId = d.id
-                    val chat: Chat = d.toObject<Chat>()
-                    if(chat.messages.size > maximumNumberOfMessages) {
-                        chat.messages.removeAt(0)
+                    for (d in doc!!){
+                        chatId = d.id
+                        val chat: Chat = d.toObject<Chat>()
+                        if(chat.messages.size > maximumNumberOfMessages) {
+                            chat.messages.removeAt(0)
+                        }
+                        messagesArrayList.addAll(chat.messages)
+                        if(groupChatRV.adapter == null) {
+                            Log.i(TAG, "recycler view is null")
+                            // attach adapter and send groups
+                            val groupChatAdapter = GroupChatAdapter(messagesArrayList, requireActivity())
+                            groupChatRV.adapter = groupChatAdapter
+                            groupChatRV.scrollToPosition(messagesArrayList.size - 1)
+                        }
+                        else {
+                            Log.i(TAG, "recycler view is not null")
+                            groupChatRV.adapter?.notifyDataSetChanged()
+                            groupChatRV.scrollToPosition(messagesArrayList.size - 1)
+                        }
                     }
-                    messagesArrayList.addAll(chat.messages)
-                    if(groupChatRV.adapter == null) {
-                        // attach adapter and send groups
-                        val groupChatAdapter = GroupChatAdapter(messagesArrayList, requireActivity())
-                        groupChatRV.adapter = groupChatAdapter
-                    }
-                    else {
-                        Log.i(TAG, "recycler view is not null")
-                        groupChatRV.adapter?.notifyDataSetChanged()
-                        groupChatRV.scrollToPosition(messagesArrayList.size - 1)
-                    }
-                }
                 }
     }
 
@@ -251,6 +232,7 @@ class GroupChatFragment : Fragment() {
                         // attach adapter and send groups
                         val groupChatAdapter = GroupChatAdapter(messagesArrayList, requireActivity())
                         groupChatRV.adapter = groupChatAdapter
+                        groupChatRV.scrollToPosition(messagesArrayList.size - 1)
                     }
                     else {
                         Log.i(TAG, "recycler view is not null")
