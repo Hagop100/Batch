@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             if((destination.id == R.id.loginFragment) || (destination.id == R.id.groupCreationFragment) || (destination.id == R.id.registrationFragment) || (destination.id == R.id.accountSettingFragment) ||
                     destination.id == R.id.initialProfilePersonalizationFragment || (destination.id == R.id.editProfileFragment) || (destination.id == R.id.viewGroupInfoFragment) ||
                     destination.id == R.id.editGroupProfile ||  destination.id == R.id.joinGroupFragment || destination.id == R.id.groupChatFragment || (destination.id == R.id.viewUserInfoFragment) ||
-                    (destination.id == R.id.preferencesFragment)) {
+                    (destination.id == R.id.preferencesFragment) || (destination.id == R.id.accountSettingFragment) || (destination.id == R.id.userGuideFragment)) {
                 binding.navBar.visibility = View.GONE
             } else {
                 binding.navBar.visibility = View.VISIBLE
