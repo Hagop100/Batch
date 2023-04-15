@@ -86,6 +86,11 @@ class EditProfileFragment : Fragment() {
         const val EMAIL: String = "email"
         const val PROFILECOMPLETE = "profileComplete"
         const val TOKEN = "userToken"
+        const val NEW_MATCHES= "matches"
+        const val NEW_MESSAGES = "messages"
+        const val VOTING = "voting"
+        const val NEW_GROUP_MEMBERS = "members"
+        const val NOTIFICATION_PREFS = "notificationPrefs"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -146,21 +151,7 @@ class EditProfileFragment : Fragment() {
             }
 
         })
-//
-//        firebaseUser = FirebaseAuth.getInstance().currentUser!!
-//        firebaseUser.getIdToken(true).addOnCompleteListener { task ->
-//            if (task.isSuccessful)
-//            {
-//                token = task.result.token.toString()
-//                isToken = true
-//            }
-//            else
-//            {
-//                Toast.makeText(requireContext(),"Could Not get token", Toast.LENGTH_SHORT).show()
-//                isToken = false
-//            }
-//
-//        }
+
         //Update the screen with the basic configuration
         updateEmptyProfilePage()
 
@@ -189,17 +180,7 @@ class EditProfileFragment : Fragment() {
     }
 
 
-    /**Temp function to update token */
-    fun updateUserProfileToken(token: String)
-    {
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        FirebaseFirestore.getInstance().collection("users").document(currentUser!!.uid)
-            .update("userToken", token).addOnSuccessListener {
-                Log.i(MyFirebaseMessagingService.TAG, "new Token updated")
-            }.addOnFailureListener{
-                Log.i(MyFirebaseMessagingService.TAG, "Failed to update token")
-            }
-    }
+
     /**
      * populate the edit text views with the user's current information.
      * */
@@ -209,7 +190,6 @@ class EditProfileFragment : Fragment() {
         if(user.imageUrl != null)
         {
             val url = user.imageUrl
-            Toast.makeText(context, "$url", Toast.LENGTH_LONG).show()
             val profileImage = binding.civEditProfileImage
             //Update imageView with image stored in the database
             //Use placeholder in case it fails to get the url
@@ -221,7 +201,7 @@ class EditProfileFragment : Fragment() {
         binding.etEmail.setText(user.email)
         binding.etEmail.isEnabled = false
         binding.btnBirthday.text = user.birthdate
-        binding.btnBirthday.isEnabled = false
+
         binding.etFirstName.setText(user.firstName)
         binding.etLastName.setText(user.lastName)
         binding.etDisplayName.setText(user.displayName)
@@ -232,8 +212,7 @@ class EditProfileFragment : Fragment() {
             "female" -> binding.femaleRadioButton.id
             else -> binding.nonBinaryRadioButton.id
         })
-        //binding.etBio.setText(user.personalBio)
-        //set the retrieved data as the default values
+        binding.etBio.setText(user.personalBio)
 
         initializeDefaultValues(user)
     }
@@ -282,6 +261,13 @@ class EditProfileFragment : Fragment() {
      * */
     private fun updateUserProfileDatabase()
     {
+        /**For Testing*/
+        val notifPrefs = HashMap<String, Any>()
+        notifPrefs[VOTING] = false
+        notifPrefs[NEW_MATCHES] = false
+        notifPrefs[NEW_MESSAGES] = true
+        notifPrefs[NEW_GROUP_MEMBERS] = true
+        /**  **********          *************/
         //Get the values the user has input
         //Save values in a Hashmap that will be used to update the user's information
         //in the firebase database.
@@ -305,7 +291,9 @@ class EditProfileFragment : Fragment() {
         userHashMap[PERSONALBIO] = personalBio
         userHashMap[PROFILECOMPLETE] = true
 
-        userHashMap["userToken"] = token
+        /**Temp Values that should be set in initialprofileInitialization or login*/
+        userHashMap[TOKEN] = token
+        userHashMap[NOTIFICATION_PREFS] = notifPrefs //
 
 
         if (uriSet)
@@ -434,7 +422,6 @@ class EditProfileFragment : Fragment() {
             if(data != null)
             {
                 try {
-                    Toast.makeText(context,"Got URI",Toast.LENGTH_LONG).show()
                     tempUri = data.data!!
                     uriSet = true
                     Glide.with(this).load(tempUri).into(userPic)

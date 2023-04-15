@@ -79,6 +79,7 @@ used to populate the cardStackView recycler -->
                     </RelativeLayout>
                     <!-- group photo -->
                     <ImageView
+                        android:id="@+id/group_picture"
                         android:layout_width="match_parent"
                         android:layout_height="300dp"
                         android:adjustViewBounds="true"

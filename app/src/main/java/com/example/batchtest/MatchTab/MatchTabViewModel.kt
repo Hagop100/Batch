@@ -6,8 +6,10 @@ import com.example.batchtest.Group
 
 class MatchTabViewModel: ViewModel() {
     private val primaryGroupVM: MutableLiveData<String?> = MutableLiveData()
+    val primaryGroupObj: MutableLiveData<Group?> = MutableLiveData()
     val groups: MutableLiveData<ArrayList<Group>?> = MutableLiveData(arrayListOf())
     val removeGroups: MutableLiveData<ArrayList<Group>?> = MutableLiveData(arrayListOf())
+    val matchedGroups: MutableLiveData<ArrayList<String>?> = MutableLiveData(arrayListOf())
     val prevGroup: MutableLiveData<Group?> = MutableLiveData(null)
     val currGroup: MutableLiveData<Group?> = MutableLiveData(null)
     val undoState: MutableLiveData<Boolean> = MutableLiveData()

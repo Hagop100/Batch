@@ -6,10 +6,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.view.isNotEmpty
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.batchtest.Group
 import com.example.batchtest.R
 import com.example.batchtest.databinding.MatchGroupCardBinding
@@ -92,6 +96,7 @@ class CardStackAdapter(
             // pass into a holder to bind
             return CardStackHolder(binding)
         }
+
         // set group information to be displayed using holder once bound
         override fun onBindViewHolder(holder: CardStackHolder, position: Int) {
             // create recycle layout for group
@@ -105,7 +110,16 @@ class CardStackAdapter(
             holder.biscuits.text = group.biscuits.toString()
             // set group description
             holder.description.text = group.aboutUsDescription
-
+            // group image for group
+            if (group.image.isNullOrEmpty()){
+                holder.groupPicture.setImageResource(R.drawable.placeholder)
+            } else {
+                if (context != null) {
+                    Glide.with(context)
+                        .load(group.image)
+                        .into(holder.groupPicture)
+                }
+            }
             // change ui of button dynamically based on undo state of user
             listener.observeUndoState(holder.undoBtn)
 
@@ -119,6 +133,9 @@ class CardStackAdapter(
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
             params.setMargins(10, 10, 10, 10)
+            if (holder.interestTags.isNotEmpty()) {
+                holder.interestTags.removeAllViews()
+            }
             // dynamically add group tags
             for (tag in tags!!) {
                 // use existing interest tag layout
@@ -146,12 +163,11 @@ class CardStackAdapter(
             // accept button accepts group when clicked
             binding.acceptBtn.setOnClickListener {
                 // listener from MatchTabFragment listens when accept button is clicked and will call method
-                listener.onAcceptBtnClick(group.name.toString())
+                listener.onAcceptBtnClick()
             }
 
             // reject button rejects group when clicked
             binding.rejectBtn.setOnClickListener {
-                Log.v(TAG, "group name in reject" + group.name.toString())
                 // listener from MatchTabFragment listens when reject button is clicked and will call method
                 listener.onRejectBtnClick(group.name.toString())
             }
@@ -175,12 +191,14 @@ class CardStackAdapter(
             val interestTags: FlexboxLayout = binding.interestTags
             // undo button
             val undoBtn: ImageButton = binding.undoBtn
+            // group picture
+            val groupPicture: ImageView = binding.groupPicture
         }
 
         // match tab fragment listens to when undo or more button is clicked
         interface CardStackAdapterListener {
             fun onUndoBtnClick(position: Int)
-            fun onAcceptBtnClick(acceptedGroup: String)
+            fun onAcceptBtnClick()
             fun onRejectBtnClick(group:String)
             fun observeUndoState(undoBtn:ImageButton)
         }

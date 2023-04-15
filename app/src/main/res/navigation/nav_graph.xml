@@ -90,8 +90,8 @@
         android:label="fragment_initial_profile_personalization"
         tools:layout="@layout/fragment_initial_profile_personalization" >
         <action
-            android:id="@+id/action_initialProfilePersonalizationFragment_to_groupCreationFragment"
-            app:destination="@id/groupCreationFragment" />
+            android:id="@+id/action_initialProfilePersonalizationFragment_to_myGroupFragment"
+            app:destination="@id/myGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"

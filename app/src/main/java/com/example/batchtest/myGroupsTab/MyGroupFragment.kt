@@ -1,5 +1,6 @@
 package com.example.batchtest.myGroupsTab
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
@@ -278,12 +279,34 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                     "Other members of your group will not be affected. ")
             .setCancelable(true)
             .setPositiveButton("Delete") { _, _ ->
+                //removes the group from the user class of groups
                 db.collection("users")
                     .document(currUser.uid)
                     .update(
                         "myGroups",
-                        FieldValue.arrayRemove(myGroupList[position])
+                        FieldValue.arrayRemove(myGroupList[position].name)
                     )
+                Log.d("print", "User Removed from Group")
+
+                //removes the user from the group class of users
+                db.collection("groups")
+                    .whereEqualTo("name", myGroupList[position])
+                    .get()
+                    .addOnSuccessListener { documents ->
+                        for (document in documents){
+                            Log.d("print", "${document.id} => ${document.data}")
+                            val group: Group = document.toObject<Group>()
+                            val currGroup = db.collection("groups").document(document.id)
+                            currGroup
+                                .update("users",
+                                FieldValue.arrayRemove(currUser.uid))
+                                .addOnSuccessListener { Log.d("print", "DocumentSnapshot successfully updated!") }
+                                .addOnFailureListener { e -> Log.w("print", "Error updating document", e) }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d("print", "Error getting documents: ", exception)
+                    }
                 //manually delete the item from the application
                 //previously we were listening to the database for real-time updates
                 //for some reason this was causing the application to crash
@@ -305,6 +328,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
      * Query the document database to get the group info include group image, group name and descrption
      * This works with the Adapter class to retrieve info of the group
      */
+    @SuppressLint("NotifyDataSetChanged")
     private fun RetrieveGroups(){
         db = FirebaseFirestore.getInstance()
 
@@ -333,53 +357,44 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                 val user: User = result.toObject(User::class.java)!!
                                 mutedGroupList.clear()
                                 mutedGroupList.addAll(user.mutedGroups)
-                                // filter groups will store all group to remove from the match group pool
-                                val filterGroups: ArrayList<String> = ArrayList()
-                                // all groups the user is will be filtered out so the user cannot match with their own groups
-                                filterGroups.addAll(user.myGroups)
-                                // fetch all groups from the database filtering out the groups with
+
+                                // fetch the group by looping through the group collection
                                 val groupsDocRef = db.collection("groups")
                                 Log.i(TAG, "fetch group")
 
-                                // display groups that the users are currently in.
-                                if (filterGroups.isNotEmpty()) {
-                                    groupsDocRef.whereIn("name", filterGroups)
-                                        .get()
-                                        .addOnSuccessListener {
+                                //check if the user already has a group, else alert user to join or create a group.
+                                if (user.myGroups.isNotEmpty()){
 
-                                            //clear all the groups before adding them into display list
-                                            myGroupList.clear()
-                                            // convert the resulting groups into group object
-                                            for (doc in it) {
-                                                val group: Group = doc.toObject(Group::class.java)
-                                                // add the group to the groups list
-                                                myGroupList.add(group)
-                                            }
+                                    //find the user in the group collection with their corresponding user id.
+                                    groupsDocRef.whereArrayContains("users",
+                                        currentUser.uid).get().addOnSuccessListener{ it ->
 
-                                            // attach adapter and send groups and listener
-                                            if (recyclerView.adapter == null){
-                                                // attach adapter and send groups
-                                                myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList, mutedGroupList, primaryGroup) }!!
-                                                recyclerView.adapter = myAdapter
-                                            }
-                                            else {
-                                                recyclerView.adapter?.notifyDataSetChanged()
-                                                Log.i(TAG, "adapter is already set")
-                                            }
+                                        //clear all the groups before adding them into display list
+                                        myGroupList.clear()
 
-//                                            recyclerView.adapter = myAdapter
-
-                                            Log.i("print", "AM I HERE 1")
-                                            //     EventChangeListener()
+                                        // convert the resulting groups into group object
+                                        for (doc in it) {
+                                            val group: Group = doc.toObject(Group::class.java)
+                                            // add the group to the groups list
+                                            myGroupList.add(group)
+                                        }
+                                        // attach adapter and send groups and listener
+                                        if (recyclerView.adapter == null){
+                                            // attach adapter and send groups
+                                            myAdapter = context?.let { MyGroupAdapter(it, this , myGroupList, mutedGroupList, primaryGroup) }!!
+                                            recyclerView.adapter = myAdapter
+                                        }
+                                        else {
+                                            recyclerView.adapter?.notifyDataSetChanged()
 
                                         }
-                                        .addOnFailureListener { e ->
+
+
+                                    }.addOnFailureListener { e ->
                                             Log.i(TAG, "error getting documents: ", e)
                                         }
-
                                 }
-
-                                //if the user have  0 groups. show a message for user to join a group
+                                //if the user have  0 groups. show a message for user to create or join a group
                                 else {
                                     binding.noGroupMessage.text =
                                         "You have 0 group. \n Create or join a group to start matching!"
@@ -388,8 +403,6 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                             .addOnFailureListener { e ->
                                 Log.i(TAG, "error getting user from documents: ", e)
                             }
-                        // Update the adapter by notify changes
-//                        recyclerView.adapter?.notifyDataSetChanged()
                     }
 
                 }

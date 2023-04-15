@@ -25,6 +25,7 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
 import java.time.LocalDate
@@ -65,6 +66,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     private var currGroup: Group? = null
     // primary group that user will be matching as
     private var primaryGroup: String? = null
+    // matched groups of a user
+    private var matchedGroups: ArrayList<String> = arrayListOf()
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,6 +93,12 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         removeGroups = matchTabViewModel.removeGroups.value!!
         primaryGroup = matchTabViewModel.getPrimaryGroup()
         prevGroup = matchTabViewModel.prevGroup.value
+        matchedGroups = matchTabViewModel.matchedGroups.value!!
+        matchTabViewModel.matchedGroups.observe(viewLifecycleOwner) { newMatchedGroups ->
+            if (newMatchedGroups != null) {
+                matchedGroups = newMatchedGroups
+            }
+        }
         /*
         * fetch all possible groups to match based on logged in user
         * and send to adapter which will display the groups in a recycler view
@@ -116,10 +125,12 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                     if (primaryGroup != user.primaryGroup) {
                         primaryGroup = user.primaryGroup
                         matchTabViewModel.setPrimaryGroup(user.primaryGroup)
-                        Log.v(TAG, "set primary group: $primaryGroup")
                         groups.clear()
                         matchTabViewModel.groups.value = groups
                     }
+                }
+                if (user.matchedGroups.isNotEmpty()) {
+                    matchTabViewModel.matchedGroups.value = user.matchedGroups
                 }
                 // if user is not a group, then display message and return
                 if (user.myGroups.isEmpty()) {
@@ -171,31 +182,22 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         }
     }
     // add a filter group and update groups
-    private fun addFilterGroup(cardStackView: CardStackView, filterGroups: ArrayList<String?>, groups: ArrayList<Group>, group: Group) {
+    private fun addFilterGroup(filterGroups: ArrayList<String?>, groups: ArrayList<Group>, group: Group) {
         if (!filterGroups.contains(group.name)) {
             filterGroups.add(group.name.toString())
-            val position = groups.indexOf(group)
             groups.remove(group)
-            if (groups.isEmpty()) {
-                if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
-            } else {
-                if (_binding != null) binding.matchTabMessage.text = ""
-            }
-            if (cardStackView.adapter == null) {
-                if (context != null) {
-                    cardStackView.adapter =
-                        CardStackAdapter(currentUser.uid, requireContext(), groups, this)
-                }
-            } else {
-                cardStackView.adapter?.notifyItemRemoved(position)
-            }
+//            if (groups.isEmpty()) {
+//                if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
+//            } else {
+//                if (_binding != null) binding.matchTabMessage.text = ""
+//            }
         }
     }
     // fetches groups from firebase
     private fun fetchGroups(cardStackView: CardStackView) {
-        // fetch all groups where user is not in
+        // fetch primary group of user
         val query1 = db.collection("groups")
-            .whereArrayContains("users", currentUser.uid)
+            .whereEqualTo("name", primaryGroup)
             .get()
         // fetch all pending groups of current user
         val query2 = db.collection("pendingGroups")
@@ -204,22 +206,22 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         // once all queries are successful, add the groups to adapter to display
         Tasks.whenAllSuccess<QuerySnapshot>(query1, query2)
             .addOnSuccessListener { results ->
-                var primaryGroupObj: Group? = null
                 // store the names of the pending group
                 val filterGroups = arrayListOf<String?>()
                 // loop thru groups containing current user and add to filter groups
-                for (query1Docs in results[0]) {
-                    // convert the query document snapshot into a pending group object to access variables
-                    val group: String? = query1Docs.getString("name")
-                    if (group == matchTabViewModel.getPrimaryGroup()) {
-                        primaryGroupObj = query1Docs.toObject(Group::class.java)
-                    }
+                // get primary group object and filter it out
+                val primaryGroupObj: Group? = results[0].documents[0].toObject(Group::class.java)
+                if (primaryGroupObj != null) {
                     // add the name of the pending group
-                    if (!filterGroups.contains(group)) {
-                        filterGroups.add(group)
+                    if (!filterGroups.contains(primaryGroupObj.name)) {
+                        filterGroups.add(primaryGroupObj.name)
                     }
+                } else {
+                    if (_binding != null) {
+                        binding.matchTabMessage.text = getString(R.string.set_primary_group_message)
+                    }
+                    return@addOnSuccessListener
                 }
-                if (primaryGroupObj == null) return@addOnSuccessListener
                 // loop thru the pending groups query
                 for (query2Docs in results[1]) {
                     // convert the query document snapshot into a pending group object to access variables
@@ -228,9 +230,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                     if (!filterGroups.contains(pendingGroup)) {
                         filterGroups.add(pendingGroup)
                     }
-
                 }
-
                 db.collection("groups").get()
                     .addOnSuccessListener {
                         // preferences
@@ -240,16 +240,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         var minAge: Number? = null
                         var maxDistance: Number? = null
                         var genderPref: String? = null
-                        // if the preferences of group is not null, set the values
-                        // if the preferences is null, groups will be fetched via interests and noninterests
-                        if (primaryGroupObj.preferences != null) {
-                            longitude = primaryGroupObj.preferences?.get("longitude") as Number
-                            latitude = primaryGroupObj.preferences?.get("latitude") as Number
-                            maxAge = primaryGroupObj.preferences?.get("maxAge") as Number
-                            minAge = primaryGroupObj.preferences?.get("minimumAge") as Number
-                            maxDistance = primaryGroupObj.preferences?.get("maxDistance") as Number
-                            genderPref = primaryGroupObj.preferences?.get("gender") as String
-                        }
 
                         // filter by interest tags
                         val interestTags = primaryGroupObj.interestTags!!.map { it -> it.lowercase() } as ArrayList<String>
@@ -258,6 +248,17 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         // once all groups with common interest tags have been swiped
                         // display groups with no common interest tags
                         val noInterestGroups = arrayListOf<Group>()
+
+                        // if the preferences of group is not null, set the values
+                        // if the preferences is null, groups will be fetched via interests and noninterests
+                        if (primaryGroupObj.preferences != null) {
+                            longitude = primaryGroupObj.preferences["longitude"] as Number
+                            latitude = primaryGroupObj.preferences["latitude"] as Number
+                            maxAge = primaryGroupObj.preferences["maxAge"] as Number
+                            minAge = primaryGroupObj.preferences["minimumAge"] as Number
+                            maxDistance = primaryGroupObj.preferences["maxDistance"] as Number
+                            genderPref = primaryGroupObj.preferences["gender"] as String
+                        }
                         // loop through groups
                         for (doc in it) {
                             // convert the query document snapshot into a group object to access variables
@@ -266,93 +267,96 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             if (filterGroups.contains(obj.name)) {
                                 continue
                             }
-                            // float array stores results from distanceBetween function
-                            val distanceBetweenArray = FloatArray(3)
-                            // if distance preferences are set, then filter out groups based on distance
-                            if ((longitude != null) && (latitude != null) && (maxDistance != null)) {
-                                // if the other groups has their longitude or latitude set, check if the group should be filtered
-                                // else filter it
-                                if (obj.preferences?.get("longitude") != null && obj.preferences["latitude"] != null) {
-                                    val objLongitude = obj.preferences["longitude"] as Double
-                                    val objLatitude = obj.preferences["latitude"] as Double
-                                    if (!objLatitude.isNaN() && !objLongitude.isNaN()) {
-                                        // get distance between 2 coordinates and store into distanceBetweenArray
-                                        distanceBetween(
-                                            longitude as Double,
-                                            latitude as Double,
-                                            objLongitude,
-                                            objLatitude,
-                                            distanceBetweenArray
-                                        )
-                                        // convert to miles
-                                        val distanceBetweenMiles =
-                                            distanceBetweenArray[0] * 0.000621371192
-                                        // check if in range, if not then filter it
-                                        if (distanceBetweenMiles > maxDistance.toDouble()) {
-                                            addFilterGroup(cardStackView, filterGroups,groups, obj)
+                            // if group is matched, remove it
+                            if (matchedGroups.contains(obj.name)) {
+                                if (!filterGroups.contains(obj.name)) {
+                                    filterGroups.add(obj.name)
+                                }
+                            }
+                            if (primaryGroupObj.preferences != null) {
+                                // float array stores results from distanceBetween function
+                                val distanceBetweenArray = FloatArray(3)
+                                // if distance preferences are set, then filter out groups based on distance
+                                if ((longitude != null) && (latitude != null) && (maxDistance != null)) {
+                                    // if the other groups has their longitude or latitude set, check if the group should be filtered
+                                    // else filter it
+                                    if (obj.preferences?.get("longitude") != null && obj.preferences["latitude"] != null) {
+                                        val objLongitude = obj.preferences["longitude"] as Double
+                                        val objLatitude = obj.preferences["latitude"] as Double
+                                        if (!objLatitude.isNaN() && !objLongitude.isNaN()) {
+                                            // get distance between 2 coordinates and store into distanceBetweenArray
+                                            distanceBetween(
+                                                longitude as Double,
+                                                latitude as Double,
+                                                objLongitude,
+                                                objLatitude,
+                                                distanceBetweenArray
+                                            )
+                                            // convert to miles
+                                            val distanceBetweenMiles =
+                                                distanceBetweenArray[0] * 0.000621371192
+                                            // check if in range, if not then filter it
+                                            if (distanceBetweenMiles > maxDistance.toDouble()) {
+                                                addFilterGroup(filterGroups, groups, obj)
+                                                continue
+                                            }
+                                        } else {
+                                            // if the other group does not have longitude or latitude set, filter it
+                                            addFilterGroup(filterGroups, groups, obj)
                                             continue
                                         }
                                     } else {
-                                        // if the other group does not have longitude or latitude set, filter it
-                                        addFilterGroup(cardStackView, filterGroups,groups, obj)
+                                        // filter out other group if longitude or latitude it not set
+                                        addFilterGroup(filterGroups, groups, obj)
                                         continue
                                     }
-                                } else {
-                                    // filter out other group if longitude or latitude it not set
-                                    addFilterGroup(cardStackView, filterGroups,groups, obj)
-                                    continue
                                 }
-                            }
-                            // loop through each user in the group to get age, gender,
-                            obj.users?.forEach { user ->
-                                if (filterGroups.contains(obj.name)) {
-                                    return@forEach
-                                }
-                                // query user
-                                db.collection("users").document(user)
-                                    .get()
-                                    .addOnSuccessListener { user ->
-                                        // if genderPref is not set, ignore
-                                        if (genderPref != null) {
-                                            if ((genderPref == "male" && user.getString(
-                                                    "gender"
-                                                ) == "female")
-                                                ||
-                                                (genderPref == "female" && user.getString(
-                                                    "gender"
-                                                ) == "male")
-                                            ) {
-                                                addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                                return@addOnSuccessListener
-                                            }
-                                        } else {
-                                            addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                            return@addOnSuccessListener
-                                        }
-
-                                        val birthdate = user.getString("birthdate")
-                                        // if birthdate, minAge, or maxAge is not null
-                                        // check if a user is not within age limits
-                                        //      else filter out group
-                                        if (!birthdate.isNullOrEmpty() && minAge != null && maxAge != null) {
-                                            // get birth date
-                                            val birthdateSplit = birthdate.split("/")
-                                            val month = birthdateSplit[0].toInt()
-                                            val day = birthdateSplit[1].toInt()
-                                            val year = birthdateSplit[2].toInt()
-                                            // get age based on birth date
-                                            val age = getAge(year, month, day)
-                                            // if age is less than the minimum age or
-                                            // greater than the maximum age, filter the group
-                                            if (age < minAge.toInt() || age > maxAge.toInt()) {
-                                                addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                                return@addOnSuccessListener
-                                            }
-                                        } else {
-                                            addFilterGroup(cardStackView, filterGroups, groups, obj)
-                                            return@addOnSuccessListener
-                                        }
+                                // loop through each user in the group to get age, gender,
+                                obj.users?.forEach { user ->
+                                    if (filterGroups.contains(obj.name)) {
+                                        return@forEach
                                     }
+                                    // query user
+                                    db.collection("users").document(user)
+                                        .get()
+                                        .addOnSuccessListener { user ->
+                                            // if genderPref is not set, ignore
+                                            if (genderPref != null) {
+                                                if ((genderPref == "male" && user.getString(
+                                                        "gender"
+                                                    ) == "female")
+                                                    ||
+                                                    (genderPref == "female" && user.getString(
+                                                        "gender"
+                                                    ) == "male")
+                                                ) {
+                                                    addFilterGroup(filterGroups, groups, obj)
+                                                }
+                                            }
+
+                                            val birthdate = user.getString("birthdate")
+                                            // if birthdate, minAge, or maxAge is not null
+                                            // check if a user is not within age limits
+                                            //      else filter out group
+                                            if (!birthdate.isNullOrEmpty() && minAge != null && maxAge != null) {
+                                                // get birth date
+                                                val birthdateSplit = birthdate.split("/")
+                                                val month = birthdateSplit[0].toInt()
+                                                val day = birthdateSplit[1].toInt()
+                                                val year = birthdateSplit[2].toInt()
+                                                // get age based on birth date
+                                                val age = getAge(year, month, day)
+                                                // if age is less than the minimum age or
+                                                // greater than the maximum age, filter the group
+                                                if (age < minAge.toInt() || age > maxAge.toInt()) {
+                                                    addFilterGroup(filterGroups, groups, obj)
+                                                }
+                                            } else {
+                                                addFilterGroup(filterGroups, groups, obj)
+                                            }
+                                            setAdapter(cardStackView)
+                                        }
+                                }
                             }
                             // if the group is not filtered out, check if there are matching interests
                             // add the group based on interest or no interests
@@ -404,7 +408,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         matchTabViewModel.undoState.value = false
     }
     // accept group when accept button is clicked
-    override fun onAcceptBtnClick(acceptedGrou: String) {
+    override fun onAcceptBtnClick() {
         // set animation card moving right for reject
         val setting = SwipeAnimationSetting.Builder()
             .setDirection(Direction.Right)
@@ -487,7 +491,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                     .document(pendingGroup.pendingGroupId.toString())
                                     .set(pendingGroup)
                                     .addOnSuccessListener {
-                                        voting(db, pendingGroup)
+                                        voting(db, pendingGroup, matchTabViewModel)
                                         // if last group was accepted, fetch groups again
                                         if (groups[groups.size - 1] == currGroup) {
                                             val size = groups.size
