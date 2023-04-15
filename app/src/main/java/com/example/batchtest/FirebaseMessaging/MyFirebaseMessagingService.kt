@@ -15,6 +15,7 @@ import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.batchtest.UserProfileTab.EditProfileFragment
 import com.example.batchtest.LoginFragment
 import com.example.batchtest.MainActivity
@@ -25,22 +26,13 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.coroutineScope
-import org.json.JSONObject
-import java.io.BufferedReader
-import java.io.DataOutputStream
-import java.io.IOException
-import java.io.InputStreamReader
-import java.io.OutputStream
-import java.net.HttpURLConnection
-import java.net.SocketException
-import java.net.SocketTimeoutException
-import java.net.URL
 
 
 /**
@@ -65,6 +57,8 @@ class MyFirebaseMessagingService(): FirebaseMessagingService() {
         const val NEW_MESSAGES = "messages"
         const val VOTING = "voting"
         const val NEW_GROUP_MEMBERS = "members"
+        const val LOCAL_BROADCAST = "local_intent"
+        const val FCM_KEY_GROUP = "groupName"
 
     }
    /**
@@ -83,12 +77,12 @@ class MyFirebaseMessagingService(): FirebaseMessagingService() {
          //   Log.d(TAG, "Message Data Payload: ${message.data}")
 
        //Values received in the data payload
-       val messageType = message.data[FCM_KEY_DATATYPE]
+       val messageType = message.data[FCM_KEY_DATATYPE]!!
        val title = message.data[FCM_KEY_TITLE]!!
        val messageReceived = message.data[FCM_KEY_MESSAGE]!!
-
+       val groupName= message.data[FCM_KEY_GROUP]!!
+       Log.i(TAG, groupName)
        //Check that the app is even in the background
-       //If the app is in the foreground then a notification is not required
        if(!isAppInForeground(this))
        {
            //Get the user's notification preferences from the database
@@ -113,16 +107,51 @@ class MyFirebaseMessagingService(): FirebaseMessagingService() {
                            NEW_GROUP_MEMBERS)!!){
                        sendNotification(title, messageReceived)
                    }
-
                }
        }
+//       else{
+//
+//           sendLocalBroadcast(this, messageType,title,messageReceived)
+////           //Get the user's notification preferences from the database
+////           FirebaseFirestore.getInstance().collection("users").document(currentUser!!.uid)
+////               .get().addOnSuccessListener { doc ->
+////                   val user = doc.toObject(User::class.java)!!
+////                   //Check the type of message received and check whether the user has given permission
+////                   //for that type of notification.
+////                   if (messageType == "chat" && user.notificationPrefs?.get(NEW_MESSAGES)!!){
+////                       //sending the notification to the user with the incoming message
+////                       sendLocalBroadcast(this,messageType,title, messageReceived)
+////                   }
+////                   else if(messageType == "match" && user.notificationPrefs?.get(NEW_MATCHES)!!)
+////                   {
+////                       sendLocalBroadcast(this,messageType,title, messageReceived)
+////                   }
+////                   else if(messageType == "voting" && user.notificationPrefs?.get(VOTING)!!)
+////                   {
+////                       sendLocalBroadcast(this,messageType,title, messageReceived)
+////                   }
+////                   else if(messageType == "new_member" && user.notificationPrefs?.get(
+////                           NEW_GROUP_MEMBERS)!!){
+////                       sendLocalBroadcast(this,messageType,title, messageReceived)
+////                   }
+// //              }
+//       }
+//
+
+
     }
 
-        //For Debugging
-//        message.notification?.let {
-//            Log.d(TAG, "Message Notification Body: ${it.body}")
-
-
+//    /**Send a local broadcast within the */
+//    private fun sendLocalBroadcast(context: Context, type: String, title: String, message: String)
+//    {
+//        val localIntent = Intent(LOCAL_BROADCAST)
+//
+//        localIntent.putExtra(FCM_KEY_DATATYPE, type)
+//        localIntent.putExtra(FCM_KEY_TITLE, title)
+//        localIntent.putExtra(FCM_KEY_MESSAGE, message)
+//        Log.i(TAG, "Sending local Broadcast")
+//        sendBroadcast(localIntent)
+//    }
 
 /**Automatically called when a new token is created or updated
      * Called when initially token is generated*/
