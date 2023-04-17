@@ -22,9 +22,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/gc_proifle_pic_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/gc_profile_pic_iv"
+        android:layout_width="35dp"
+        android:layout_height="30dp"
         android:layout_marginStart="16dp"
         android:contentDescription="User Icon"
         app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
         android:text="John Grady Cole"
         android:textColor="@color/gray"
         android:textSize="13sp"
-        app:layout_constraintStart_toEndOf="@+id/gc_proifle_pic_iv"
+        app:layout_constraintStart_toEndOf="@+id/gc_profile_pic_iv"
         app:layout_constraintTop_toBottomOf="@+id/gc_date_tv" />
 
     <androidx.cardview.widget.CardView
@@ -50,7 +50,7 @@
         app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false"
         app:cardUseCompatPadding="true"
-        app:layout_constraintStart_toEndOf="@+id/gc_proifle_pic_iv"
+        app:layout_constraintStart_toEndOf="@+id/gc_profile_pic_iv"
         app:layout_constraintTop_toBottomOf="@+id/gc_username_tv">
 
         <LinearLayout

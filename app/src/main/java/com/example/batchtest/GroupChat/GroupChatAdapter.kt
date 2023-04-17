@@ -9,13 +9,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.batchtest.Group
 import com.example.batchtest.Message
 import com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupAdapter
+import com.example.batchtest.R
+import com.example.batchtest.User
 import com.example.batchtest.databinding.MatchedGroupRecyclerViewRowBinding
 import com.example.batchtest.databinding.MeMessageRecyclerViewRowBinding
 import com.example.batchtest.databinding.ThemMessageRecyclerViewRowBinding
 import com.google.android.gms.common.util.DataUtils
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
 class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
@@ -27,7 +33,7 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
         val timeText = binding.gcTimeStampTv
         val nameText = binding.gcUsernameTv
         val date = binding.gcDateTv
-        val profileImage = binding.gcProiflePicIv
+        val profileImage = binding.gcProfilePicIv
 
         //bind function handles setting all the views in the received message holder
         @SuppressLint("SetTextI18n")
@@ -46,6 +52,18 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
                 date.visibility = View.VISIBLE
                 date.text = (message.createdDate?.month?.plus(1)).toString() + "/" + message.createdDate?.date.toString()
             }
+
+            /*var user: User? = null
+            val db = Firebase.firestore
+            db.collection("users")
+                .whereEqualTo("email", message.username)
+                .get()
+                .addOnSuccessListener { doc ->
+                    for(d in doc!!) {
+                        user = d.toObject<User>()
+                        Glide.with(mContext).load(user?.imageUrl).placeholder(R.drawable.placeholder).into(profileImage)
+                    }
+                }*/
             //profileImage.setImageURI(message.user.imageUri)
         }
     }
