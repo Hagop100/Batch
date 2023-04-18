@@ -23,6 +23,7 @@ import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.ArrayList
@@ -36,6 +37,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
     var db = Firebase.firestore
     // get the authenticated logged in user
     private val currentUser = Firebase.auth.currentUser
+    private val currentUserId = currentUser?.uid
     private lateinit var userRecyclerView: RecyclerView
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
     private lateinit var userList: ArrayList<User>
@@ -62,11 +64,11 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
         //get info from the group collection in firebase
         db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
             // set biscuit value
-            binding.biscuitValue.text = document.get("biscuits").toString()
+            if (_binding != null) binding.biscuitValue.text = document.get("biscuits").toString()
 
             //set info about group pic
             val groupPic = document.getString("image")
-            if (groupPic.isNullOrEmpty()){
+            if (groupPic.isNullOrEmpty() && _binding != null){
                 binding.groupPicture.setImageResource(R.drawable.placeholder)
             }
             else{
@@ -75,7 +77,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
 
             //retrieve group description
             val aboutUs = document.getString("aboutUsDescription")
-            binding.aboutUsDescription.text = aboutUs
+            if (_binding != null) binding.aboutUsDescription.text = aboutUs
 
             //used for passing value to preference fragment
             groupId = document.getString("groupId").toString()
@@ -195,6 +197,32 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
                 // add the group invite dialog button to the bottom dialog view
                 view.addView(groupInviteBtn)
             } else {
+                // inflate a text view to hold the block group dialog
+                val giveBiscuitBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+                giveBiscuitBtn.text = getString(R.string.give_biscuit)
+                // check if user has given group biscuit
+                if (currentUserId != null) {
+                    db.collection("users").document(currentUserId).get().addOnSuccessListener {
+                        val isBiscuitGiven = it.get("biscuits.${groupName}") as Boolean
+                        if (isBiscuitGiven) {
+                            toggleBiscuitBtn(giveBiscuitBtn)
+                        }
+                    }
+                }
+                giveBiscuitBtn.setOnClickListener {
+                    if (currentUserId != null) {
+                        // update database that user has given group biscuit
+                        db.collection("users").document(currentUserId).update("biscuits.$groupName", true)
+                        // update biscuit value of group
+                        db.collection("groups").document(groupName).update("biscuits", FieldValue.increment(1))
+                        // update biscuit value
+                        binding.biscuitValue.text = getString(R.string.increment_biscuit, (binding.biscuitValue.text.toString().toInt() + 1))
+                        // disable biscuit button
+                        toggleBiscuitBtn(giveBiscuitBtn)
+                        dialog.onContentChanged()
+                    }
+                }
+
                 // inflate a text view to hold the report group dialog
                 val reportGroupDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
                 reportGroupDialogBtn.text = getString(R.string.report_group)
@@ -203,6 +231,8 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
                 val blockGroupBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
                 blockGroupBtn.text = getString(R.string.block_group)
 
+                // add the give biscuit dialog button to the bottom dialog view
+                view.addView(giveBiscuitBtn)
                 // add the report group dialog button to the bottom dialog view
                 view.addView(reportGroupDialogBtn)
                 // add the block group dialog button to the bottom dialog view
@@ -226,6 +256,10 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
         return binding.root
     }
 
+    private fun toggleBiscuitBtn(giveBiscuitBtn: TextView) {
+        giveBiscuitBtn.isClickable = false
+        giveBiscuitBtn.alpha = .4F
+    }
     // free from memory
     override fun onDestroyView() {
         super.onDestroyView()

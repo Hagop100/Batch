@@ -105,6 +105,8 @@
     <string name="invite_user">Invite a user</string>
     <string name="report_group">Report group</string>
     <string name="block_group">Block group</string>
+    <string name="give_biscuit">Give biscuit</string>
+    <string name="increment_biscuit">%1$d</string>
 
     <!-- join group -->
     <string name="search">Search</string>

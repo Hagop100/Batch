@@ -80,8 +80,8 @@ class MyFirebaseMessagingService(): FirebaseMessagingService() {
        val messageType = message.data[FCM_KEY_DATATYPE]!!
        val title = message.data[FCM_KEY_TITLE]!!
        val messageReceived = message.data[FCM_KEY_MESSAGE]!!
-       val groupName= message.data[FCM_KEY_GROUP]!!
-       Log.i(TAG, groupName)
+       val groupName = message.data[FCM_KEY_GROUP]!!
+
        //Check that the app is even in the background
        if(!isAppInForeground(this))
        {
@@ -92,8 +92,12 @@ class MyFirebaseMessagingService(): FirebaseMessagingService() {
                    //Check the type of message received and check whether the user has given permission
                    //for that type of notification.
                    if (messageType == "chat" && user.notificationPrefs?.get(NEW_MESSAGES)!!){
+                       val mutedGroups = user.mutedGroups
                        //sending the notification to the user with the incoming message
-                       sendNotification(title, messageReceived)
+                       //if the group is not muted
+                       if (!mutedGroups.contains(groupName)) {
+                           sendNotification(title, messageReceived)
+                       }
                    }
                    else if(messageType == "match" && user.notificationPrefs?.get(NEW_MATCHES)!!)
                    {

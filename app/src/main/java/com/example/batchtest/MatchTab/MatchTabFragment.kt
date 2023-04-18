@@ -455,7 +455,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                 // if the pending group does not exist in the database then create a new pending group
                 if (!pendingGroupExists) {
                     if (primaryGroup != null) {
-                        Log.v(TAG, "primary group: $primaryGroup")
                         db.collection("groups").document(primaryGroup.toString()).get()
                             .addOnSuccessListener {
                                 val users: HashMap<String, HashMap<String, String>> = hashMapOf()
