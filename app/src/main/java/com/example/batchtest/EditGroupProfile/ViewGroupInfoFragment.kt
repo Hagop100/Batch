@@ -222,7 +222,6 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
                         dialog.onContentChanged()
                     }
                 }
-
                 // inflate a text view to hold the report group dialog
                 val reportGroupDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
                 reportGroupDialogBtn.text = getString(R.string.report_group)

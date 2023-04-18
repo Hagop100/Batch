@@ -118,7 +118,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                 val user: User = result?.toObject(User::class.java)!!
                 // if user does not have a primary group, display message and return
                 if (user.primaryGroup.isNullOrEmpty()) {
-                    binding.matchTabMessage.text = getString(R.string.set_primary_group_message)
+                    if (_binding != null) binding.matchTabMessage.text = getString(R.string.set_primary_group_message)
                     return@addOnSuccessListener
                 } else {
                     // if primary group has changed, clear the groups arraylist
@@ -134,7 +134,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                 }
                 // if user is not a group, then display message and return
                 if (user.myGroups.isEmpty()) {
-                    binding.matchTabMessage.text = getString(R.string.join_group_message)
+                    if (_binding != null) binding.matchTabMessage.text = getString(R.string.join_group_message)
                     return@addOnSuccessListener
                 }
                 //if the groups has not been populated (is empty), fetch the groups from firebase
@@ -253,12 +253,19 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         // if the preferences is null, groups will be fetched via interests and noninterests
                         if (primaryGroupObj.preferences != null) {
                             longitude = primaryGroupObj.preferences["longitude"] as Number
+                            if (longitude == 0.0) {
+                                longitude = null
+                            }
                             latitude = primaryGroupObj.preferences["latitude"] as Number
+                            if (latitude == 0.0) {
+                                latitude = null
+                            }
                             maxAge = primaryGroupObj.preferences["maxAge"] as Number
                             minAge = primaryGroupObj.preferences["minimumAge"] as Number
                             maxDistance = primaryGroupObj.preferences["maxDistance"] as Number
                             genderPref = primaryGroupObj.preferences["gender"] as String
                         }
+
                         // loop through groups
                         for (doc in it) {
                             // convert the query document snapshot into a group object to access variables
@@ -267,8 +274,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             if (filterGroups.contains(obj.name)) {
                                 continue
                             }
-                            // if group is matched, remove it
-                            if (matchedGroups.contains(obj.name)) {
+                            // if group is matched by primary group, remove it
+                            if (matchedGroups.contains(obj.name) && obj.matchedGroups.contains(primaryGroup)) {
                                 if (!filterGroups.contains(obj.name)) {
                                     filterGroups.add(obj.name)
                                 }
@@ -280,10 +287,15 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                 if ((longitude != null) && (latitude != null) && (maxDistance != null)) {
                                     // if the other groups has their longitude or latitude set, check if the group should be filtered
                                     // else filter it
+
                                     if (obj.preferences?.get("longitude") != null && obj.preferences["latitude"] != null) {
-                                        val objLongitude = obj.preferences["longitude"] as Double
-                                        val objLatitude = obj.preferences["latitude"] as Double
-                                        if (!objLatitude.isNaN() && !objLongitude.isNaN()) {
+                                        var objLongitude = obj.preferences["longitude"] as Double
+                                        var objLatitude = obj.preferences["latitude"] as Double
+
+                                        if (!objLatitude.isNaN() &&
+                                            objLongitude != 0.0 &&
+                                            !objLongitude.isNaN() &&
+                                            objLongitude != 0.0) {
                                             // get distance between 2 coordinates and store into distanceBetweenArray
                                             distanceBetween(
                                                 longitude as Double,
@@ -381,7 +393,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         groups.addAll(noInterestGroups)
                         // if groups is empty, display that the user needs to join a group
                         if (groups.isEmpty()) {
-                            binding.matchTabMessage.text = getString(R.string.no_group_found)
+                            if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
                         } else {
                             // attach adapter and send groups and listener
                             setAdapter(cardStackView)
