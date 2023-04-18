@@ -116,6 +116,13 @@ class UserProfileTabFragment : Fragment() {
             findNavController().navigate(R.id.action_userProfileTabFragment_to_userGuideFragment)
         }
 
+        /*
+        About us page
+         */
+        binding.aboutBtn.setOnClickListener{
+            findNavController().navigate(R.id.action_userProfileTabFragment_to_aboutUsFragment)
+        }
+
         return binding.root
     }
 
