@@ -87,14 +87,17 @@
         android:background="@drawable/round_corner">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher_foreground"
+            android:layout_width="150dp"
+            android:layout_height="300dp"
             android:contentDescription="placeholder"
-            tools:ignore="HardcodedText" />
+            android:src="@drawable/mygroup_tab"
+            tools:ignore="HardcodedText"
+            android:scaleType="fitXY"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="Navigate to 'My Groups' Tab."
             >
         </TextView>
@@ -132,8 +135,8 @@
 
             <ImageView
                 android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/my_groups_add_button"
+                android:layout_height="300dp"
+                android:src="@drawable/add_btn_group"
                 android:contentDescription="placeholder"
                 tools:ignore="HardcodedText"
                 android:scaleType="fitXY" />
