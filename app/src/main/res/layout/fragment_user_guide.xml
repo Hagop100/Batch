@@ -58,6 +58,65 @@
             android:layout_marginBottom="20dp"
             android:background="@color/horizontal_line" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Getting Started:"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:theme="@style/page_heading"
+            />
+
+<!--        getting started-->
+        <LinearLayout
+            android:id="@+id/getting_started_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/round_corner"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:src="@drawable/ic_launcher_foreground"
+                android:contentDescription="placeholder"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Getting Started"
+                    android:theme="@style/page_heading"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/page_subheading"
+                    android:layout_marginTop="10dp"
+                    android:text="Learn how use Batch as a new user."
+
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+
 
 <!--        learn more about batch-->
 <!--        <Button-->
@@ -95,7 +154,7 @@
             android:layout_height="wrap_content"
             android:text="App Functionality:"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:theme="@style/page_heading"
@@ -141,7 +200,7 @@
                 android:layout_height="wrap_content"
                 android:theme="@style/page_subheading"
                 android:layout_marginTop="10dp"
-                android:text="Join someone else group that has given you permission."
+                android:text="Join a group that your friends made."
 
                 />
 
@@ -189,7 +248,7 @@
                     android:layout_height="wrap_content"
                     android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
-                    android:text="Create a group and start inviting your friends to the group or start matching with other groups."
+                    android:text="Create a group and start inviting your friends to the group."
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
@@ -235,7 +294,7 @@
                     android:layout_height="wrap_content"
                     android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
-                    android:text="Set primary group can be use to generate matching."
+                    android:text="Set a group as primary group to start matching."
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
@@ -336,5 +395,98 @@
 
         </LinearLayout>
 
+        <!--        -->
+        <LinearLayout
+            android:id="@+id/group_customization_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/round_corner"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+
+            <ImageView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher_foreground"
+                android:contentDescription="placeholder"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Group Profile Customization"
+                    android:theme="@style/page_heading"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/page_subheading"
+                    android:layout_marginTop="10dp"
+                    android:text="Individuals of the group votes to determine the outcome of the match."
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+<!--        -->
+
+        <!--        -->
+        <LinearLayout
+            android:id="@+id/user_setting_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/round_corner"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+
+            <ImageView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher_foreground"
+                android:contentDescription="placeholder"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Setting"
+                    android:theme="@style/page_heading"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:theme="@style/page_subheading"
+                    android:layout_marginTop="10dp"
+                    android:text="Individuals of the group votes to determine the outcome of the match."
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <!--        -->
     </LinearLayout>
 </ScrollView>
