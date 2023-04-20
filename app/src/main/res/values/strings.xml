@@ -60,6 +60,7 @@
     <string name="set_primary_group_message">Set a primary group to start matching!</string>
     <string name="join_group_message">Create or join a group to start matching!</string>
     <string name="no_group_found">No groups found with specified preferences!</string>
+    <string name="block_group_warning">Blocking group will remove them from matching groups. Group will no longer appear in your group discoveries\nDo you wish to block %1$s group?</string>
 
     <!--    other groups tab -->
     <string name="matched">Matched</string>
@@ -105,6 +106,8 @@
     <string name="invite_user">Invite a user</string>
     <string name="report_group">Report group</string>
     <string name="block_group">Block group</string>
+    <string name="give_biscuit">Give biscuit</string>
+    <string name="increment_biscuit">%1$d</string>
 
     <!-- join group -->
     <string name="search">Search</string>

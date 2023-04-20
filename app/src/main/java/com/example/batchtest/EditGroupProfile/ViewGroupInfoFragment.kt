@@ -9,10 +9,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,8 +26,10 @@ import com.example.batchtest.databinding.FragmentViewGroupInfoBinding
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 import java.util.ArrayList
 
 private const val TAG = "ViewGroupInfoFragment"
@@ -36,6 +41,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
     var db = Firebase.firestore
     // get the authenticated logged in user
     private val currentUser = Firebase.auth.currentUser
+    private val currentUserId = currentUser?.uid
     private lateinit var userRecyclerView: RecyclerView
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
     private lateinit var userList: ArrayList<User>
@@ -62,11 +68,11 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
         //get info from the group collection in firebase
         db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
             // set biscuit value
-            binding.biscuitValue.text = document.get("biscuits").toString()
+            if (_binding != null) binding.biscuitValue.text = document.get("biscuits").toString()
 
             //set info about group pic
             val groupPic = document.getString("image")
-            if (groupPic.isNullOrEmpty()){
+            if (groupPic.isNullOrEmpty() && _binding != null){
                 binding.groupPicture.setImageResource(R.drawable.placeholder)
             }
             else{
@@ -75,7 +81,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
 
             //retrieve group description
             val aboutUs = document.getString("aboutUsDescription")
-            binding.aboutUsDescription.text = aboutUs
+            if (_binding != null) binding.aboutUsDescription.text = aboutUs
 
             //used for passing value to preference fragment
             groupId = document.getString("groupId").toString()
@@ -195,14 +201,91 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
                 // add the group invite dialog button to the bottom dialog view
                 view.addView(groupInviteBtn)
             } else {
+                // inflate a text view to hold the block group dialog
+                val giveBiscuitBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+                giveBiscuitBtn.text = getString(R.string.give_biscuit)
+                // check if user has given group biscuit
+                if (currentUserId != null) {
+                    db.collection("users").document(currentUserId).get().addOnSuccessListener {
+                        if(it.get("biscuits") != null)
+                        {
+                            val isBiscuitGiven = it.get("biscuits.${groupName}") as Boolean
+                            if (isBiscuitGiven) {
+                                toggleBiscuitBtn(giveBiscuitBtn)
+                            }
+                        }
+
+                    }
+                }
+                giveBiscuitBtn.setOnClickListener {
+                    if (currentUserId != null) {
+                        // update database that user has given group biscuit
+                        db.collection("users").document(currentUserId).update("biscuits.$groupName", true)
+                        // update biscuit value of group
+                        db.collection("groups").document(groupName).update("biscuits", FieldValue.increment(1))
+                        // update biscuit value
+                        binding.biscuitValue.text = getString(R.string.increment_biscuit, (binding.biscuitValue.text.toString().toInt() + 1))
+                        // disable biscuit button
+                        toggleBiscuitBtn(giveBiscuitBtn)
+                        dialog.onContentChanged()
+                    }
+                }
+
                 // inflate a text view to hold the report group dialog
                 val reportGroupDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
                 reportGroupDialogBtn.text = getString(R.string.report_group)
+
+                //TODO, set up the report blocking
+                reportGroupDialogBtn.setOnClickListener { view ->
+                    dialog.dismiss()
+                }
 
                 // inflate a text view to hold the block group dialog
                 val blockGroupBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
                 blockGroupBtn.text = getString(R.string.block_group)
 
+                //user wishes to block group
+                blockGroupBtn.setOnClickListener { blockView->
+                    dialog.dismiss()
+                    val blockDialog = BottomSheetDialog(requireContext())
+
+                    //display message to user
+                    val blockText = getString(R.string.block_group_warning, groupName)
+                    val blockView = layoutInflater.inflate(R.layout.block_bottom_view,binding.root, false)
+
+                    //set view text
+                    blockView.findViewById<TextView>(R.id.tv_block_warning).text = blockText
+
+                    //get layout button values
+                    val btnOk = blockView.findViewById<Button>(R.id.btn_ok)
+                    val btnCancel = blockView.findViewById<Button>(R.id.btn_cancel)
+                    blockDialog.setContentView(blockView)
+                    blockDialog.show()
+
+                    btnOk.setOnClickListener { it->
+                        //Will update user's matched groups and blocked groups
+                        if(currentUserId != null)
+                        {
+
+                            lifecycleScope.launch {
+                                suspend {
+                                    blockGroupUpdate(currentUserId, groupName) }
+
+                                blockDialog.dismiss()
+                            }
+                        }
+
+                    }
+                    //dismiss dialog if user presses to cancel
+                    btnCancel.setOnClickListener { it->
+
+                        blockDialog.dismiss()
+                    }
+
+                }
+
+                // add the give biscuit dialog button to the bottom dialog view
+                view.addView(giveBiscuitBtn)
                 // add the report group dialog button to the bottom dialog view
                 view.addView(reportGroupDialogBtn)
                 // add the block group dialog button to the bottom dialog view
@@ -226,6 +309,10 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
         return binding.root
     }
 
+    private fun toggleBiscuitBtn(giveBiscuitBtn: TextView) {
+        giveBiscuitBtn.isClickable = false
+        giveBiscuitBtn.alpha = .4F
+    }
     // free from memory
     override fun onDestroyView() {
         super.onDestroyView()
@@ -248,7 +335,52 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
             findNavController().navigate(action)
         }
     }
+
+    /**Function takes in the current user id and the groupName of the group they are blocking
+     * User's Matched Group and Blocked groups fields are updated in the database*/
+    private fun  blockGroupUpdate(currentUserId: String, groupName: String)
+    {
+        //get user
+        db.collection("users").document(currentUserId).get()
+            .addOnSuccessListener {
+                val user = it.toObject(User::class.java)
+                var blockedGroups = ArrayList<String>()
+
+                if (user != null)
+                {
+                    //get the blockedGroups from the user if exist and add blocked group
+                    if(user.blockedGroups != null)
+                    {
+                        blockedGroups = user.blockedGroups
+                        blockedGroups.add(groupName)
+                    }
+                    else //create new list with blocked group
+                    {
+                        blockedGroups.add(groupName)
+                    }
+
+                    val matchedGroups = user.matchedGroups
+                    //remove blocked group from user's matched group list
+                    matchedGroups.remove(groupName)
+
+                    //update user's matched and blocked groups
+                    var updateGroups = HashMap<String, Any>()
+                    updateGroups["matchedGroups"] = matchedGroups
+                    updateGroups["blockedGroups"] = blockedGroups
+                    db.collection("users").document(currentUserId).update(updateGroups)
+                        .addOnSuccessListener {
+                            //TODO: DO I remove the blocked group from all the members
+                            //navigate back to matched page
+                            findNavController().navigate(R.id.action_viewGroupInfoFragment_to_otherGroupTabFragment)
+                        }.addOnFailureListener { Log.i(TAG,"Failed to update") }
+                }
+            }.addOnFailureListener {
+                Log.i(TAG, "failed to get user")
+            }
+    }
 }
+
+
 
 
 

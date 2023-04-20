@@ -249,8 +249,8 @@ class PendingGroupFragment : Fragment() {
                                                         )
                                                     }
                                                 // delete both pending groups from db
-                                                db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString()).delete()
-                                                db.collection("pendingGroups").document(otherPendingGroup.pendingGroupId.toString()).delete()
+//                                                db.collection("pendingGroups").document(pendingGroup.pendingGroupId.toString()).delete()
+//                                                db.collection("pendingGroups").document(otherPendingGroup.pendingGroupId.toString()).delete()
                                             }
                                         }
                                     }

@@ -21,18 +21,17 @@
 
             <TextView
                 android:id="@+id/user_guide"
-                android:layout_width="297dp"
-                android:layout_height="43dp"
+                android:layout_width="247dp"
+                android:layout_height="38dp"
                 android:gravity="center"
                 android:text="Join a group"
                 android:textAppearance="?attr/textAppearanceHeadline5"
                 android:theme="@style/page_title"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.659"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintVertical_bias="0.4" />
 
             <Button
                 android:id="@+id/backto_guide_from_join_a_group"
@@ -88,14 +87,17 @@
         android:background="@drawable/round_corner">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher_foreground"
+            android:layout_width="150dp"
+            android:layout_height="300dp"
             android:contentDescription="placeholder"
-            tools:ignore="HardcodedText" />
+            android:src="@drawable/mygroup_tab"
+            tools:ignore="HardcodedText"
+            android:scaleType="fitXY"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:text="Navigate to 'My Groups' Tab."
             >
         </TextView>
@@ -133,8 +135,8 @@
 
             <ImageView
                 android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:src="@drawable/my_groups_add_button"
+                android:layout_height="300dp"
+                android:src="@drawable/add_btn_group"
                 android:contentDescription="placeholder"
                 tools:ignore="HardcodedText"
                 android:scaleType="fitXY" />
@@ -240,6 +242,57 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Enter in the 'group code' and click on 'Search'.\n\nNote: User must received an invite code to join a group."
+                android:gravity="center_vertical|start"
+                >
+            </TextView>
+
+        </LinearLayout>
+
+        <!--        -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Step 5:"
+                android:gravity="center"
+                android:theme="@style/page_heading"
+                android:layout_marginTop="15dp">
+            </TextView>
+        </LinearLayout>
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/round_corner">
+
+            <ImageView
+                android:layout_width="150dp"
+                android:layout_height="300dp"
+                android:src="@drawable/enter_code"
+                android:contentDescription="placeholder"
+                tools:ignore="HardcodedText"
+                android:scaleType="fitXY"
+
+                />
+            <TextView
+                android:layout_marginStart="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Once the code is entered, user can select 'Join' to join the group."
                 android:gravity="center_vertical|start"
                 >
             </TextView>

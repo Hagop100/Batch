@@ -123,6 +123,9 @@
         <action
             android:id="@+id/action_userProfileTabFragment_to_userGuideFragment"
             app:destination="@id/userGuideFragment" />
+        <action
+            android:id="@+id/action_userProfileTabFragment_to_aboutUsFragment"
+            app:destination="@id/aboutUsFragment" />
     </fragment>
     <fragment
         android:id="@+id/preferencesFragment"
@@ -251,6 +254,14 @@
         tools:layout="@layout/fragment_user_guide" >
         <action
             android:id="@+id/action_userGuideFragment_to_userProfileTabFragment"
+            app:destination="@id/userProfileTabFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/aboutUsFragment"
+        android:name="com.example.batchtest.UserProfileTab.AboutUsFragment"
+        android:label="AboutUsFragment" >
+        <action
+            android:id="@+id/action_aboutUsFragment_to_userProfileTabFragment"
             app:destination="@id/userProfileTabFragment" />
     </fragment>
 
