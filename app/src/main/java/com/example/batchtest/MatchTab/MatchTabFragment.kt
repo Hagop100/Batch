@@ -140,18 +140,18 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                     binding.matchTabMessage.text = getString(R.string.join_group_message)
                     return@addOnSuccessListener
                 }
-                //if the groups has not been populated (is empty), fetch the groups from firebase
-                //else reuse the fetched groups
-                if (groups.isEmpty()) {
-                    fetchGroups(cardStackView)
-                    //setAdapter(cardStackView)
-                }
+
                 //Eman update: Get User's Blocked Groups
                 if (user.blockedGroups.isNotEmpty())
                 {
                     blockedGroups = user.blockedGroups
                 }
-                else {
+                //if the groups has not been populated (is empty), fetch the groups from firebase
+                //else reuse the fetched groups
+                if (groups.isEmpty()) {
+                    fetchGroups(cardStackView)
+                    //setAdapter(cardStackView)
+                } else {
                     /*
                     * when the match tab fragment gets rebuilt, we use the groups that was fetched
                     * to avoid errors in the adapter with the original groups passed, we wait until
