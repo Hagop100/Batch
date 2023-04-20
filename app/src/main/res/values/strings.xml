@@ -123,6 +123,7 @@
 
     <!-- Discovery Preferences -->
     <string name="discoverPref">Discovery Preferences</string>
+    <string name="fragmet_mgdialog_title">Please select which group chat you would like to open.</string>
     <string-array name="rangeSliderValues">
         <item>18</item>
         <item>100</item>

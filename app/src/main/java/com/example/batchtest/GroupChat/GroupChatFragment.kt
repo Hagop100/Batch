@@ -80,10 +80,7 @@ class GroupChatFragment : Fragment() {
 
         //Retrieves our group name for matched group chat
         myGroupName = arguments?.getString("myGroupName")
-        Log.i(TAG, "Retrieved ${myGroupName!!}")
-
-        //set the group chat title
-        setGroupChatTitle(myGroupName!!)
+        Log.i(TAG, "Retrieved $myGroupName")
 
         //---------------------------------------------------
         /**
@@ -101,6 +98,8 @@ class GroupChatFragment : Fragment() {
             queryChatFromMyGroups(db, groupChatRV, currentGroupName)
         }
         else{
+            //set the group chat title
+            setGroupChatTitle(myGroupName!!)
             queryChatFromMatchedGroups(db, myGroupName!!, groupChatRV)
         }
         //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
