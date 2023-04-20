@@ -266,37 +266,12 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
                         //Will update user's matched groups and blocked groups
                         if(currentUserId != null)
                         {
+
                             lifecycleScope.launch {
-                                db.collection("users").document(currentUserId).get()
-                                    .addOnSuccessListener {
-                                        val user = it.toObject(User::class.java)
-                                        var blockedGroups = ArrayList<String>()
-                                        var matchedGroups = ArrayList<String>()
-                                        if (user != null)
-                                        {
-                                            //get the blockedGroups from the user if exist and add blocked group
-                                            if(user.blockedGroups != null)
-                                            {
-                                                blockedGroups = user.blockedGroups
-                                                blockedGroups.add(groupName)
-                                            }
-                                            else //create new list with blocked group
-                                            {
-                                                blockedGroups.add(groupName)
-                                            }
-                                            matchedGroups = user.matchedGroups
-                                            matchedGroups.remove(groupName)
-                                            var updateGroups = HashMap<String, Any>()
-                                            updateGroups["matchedGroups"] = matchedGroups
-                                            updateGroups["blockedGroups"] = blockedGroups
-                                            db.collection("users").document(currentUserId).update(updateGroups)
-                                                .addOnSuccessListener {
-                                                    blockDialog.dismiss()
-                                                }.addOnFailureListener { Log.i(TAG,"Failed to update") }
-                                        }
-                                    }.addOnFailureListener {
-                                        Log.i(TAG, "failed to get user")
-                                    }
+                                suspend {
+                                    blockGroupUpdate(currentUserId, groupName) }
+
+                                blockDialog.dismiss()
                             }
                         }
 
@@ -360,7 +335,50 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
             findNavController().navigate(action)
         }
     }
+
+    private fun  blockGroupUpdate(currentUserId: String, groupName: String)
+    {
+        //get user
+        db.collection("users").document(currentUserId).get()
+            .addOnSuccessListener {
+                val user = it.toObject(User::class.java)
+                var blockedGroups = ArrayList<String>()
+
+                if (user != null)
+                {
+                    //get the blockedGroups from the user if exist and add blocked group
+                    if(user.blockedGroups != null)
+                    {
+                        blockedGroups = user.blockedGroups
+                        blockedGroups.add(groupName)
+                    }
+                    else //create new list with blocked group
+                    {
+                        blockedGroups.add(groupName)
+                    }
+
+                    val matchedGroups = user.matchedGroups
+                    //remove blocked group from user's matched group list
+                    matchedGroups.remove(groupName)
+
+                    //update user's matched and blocked groups
+                    var updateGroups = HashMap<String, Any>()
+                    updateGroups["matchedGroups"] = matchedGroups
+                    updateGroups["blockedGroups"] = blockedGroups
+                    db.collection("users").document(currentUserId).update(updateGroups)
+                        .addOnSuccessListener {
+                            //TODO: DO I remove the blocked group from all the members
+                            //navigate back to matched page
+                            findNavController().navigate(R.id.action_viewGroupInfoFragment_to_otherGroupTabFragment)
+                        }.addOnFailureListener { Log.i(TAG,"Failed to update") }
+                }
+            }.addOnFailureListener {
+                Log.i(TAG, "failed to get user")
+            }
+    }
 }
+
+
 
 
 
