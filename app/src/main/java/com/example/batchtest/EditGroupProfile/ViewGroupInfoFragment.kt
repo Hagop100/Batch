@@ -336,6 +336,8 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
         }
     }
 
+    /**Function takes in the current user id and the groupName of the group they are blocking
+     * User's Matched Group and Blocked groups fields are updated in the database*/
     private fun  blockGroupUpdate(currentUserId: String, groupName: String)
     {
         //get user

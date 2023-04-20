@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateInterpolator
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -68,6 +69,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     private var primaryGroup: String? = null
     // matched groups of a user
     private var matchedGroups: ArrayList<String> = arrayListOf()
+    //Eman: User's Blocked Groups
+    private var blockedGroups: ArrayList<String> = arrayListOf()
     // inflate and bind the match tab fragment after view is created
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -142,7 +145,13 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                 if (groups.isEmpty()) {
                     fetchGroups(cardStackView)
                     //setAdapter(cardStackView)
-                } else {
+                }
+                //Eman update: Get User's Blocked Groups
+                if (user.blockedGroups.isNotEmpty())
+                {
+                    blockedGroups = user.blockedGroups
+                }
+                else {
                     /*
                     * when the match tab fragment gets rebuilt, we use the groups that was fetched
                     * to avoid errors in the adapter with the original groups passed, we wait until
@@ -203,6 +212,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         val query2 = db.collection("pendingGroups")
             .whereEqualTo("users.${currentUser.uid}.uid", currentUser.uid) // get all pending groups where user exists in users
             .get()
+
+
+
         // once all queries are successful, add the groups to adapter to display
         Tasks.whenAllSuccess<QuerySnapshot>(query1, query2)
             .addOnSuccessListener { results ->
@@ -231,6 +243,16 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         filterGroups.add(pendingGroup)
                     }
                 }
+                /**Eman Update: Iterate through blocked list and filter blocked groups out.*/
+                if(blockedGroups.isNotEmpty())
+                {
+                    for(group in blockedGroups)
+                    {
+                        filterGroups.add(group)
+                    }
+                }
+
+
                 db.collection("groups").get()
                     .addOnSuccessListener {
                         // preferences
