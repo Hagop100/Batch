@@ -1,6 +1,7 @@
 package com.example.batchtest.OtherGroupsTab.MatchedGroups
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -37,6 +38,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
@@ -260,10 +262,19 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
         val db = Firebase.firestore
         val myGroupNames = ArrayList<String>()
         var user: User? = null
+
+        //Build progress dialog
+        val pDialog = ProgressDialog(context)
+        pDialog.setTitle("Fetching Group(s)")
+        pDialog.setMessage("Loading...")
+        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        pDialog.show()
+
         val userDocRef = currUser.let { db.collection("users").document(it.uid) }
         userDocRef.get().addOnSuccessListener { doc ->
             if (doc != null) {
                 user = doc.toObject<User>()
+                Log.i(TAG, "pDialog shown")
                 for(myGroups in user?.myGroups!!) {
                     var group: Group? = null
                     val groupDocRef = db.collection("groups").document(myGroups)
@@ -276,6 +287,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
                         }
                     }
                 }
+                pDialog.dismiss() //dismiss the loading progress dialog
                 if(myGroupNames.size > 1) {
                     //show dialog because we have more than one group that matched with
                     //the group we clicked on
