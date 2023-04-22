@@ -70,12 +70,14 @@
         app:layout_constraintTop_toBottomOf="@+id/fragment_report_dialog_rg" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
+        android:id="@+id/fragment_report_dialog_explanation_et"
         android:layout_width="0dp"
         android:layout_height="150dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@color/white"
+        android:backgroundTint="@color/white"
         android:ems="10"
         android:gravity="start|top"
         android:hint="@string/fragment_report_dialog_tell_us_more_hint"
@@ -93,7 +95,7 @@
         android:text="@string/submit_btn_text2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_report_dialog_explanation_et" />
 
     <Button
         android:id="@+id/fragment_report_dialog_report_btn"
@@ -105,5 +107,5 @@
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_report_dialog_explanation_et" />
 </androidx.constraintlayout.widget.ConstraintLayout>

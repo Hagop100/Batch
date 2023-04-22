@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.batchtest.databinding.FragmentReportDialogBinding
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -48,25 +50,63 @@ class ReportDialogFragment(entityBeingReported : String, fragmentArrivedFrom: St
             binding.fragmentReportDialogTitleTv.text = title
 
             binding.fragmentReportDialogSubmitBtn.setOnClickListener {
-                //this will update the report count in the groups collection
-                db.collection("groups")
-                    .document(entityBeingReported)
-                    .get()
-                    .addOnSuccessListener { d ->
-                        val group: Group? = d.toObject<Group>()
-                        group!!.reportCount += 1
-                        val currGroup = db.collection("groups").document(d.id)
-                        currGroup.update("reportCount", group!!.reportCount)
-                            .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
-                            .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.w(TAG, "Error getting documents: ", exception)
-                    }
+                //get information that user submitted and store it in a report object
+                var reportReason: String? = null
+                if(binding.fragmentReportDialogProfanityRb.isChecked) {
+                    reportReason = binding.fragmentReportDialogProfanityRb.text.toString()
+                }
+                else if(binding.fragmentReportDialogImposterRb.isChecked) {
+                    reportReason = binding.fragmentReportDialogImposterRb.text.toString()
+                }
+                else if(binding.fragmentReportDialogHarassmentRb.isChecked) {
+                    reportReason = binding.fragmentReportDialogHarassmentRb.text.toString()
+                }
+
+                //get other reason that is explained
+                var otherReason: String? = null
+                otherReason = binding.fragmentReportDialogExplanationEt.text.toString()
+
+                if(binding.fragmentReportDialogRg.checkedRadioButtonId == -1) {
+                    Toast.makeText(context, "Please select a reason for the report", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    //store reportCount from groups object
+                    var reportCount: Int = 0
+                    //this will update the report count in the groups collection
+                    db.collection("groups")
+                        .document(entityBeingReported)
+                        .get()
+                        .addOnSuccessListener { d ->
+                            val group: Group? = d.toObject<Group>()
+                            group!!.reportCount += 1
+
+                            //storing reportCount
+                            reportCount = group!!.reportCount
+
+                            //build the report object
+                            val reportInfo: ReportInformation = ReportInformation(
+                                reportCount = reportCount,
+                                reportReason = reportReason,
+                                otherReason = otherReason
+                            )
+
+                            //we will update the reports collection
+                            db.collection("reports").document(entityBeingReported)
+                                .set(reportInfo, SetOptions.merge())
+
+                            val currGroup = db.collection("groups").document(d.id)
+                            currGroup.update("reportCount", group!!.reportCount)
+                                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
+                                .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
+                        }
+                        .addOnFailureListener { exception ->
+                            Log.w(TAG, "Error getting documents: ", exception)
+                        }
+                }
             }
         }
         else {
-
+            //EMANUEL YOUR CODE GOES IN THIS BLOCK
         }
 
         return binding.root
