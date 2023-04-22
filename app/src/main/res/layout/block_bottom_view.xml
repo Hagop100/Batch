@@ -14,7 +14,7 @@
             android:id="@+id/tv_block_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Block group"
+            android:text="@string/block_group"
             android:textSize="15sp"
             android:textStyle="bold"
             android:textAlignment="center"
@@ -27,7 +27,7 @@
             android:id="@+id/tv_group_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Group will be removed from matching tab"
+            android:text="@string/group_remove_matching"
             app:layout_constraintTop_toBottomOf="@id/tv_block_warning"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -36,7 +36,7 @@
             android:id="@+id/tv_discover_warning"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Group will not appear in discovery matching"
+            android:text="@string/block_discovery"
             app:layout_constraintTop_toBottomOf="@id/tv_group_warning"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -57,7 +57,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_question_verify"
             app:layout_constraintEnd_toStartOf="@+id/btn_cancel"
-            android:text="Yes"
+            android:text="@string/yes"
             />
         <Button
             android:id="@+id/btn_cancel"
@@ -67,7 +67,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_ok"
 
-            android:text="Cancel"/>
+            android:text="@string/cancel"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -134,4 +134,13 @@
         <item>100</item>
     </string-array>
 
+    <!-- Blocked Group -->
+    <string name="leaderWarning">Sorry Only The Group\'s Leader May Block a Group</string>
+    <string name="ok">OK</string>
+    <string name="group_remove_matching">Group will be removed from matching tab</string>
+    <string name="block_discovery">Group will not appear in discovery matching</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>block
+
+
 </resources>

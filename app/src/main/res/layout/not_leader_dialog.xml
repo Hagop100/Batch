@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:text="Sorry Only The Group's Leader May Block a Group"/>
+        android:text="@string/leaderWarning"/>
     <Button
         android:id="@+id/btn_okLeader"
         android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="Ok"
+        android:text="@string/ok"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
