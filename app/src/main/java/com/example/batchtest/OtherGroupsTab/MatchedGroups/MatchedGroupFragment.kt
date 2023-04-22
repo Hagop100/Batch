@@ -151,7 +151,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     being reported
      */
     private fun buildReportAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
-        alertDialogBuilder.setTitle("Confirm Action: Report")
+        /*alertDialogBuilder.setTitle("Confirm Action: Report")
             .setMessage("Are you sure you want to report this group?")
             .setCancelable(true)
             .setPositiveButton("Report") { _, _ ->
@@ -177,7 +177,10 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
             }
-            .show()
+            .show()*/
+        val reportDialog = ReportDialogFragment(matchedGroupArrayList[position], "MatchedGroupFragment")
+        reportDialog.show(childFragmentManager, "reportDialog")
+
     }
 
     /*
