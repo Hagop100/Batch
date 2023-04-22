@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.batchtest.databinding.FragmentReportDialogBinding
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
@@ -21,6 +24,9 @@ class ReportDialogFragment(entityBeingReported : String, fragmentArrivedFrom: St
     //binding variables
     private var _binding: FragmentReportDialogBinding? = null
     private val binding get() = _binding!!
+
+    //current user
+    private lateinit var currUser: FirebaseUser
 
     //variables holding constructor information
     private var entityBeingReported: String //can be group or user
@@ -38,11 +44,20 @@ class ReportDialogFragment(entityBeingReported : String, fragmentArrivedFrom: St
         setPercentOfParent(85, 70)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        currUser = Firebase.auth.currentUser!!
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         _binding = FragmentReportDialogBinding.inflate(inflater, container, false)
 
         val db = Firebase.firestore
+
+        binding.fragmentReportDialogCancelBtn.setOnClickListener {
+            dismiss()
+        }
 
         if(fragmentArrivedFrom == "MatchedGroupFragment") {
             //set title
@@ -86,13 +101,34 @@ class ReportDialogFragment(entityBeingReported : String, fragmentArrivedFrom: St
                             //build the report object
                             val reportInfo: ReportInformation = ReportInformation(
                                 reportCount = reportCount,
-                                reportReason = reportReason,
-                                otherReason = otherReason
+                                reportReason = arrayListOf(reportReason!!),
+                                otherReason = arrayListOf(otherReason)
                             )
 
-                            //we will update the reports collection
-                            db.collection("reports").document(entityBeingReported)
-                                .set(reportInfo, SetOptions.merge())
+                            //get reportObject from database if it exists
+                            var reportObject: ReportInformation? = null
+                            val docRef = db.collection("reports").document(entityBeingReported)
+
+                            docRef.get().addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val document = task.result
+                                    if(document != null) {
+                                        if (document.exists()) {
+                                            Log.d("TAG", "Document already exists.")
+                                            //if it exists update else create
+                                            docRef.update("reportReason", FieldValue.arrayUnion(reportReason))
+                                            docRef.update("otherReason", FieldValue.arrayUnion(otherReason))
+                                        } else {
+                                            Log.d("TAG", "Document doesn't exist.")
+                                            //we will create the reports collection
+                                            db.collection("reports").document(entityBeingReported)
+                                                .set(reportInfo)
+                                        }
+                                    }
+                                } else {
+                                    Log.d("TAG", "Error: ", task.exception)
+                                }
+                            }
 
                             val currGroup = db.collection("groups").document(d.id)
                             currGroup.update("reportCount", group!!.reportCount)
