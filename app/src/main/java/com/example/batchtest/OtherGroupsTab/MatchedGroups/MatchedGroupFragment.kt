@@ -1,6 +1,7 @@
 package com.example.batchtest.OtherGroupsTab.MatchedGroups
 
 import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -13,28 +14,34 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.batchtest.*
 import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
-import com.example.batchtest.Group
+import com.example.batchtest.GroupChat.GroupChatFragment
 import com.example.batchtest.OtherGroupsTab.PendingGroups.PendingGroupAdapter
 import com.example.batchtest.R
-import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentLoginBinding
 import com.example.batchtest.databinding.FragmentMatchedGroupBinding
 import com.example.batchtest.myGroupsTab.MyGroupAdapter
 import com.example.batchtest.myGroupsTab.MyGroupFragmentDirections
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 
 class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecyclerViewEvent {
 
@@ -55,6 +62,9 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     //User variable
     private lateinit var user: User
 
+    //Other Group Click On
+    private lateinit var theirGroupName: String
+
     //Group Info View Model
     private val sharedViewModel: GroupInfoViewModel by activityViewModels()
 
@@ -63,6 +73,15 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
         alertDialogBuilder = AlertDialog.Builder(requireActivity())
         auth = Firebase.auth //Firebase.auth initialization
         currUser = auth.currentUser!!
+        childFragmentManager.setFragmentResultListener("Group_Key", this) { requestKey, bundle ->
+            // We use a String here, but any type that can be put in a Bundle is supported
+            val groupNameSelected = bundle.getString("Group_Value")
+            Log.i(TAG, groupNameSelected!!)
+            val sendBundle = Bundle()
+            sendBundle.putString("groupName", theirGroupName)
+            sendBundle.putString("myGroupName", groupNameSelected)
+            findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment, sendBundle)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -132,7 +151,7 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     being reported
      */
     private fun buildReportAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
-        alertDialogBuilder.setTitle("Confirm Action: Report")
+        /*alertDialogBuilder.setTitle("Confirm Action: Report")
             .setMessage("Are you sure you want to report this group?")
             .setCancelable(true)
             .setPositiveButton("Report") { _, _ ->
@@ -158,7 +177,10 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
             }
-            .show()
+            .show()*/
+        val reportDialog = ReportDialogFragment(matchedGroupArrayList[position], "MatchedGroupFragment")
+        reportDialog.show(childFragmentManager, "reportDialog")
+
     }
 
     /*
@@ -234,9 +256,60 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     This will eventually be used to implement a group chat feature
      */
     override fun onItemClick(position: Int) {
+        theirGroupName = matchedGroupArrayList[position]
+        queryMyGroupsMatched(position)
+    }
+
+    private fun queryMyGroupsMatched(position: Int) {
         //This will communicate to the next fragment which group we click on
-        val bundle = bundleOf("groupName" to matchedGroupArrayList[position])
-        findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment, bundle)
+        val db = Firebase.firestore
+        val myGroupNames = ArrayList<String>()
+        var user: User? = null
+
+        //Build progress dialog
+        val pDialog = ProgressDialog(context)
+        pDialog.setTitle("Fetching Group(s)")
+        pDialog.setMessage("Loading...")
+        pDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+        pDialog.show()
+
+        val userDocRef = currUser.let { db.collection("users").document(it.uid) }
+        userDocRef.get().addOnSuccessListener { doc ->
+            if (doc != null) {
+                user = doc.toObject<User>()
+                Log.i(TAG, "pDialog shown")
+                for(myGroups in user?.myGroups!!) {
+                    var group: Group? = null
+                    val groupDocRef = db.collection("groups").document(myGroups)
+                    //runBlocking coroutine will block the main thread until the inside function
+                    //has completed
+                    runBlocking {
+                        group = groupDocRef.get().await().toObject<Group>()
+                        if(group?.matchedGroups?.contains(matchedGroupArrayList[position]) == true) {
+                            myGroupNames.add(group?.name!!)
+                        }
+                    }
+                }
+                pDialog.dismiss() //dismiss the loading progress dialog
+                if(myGroupNames.size > 1) {
+                    //show dialog because we have more than one group that matched with
+                    //the group we clicked on
+                    val dialog = MatchedGroupDialogFragment(myGroupNames)
+                    dialog.show(childFragmentManager, "matchedGroupDialogFragment")
+                }
+                else {
+                    val sendBundle = Bundle()
+                    sendBundle.putString("groupName", theirGroupName)
+                    sendBundle.putString("myGroupName", myGroupNames[0])
+                    findNavController().navigate(R.id.action_otherGroupTabFragment_to_groupChatFragment, sendBundle)
+                }
+            } else {
+                Log.i(TAG, "no such doc")
+            }
+        }
+            .addOnFailureListener { e ->
+                Log.i(TAG, "get failed with ", e)
+            }
     }
 
     //Clicking on the group photo in the recycler view will take you to the group's info page

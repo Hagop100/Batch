@@ -28,6 +28,7 @@ data class User(
     val undoState: Boolean = false,
     val primaryGroup: String? = null,
     val mutedGroups: ArrayList<String> = ArrayList(),
+    val blockedGroups: ArrayList<String> = ArrayList(),
     var biscuits: HashMap<String, Boolean>? = null
 ) {
 

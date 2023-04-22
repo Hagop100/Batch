@@ -30,6 +30,21 @@ class UserGuideFragment : Fragment() {
         _binding = FragmentUserGuideBinding.inflate(layoutInflater, container, false)
         dialog = Dialog(requireActivity())
 //        val backButton = dialog.findViewById<Button>(R.id.btn_user_guide)
+
+
+        /*
+        getting started dialog
+         */
+        binding.gettingStartedLayout.setOnClickListener{
+            dialog.setContentView(R.layout.getting_started_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_getting_started)
+            dialog.show()
+            backButton.setOnClickListener{
+                dialog.dismiss()
+            }
+        }
+
+
         /*
          * dialog for join a group
          */

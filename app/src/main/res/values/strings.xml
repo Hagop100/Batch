@@ -60,6 +60,7 @@
     <string name="set_primary_group_message">Set a primary group to start matching!</string>
     <string name="join_group_message">Create or join a group to start matching!</string>
     <string name="no_group_found">No groups found with specified preferences!</string>
+    <string name="block_group_warning">Do you wish to block %1$s group?</string>
 
     <!--    other groups tab -->
     <string name="matched">Matched</string>
@@ -122,9 +123,24 @@
 
     <!-- Discovery Preferences -->
     <string name="discoverPref">Discovery Preferences</string>
+    <string name="fragmet_mgdialog_title">Please select which group chat you would like to open.</string>
+    <string name="fragment_report_dialog_profanity_text">Profanity</string>
+    <string name="fragment_report_dialog_imposter_text">Fake Account</string>
+    <string name="fragment_report_dialog_harassment_text">Harassment</string>
+    <string name="fragment_report_dialog_tell_us_more_hint">Tell us more…</string>
+    <string name="fragment_report_dialog_other_tv">Other:</string>
     <string-array name="rangeSliderValues">
         <item>18</item>
         <item>100</item>
     </string-array>
+
+    <!-- Blocked Group -->
+    <string name="leaderWarning">Sorry Only The Group\'s Leader May Block a Group</string>
+    <string name="ok">OK</string>
+    <string name="group_remove_matching">Group will be removed from matching tab</string>
+    <string name="block_discovery">Group will not appear in discovery matching</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>block
+
 
 </resources>

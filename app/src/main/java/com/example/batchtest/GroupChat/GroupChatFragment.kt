@@ -33,7 +33,7 @@ class GroupChatFragment : Fragment() {
     private var messagesArrayList: ArrayList<Message> = ArrayList()
 
     //groups that are a part of this chat
-    private var myGroupNames: ArrayList<String> = ArrayList()
+    private var myGroupName: String? = null
     private lateinit var theirGroupName: String
 
     //Firebase auth
@@ -78,6 +78,10 @@ class GroupChatFragment : Fragment() {
         theirGroupName = result!!
         Log.i(TAG, theirGroupName)
 
+        //Retrieves our group name for matched group chat
+        myGroupName = arguments?.getString("myGroupName")
+        Log.i(TAG, "Retrieved $myGroupName")
+
         //---------------------------------------------------
         /**
          * identify which fragment came previously for query
@@ -94,7 +98,9 @@ class GroupChatFragment : Fragment() {
             queryChatFromMyGroups(db, groupChatRV, currentGroupName)
         }
         else{
-            queryChatFromFirestore(db, groupChatRV)
+            //set the group chat title
+            setGroupChatTitle(myGroupName!!)
+            queryChatFromMatchedGroups(db, myGroupName!!, groupChatRV)
         }
         //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
         //--------------------------------------------------
@@ -127,9 +133,11 @@ class GroupChatFragment : Fragment() {
     }
 
     /**
-     * QUERY CHAT FROM matchedGroups
+     * This was previously used to grab which one of our groups we have matched with the group
+     * we are clicking on.
+     * But it has since been deprecated as we do that in the matched group fragment now
      */
-    private fun queryChatFromFirestore(db: FirebaseFirestore, groupChatRV: RecyclerView) {
+    /*private fun queryChatFromFirestore(db: FirebaseFirestore, groupChatRV: RecyclerView) {
         var user: User? = null
         val userDocRef = currUser?.let { db.collection("users").document(it.uid) }
         userDocRef?.get()?.addOnSuccessListener { doc ->
@@ -160,7 +168,7 @@ class GroupChatFragment : Fragment() {
             ?.addOnFailureListener { e ->
                 Log.i(TAG, "get failed with ", e)
             }
-    }
+    }*/
 
     /**
      * QUERY CHAT FROM myGroups
@@ -209,7 +217,7 @@ class GroupChatFragment : Fragment() {
      * GET CHAT FOR matched group
      */
     @SuppressLint("NotifyDataSetChanged")
-    private fun getChat(db: FirebaseFirestore, myGroupName: String, groupChatRV: RecyclerView) {
+    private fun queryChatFromMatchedGroups(db: FirebaseFirestore, myGroupName: String, groupChatRV: RecyclerView) {
         var chat = Chat()
         val chatsRef = db.collection("chats")
         chatsRef.whereIn("group1Name", listOf(myGroupName, theirGroupName))

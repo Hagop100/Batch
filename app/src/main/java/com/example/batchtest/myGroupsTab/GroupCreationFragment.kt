@@ -64,6 +64,7 @@ class GroupCreationFragment : Fragment() {
             biscuits = 0,
             image = "@drawable/placeholder",
             reportCount = 0,
+            leader = ""
         )
     }
 
@@ -107,6 +108,7 @@ class GroupCreationFragment : Fragment() {
             val tags = group.interestTags
             val biscuit = group.biscuits
             val image = imageURL
+            val leader = currentUser.toString() //added leader to group
 
 
                 //Validating group name and tag if empty or not
@@ -140,7 +142,7 @@ class GroupCreationFragment : Fragment() {
                                     }
                                     // if tag is not empty, create a new group
                                     else{
-                                        val groupInfo = Group(UUID.randomUUID().toString(), groupName, users, tags, aboutUs,biscuit, image)
+                                        val groupInfo = Group(UUID.randomUUID().toString(), groupName, users, tags, aboutUs,biscuit, image, leader)
 
                                         //initalize A chat object
                                         chat = Chat(0, arrayListOf(), groupName, "", Date())
