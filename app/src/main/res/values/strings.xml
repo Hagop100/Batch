@@ -60,7 +60,7 @@
     <string name="set_primary_group_message">Set a primary group to start matching!</string>
     <string name="join_group_message">Create or join a group to start matching!</string>
     <string name="no_group_found">No groups found with specified preferences!</string>
-    <string name="block_group_warning">Blocking group will remove them from matching groups. Group will no longer appear in your group discoveries\nDo you wish to block %1$s group?</string>
+    <string name="block_group_warning">Do you wish to block %1$s group?</string>
 
     <!--    other groups tab -->
     <string name="matched">Matched</string>
@@ -133,5 +133,14 @@
         <item>18</item>
         <item>100</item>
     </string-array>
+
+    <!-- Blocked Group -->
+    <string name="leaderWarning">Sorry Only The Group\'s Leader May Block a Group</string>
+    <string name="ok">OK</string>
+    <string name="group_remove_matching">Group will be removed from matching tab</string>
+    <string name="block_discovery">Group will not appear in discovery matching</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>block
+
 
 </resources>

@@ -44,7 +44,7 @@
                 android:layout_height="199dp"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop"
-                android:src="@drawable/profile_icon"
+                android:src="@drawable/placeholder"
                 app:civ_border_color="#FF000000"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

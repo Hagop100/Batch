@@ -41,7 +41,7 @@
                android:layout_marginTop="32dp"
                android:layout_marginBottom="32dp"
                android:scaleType="centerCrop"
-               android:src="@drawable/profile_icon"
+               android:src="@drawable/placeholder"
                app:civ_border_color="#FF000000"
                app:layout_constraintEnd_toEndOf="parent"
                app:layout_constraintStart_toStartOf="parent"
