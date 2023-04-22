@@ -98,7 +98,7 @@
         app:layout_constraintTop_toBottomOf="@+id/fragment_report_dialog_explanation_et" />
 
     <Button
-        android:id="@+id/fragment_report_dialog_report_btn"
+        android:id="@+id/fragment_report_dialog_cancel_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

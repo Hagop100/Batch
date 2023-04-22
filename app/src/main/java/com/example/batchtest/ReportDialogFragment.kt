@@ -55,6 +55,10 @@ class ReportDialogFragment(entityBeingReported : String, fragmentArrivedFrom: St
 
         val db = Firebase.firestore
 
+        binding.fragmentReportDialogCancelBtn.setOnClickListener {
+            dismiss()
+        }
+
         if(fragmentArrivedFrom == "MatchedGroupFragment") {
             //set title
             val title: String = "Report Group"
