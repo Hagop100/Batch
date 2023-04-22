@@ -71,6 +71,7 @@ class PreviewGroupInfoFragment : Fragment() {
                     .into(binding.groupPicture)
             }
 
+            binding.biscuitValue.text = (document.get("biscuitsArray") as ArrayList<*>).size.toString()
         }
 
         //get group profile if user set a group pic

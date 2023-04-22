@@ -66,7 +66,6 @@ class RegistrationFragment : Fragment() {
             MFA_Opt = "",
             myGroups = ArrayList(),
             matchedGroups = ArrayList(),
-            undoState = false,
             primaryGroup = null,
             mutedGroups = ArrayList()
         )

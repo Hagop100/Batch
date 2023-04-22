@@ -33,7 +33,7 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
 private const val TAG = "ViewGroupInfoFragment"
 
@@ -74,7 +74,9 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
         //get info from the group collection in firebase
         db.collection("groups").document(groupName as String).get().addOnSuccessListener { document ->
             // set biscuit value
-            if (_binding != null) binding.biscuitValue.text = document.get("biscuits").toString()
+            if (_binding != null) {
+                binding.biscuitValue.text = (document.get("biscuitsArray") as ArrayList<*>).size.toString()
+            }
 
             //set info about group pic
             val groupPic = document.getString("image")
@@ -209,30 +211,38 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
             } else {
                 // inflate a text view to hold the block group dialog
                 val giveBiscuitBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
-                giveBiscuitBtn.text = getString(R.string.give_biscuit)
+                //giveBiscuitBtn.text = getString(R.string.give_biscuit)
                 //check if user has given group biscuit
                 if (currentUserId != null) {
-                    db.collection("users").document(currentUserId).get().addOnSuccessListener {
-                        if(it.get("biscuits") != null)
-                        {
-                            val isBiscuitGiven = it.get("biscuits.${groupName}") as Boolean
-                            if (isBiscuitGiven) {
-                                toggleBiscuitBtn(giveBiscuitBtn)
+                    db.collection("groups").document(groupName).get().addOnSuccessListener {
+                        val group = it.toObject(Group::class.java)
+                        if (group != null) {
+                            val isBiscuitGiven = group.biscuitsArray?.contains(currentUserId)
+                            if (isBiscuitGiven == true) {
+                                giveBiscuitBtn.text = getString(R.string.remove_biscuit)
+                            } else {
+                                giveBiscuitBtn.text = getString(R.string.give_biscuit)
                             }
                         }
-
                     }
                 }
                 giveBiscuitBtn.setOnClickListener {
                     if (currentUserId != null) {
-                        // update database that user has given group biscuit
-                        db.collection("users").document(currentUserId).update("biscuits.$groupName", true)
-                        // update biscuit value of group
-                        db.collection("groups").document(groupName).update("biscuits", FieldValue.increment(1))
-                        // update biscuit value
-                        binding.biscuitValue.text = getString(R.string.increment_biscuit, (binding.biscuitValue.text.toString().toInt() + 1))
-                        // disable biscuit button
-                        toggleBiscuitBtn(giveBiscuitBtn)
+                        // check if current state is give biscuit
+                        if (giveBiscuitBtn.text == getString(R.string.give_biscuit)) {
+                            db.collection("groups").document(groupName).update("biscuitsArray", FieldValue.arrayUnion(currentUserId))
+                            // update biscuit value
+                            binding.biscuitValue.text = getString(R.string.biscuit_val, (binding.biscuitValue.text.toString().toInt() + 1))
+                            // change text of button to remove biscuit
+                            giveBiscuitBtn.text = getString(R.string.remove_biscuit)
+                        } else {
+                            db.collection("groups").document(groupName).update("biscuitsArray", FieldValue.arrayRemove(currentUserId))
+                            // update biscuit value
+                            binding.biscuitValue.text = getString(R.string.biscuit_val, (binding.biscuitValue.text.toString().toInt() - 1))
+                            // change text of button to give biscuit
+                            giveBiscuitBtn.text = getString(R.string.give_biscuit)
+                        }
+                        // let dialog know the text of button has changed
                         dialog.onContentChanged()
                     }
                 }
@@ -358,11 +368,6 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
             }
         }
         return binding.root
-    }
-
-    private fun toggleBiscuitBtn(giveBiscuitBtn: TextView) {
-        giveBiscuitBtn.isClickable = false
-        giveBiscuitBtn.alpha = .4F
     }
     // free from memory
     override fun onDestroyView() {

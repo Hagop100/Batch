@@ -23,17 +23,21 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
+import java.lang.reflect.Field
 import java.time.LocalDate
 import java.time.Period
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 
 private const val TAG = "MatchTabFragmentLog"
@@ -187,6 +191,9 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                     CardStackAdapter(currentUser.uid, requireContext(), groups, this)
             }
         } else {
+            if (groups.isEmpty()) {
+                if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
+            }
             cardStackView.adapter?.notifyDataSetChanged()
         }
     }
@@ -212,8 +219,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         val query2 = db.collection("pendingGroups")
             .whereEqualTo("users.${currentUser.uid}.uid", currentUser.uid) // get all pending groups where user exists in users
             .get()
-
-
 
         // once all queries are successful, add the groups to adapter to display
         Tasks.whenAllSuccess<QuerySnapshot>(query1, query2)
@@ -418,7 +423,14 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
                         } else {
                             // attach adapter and send groups and listener
-                            setAdapter(cardStackView)
+                            // setAdapter(cardStackView)
+                            //cardStackView.adapter?.notifyDataSetChanged()
+                            if (cardStackView.adapter == null) {
+                                if (context != null) {
+                                    cardStackView.adapter =
+                                        CardStackAdapter(currentUser.uid, requireContext(), groups, this)
+                                }
+                            }
                         }
                     }
             }

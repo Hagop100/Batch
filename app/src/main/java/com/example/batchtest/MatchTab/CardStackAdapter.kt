@@ -207,7 +207,7 @@ class CardStackAdapter(
             // set group name
             holder.name.text = group.name
             // set biscuit value
-            holder.biscuits.text = group.biscuits.toString()
+            holder.biscuits.text = group.biscuitsArray?.size.toString()
             // set group description
             holder.description.text = group.aboutUsDescription
             // group image for group
