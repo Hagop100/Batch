@@ -25,4 +25,9 @@
         <item name="android:color">@color/purple_700</item>
     </style>
 
+    <style name="pop_up_dialog_corners" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:windowBackground">@drawable/dialog_corners</item>
+
+    </style>
+
 </resources>
