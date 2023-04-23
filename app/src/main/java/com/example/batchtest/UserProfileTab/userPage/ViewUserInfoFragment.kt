@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
 import com.example.batchtest.R
+import com.example.batchtest.ReportDialogFragment
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentViewUserInfoBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -67,14 +68,15 @@ class ViewUserInfoFragment : Fragment(), ViewUserInfoAdapter.GroupProfileViewEve
             // create block dialog button to add into the dialog layout dynamically
             // using the dialog button layout
 
-            // inflate a text view to hold the block profile dialog
-            val blockUserDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
-            blockUserDialogBtn.text = getString(R.string.block_user)
-            // perform action on click
-            blockUserDialogBtn.setOnClickListener {
-                // add code to block user here //
-                dialog.dismiss()
-            }
+            /**Removing Block user as an option*/
+//            // inflate a text view to hold the block profile dialog
+//            val blockUserDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
+//            blockUserDialogBtn.text = getString(R.string.block_user)
+//            // perform action on click
+//            blockUserDialogBtn.setOnClickListener {
+//                // add code to block user here //
+//                dialog.dismiss()
+//            }
 
             // inflate a text view to hold the report profile dialog
             val reportUserDialogBtn: TextView = LayoutInflater.from(view.context).inflate(R.layout.dialog_button, view, false) as TextView
@@ -82,11 +84,13 @@ class ViewUserInfoFragment : Fragment(), ViewUserInfoAdapter.GroupProfileViewEve
             // perform action on click
             reportUserDialogBtn.setOnClickListener {
                 // add code to report user here //
+                val reportDialogFragment = ReportDialogFragment(args.userEmail, "ViewUserInfoFragment")
+                reportDialogFragment.show(requireFragmentManager(), "ReportDialogFragment")
                 dialog.dismiss()
             }
 
             // add the block user dialog button to the bottom dialog view
-            view.addView(blockUserDialogBtn)
+            //view.addView(blockUserDialogBtn)
             // add the report user dialog button to the bottom dialog view
             view.addView(reportUserDialogBtn)
 

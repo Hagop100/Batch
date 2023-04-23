@@ -88,14 +88,18 @@ class MyFirebaseMessagingService(): FirebaseMessagingService() {
            //Get the user's notification preferences from the database
            FirebaseFirestore.getInstance().collection("users").document(currentUser!!.uid)
                .get().addOnSuccessListener { doc ->
+                   //get user to user object
                    val user = doc.toObject(User::class.java)!!
+
+
                    //Check the type of message received and check whether the user has given permission
-                   //for that type of notification.
+                   //for that type of notification and whether the user
                    if (messageType == "chat" && user.notificationPrefs?.get(NEW_MESSAGES)!!){
+                       val blockGroups = user.blockedGroups
                        val mutedGroups = user.mutedGroups
                        //sending the notification to the user with the incoming message
                        //if the group is not muted
-                       if (!mutedGroups.contains(groupName)) {
+                       if (!mutedGroups.contains(groupName) || !blockGroups.contains(groupName)) {
                            sendNotification(title, messageReceived)
                        }
                    }
