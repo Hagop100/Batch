@@ -290,7 +290,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
 
                 //removes the user from the group class of users
                 db.collection("groups")
-                    .whereEqualTo("name", myGroupList[position])
+                    .whereEqualTo("name", myGroupList[position].name)
                     .get()
                     .addOnSuccessListener { documents ->
                         for (document in documents){
