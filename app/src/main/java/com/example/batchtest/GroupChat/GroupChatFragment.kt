@@ -1,13 +1,19 @@
 package com.example.batchtest.GroupChat
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.*
@@ -57,6 +63,7 @@ class GroupChatFragment : Fragment() {
         // Use the Kotlin extension in the fragment-ktx artifact
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         _binding = FragmentGroupChatBinding.inflate(inflater, container, false)
@@ -104,8 +111,34 @@ class GroupChatFragment : Fragment() {
             setGroupChatTitle(myGroupName!!)
             queryChatFromMatchedGroups(db, myGroupName!!, groupChatRV)
         }
-        //QUERY THE CHAT FROM FIRESTORE!!!!!!!!!!!!!!!!!!!!!
-        //--------------------------------------------------
+
+        //implement back button
+        binding.backBtn.setOnClickListener{
+            if (previousFragmentName == "MyGroupFragment"){
+                findNavController().navigate(R.id.action_groupChatFragment_to_myGroupFragment)
+            }
+            else{
+                findNavController().navigate(R.id.action_groupChatFragment_to_otherGroupTabFragment)
+            }
+        }
+
+        //fit group name
+        val textView = binding.fragmentGroupChatTb
+
+        TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+            textView,
+            12, // min text size in sp
+            36, // max text size in sp
+            2, // step size in sp
+            TypedValue.COMPLEX_UNIT_SP // units for min, max, and step size
+        )
+
+        // Set the gravity to center the text vertically
+        textView.gravity = Gravity.CENTER_VERTICAL
+
+        // Set the text alignment to left
+        textView.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+
 
         binding.fragmentGroupChatSendBtn.setOnClickListener {
             //create message Object from the edit text

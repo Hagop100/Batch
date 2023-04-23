@@ -225,6 +225,13 @@
         <argument
             android:name="currentFragmentName"
             app:argType="string" />
+        <action
+            android:id="@+id/action_groupChatFragment_to_myGroupFragment"
+            app:destination="@id/myGroupFragment" />
+        <action
+            android:id="@+id/action_groupChatFragment_to_otherGroupTabFragment"
+            app:destination="@id/otherGroupTabFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/previewGroupInfoFragment"
@@ -264,5 +271,10 @@
             android:id="@+id/action_aboutUsFragment_to_userProfileTabFragment"
             app:destination="@id/userProfileTabFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/matchedGroupFragment2"
+        android:name="com.example.batchtest.OtherGroupsTab.MatchedGroups.MatchedGroupFragment"
+        android:label="fragment_matched_group"
+        tools:layout="@layout/fragment_matched_group" />
 
 </navigation>
