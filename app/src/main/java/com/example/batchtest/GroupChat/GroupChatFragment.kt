@@ -133,44 +133,6 @@ class GroupChatFragment : Fragment() {
     }
 
     /**
-     * This was previously used to grab which one of our groups we have matched with the group
-     * we are clicking on.
-     * But it has since been deprecated as we do that in the matched group fragment now
-     */
-    /*private fun queryChatFromFirestore(db: FirebaseFirestore, groupChatRV: RecyclerView) {
-        var user: User? = null
-        val userDocRef = currUser?.let { db.collection("users").document(it.uid) }
-        userDocRef?.get()?.addOnSuccessListener { doc ->
-            if (doc != null) {
-                user = doc.toObject<User>()
-                for(myGroups in user?.myGroups!!) {
-                    var group: Group? = null
-                    val groupDocRef = db.collection("groups").document(myGroups)
-                    groupDocRef.get().addOnSuccessListener { doc ->
-                        group = doc.toObject<Group>()
-                        if(group?.matchedGroups?.contains(theirGroupName) == true) {
-                            myGroupNames.add(group?.name!!)
-                        }
-                        if(myGroupNames.size > 0) {
-                            //Set Group Chat title in toolbar
-                            setGroupChatTitle(myGroupNames[0])
-                            //Decision must happen here which groupChat they want to open!
-                            //For now we will select the first index
-                            Log.i(TAG, myGroupNames[0])
-                            getChat(db, myGroupNames[0], groupChatRV)
-                        }
-                    }
-                }
-            } else {
-                Log.i(TAG, "no such doc")
-            }
-        }
-            ?.addOnFailureListener { e ->
-                Log.i(TAG, "get failed with ", e)
-            }
-    }*/
-
-    /**
      * QUERY CHAT FROM myGroups
      * retrieve messages for specific group and display them in recyclerview
      *

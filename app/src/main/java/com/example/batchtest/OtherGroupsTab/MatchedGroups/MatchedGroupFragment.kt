@@ -146,41 +146,11 @@ class MatchedGroupFragment : Fragment(), MatchedGroupAdapter.MatchedGroupRecycle
     }
 
     /*
-    Builds the alert dialog required to report a group
-    Furthermore, this handles the database read and write necessary to update the reportCount of the group
-    being reported
+    Builds the dialog required to report a group
      */
     private fun buildReportAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
-        /*alertDialogBuilder.setTitle("Confirm Action: Report")
-            .setMessage("Are you sure you want to report this group?")
-            .setCancelable(true)
-            .setPositiveButton("Report") { _, _ ->
-                db.collection("groups")
-                    .whereEqualTo("name", matchedGroupArrayList[position])
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        for (document in documents) {
-                            Log.d(TAG, "${document.id} => ${document.data}")
-                            val group: Group = document.toObject<Group>()
-                            group.reportCount += 1
-                            val currGroup = db.collection("groups").document(document.id)
-                            currGroup
-                                .update("reportCount", group.reportCount)
-                                .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully updated!") }
-                                .addOnFailureListener { e -> Log.w(TAG, "Error updating document", e) }
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.w(TAG, "Error getting documents: ", exception)
-                    }
-            }
-            .setNegativeButton("No") { dialogInterface, _ ->
-                dialogInterface.cancel()
-            }
-            .show()*/
         val reportDialog = ReportDialogFragment(matchedGroupArrayList[position], "MatchedGroupFragment")
         reportDialog.show(childFragmentManager, "reportDialog")
-
     }
 
     /*
