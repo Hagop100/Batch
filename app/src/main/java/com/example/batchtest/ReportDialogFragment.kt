@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.lifecycleScope
 import com.example.batchtest.databinding.FragmentReportDialogBinding
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -18,6 +19,9 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class ReportDialogFragment(entityBeingReported : String, fragmentArrivedFrom: String) : DialogFragment() {
 
@@ -102,7 +106,7 @@ class ReportDialogFragment(entityBeingReported : String, fragmentArrivedFrom: St
                             val reportInfo: ReportInformation = ReportInformation(
                                 reportCount = reportCount,
                                 reportReason = arrayListOf(reportReason!!),
-                                otherReason = arrayListOf(otherReason)
+                                otherReason = arrayListOf(otherReason!!)
                             )
 
                             //get reportObject from database if it exists
@@ -142,7 +146,80 @@ class ReportDialogFragment(entityBeingReported : String, fragmentArrivedFrom: St
             }
         }
         else {
+
             //EMANUEL YOUR CODE GOES IN THIS BLOCK
+            //set title
+            val title: String = "Report User"
+            binding.fragmentReportDialogTitleTv.text = title
+
+            binding.fragmentReportDialogSubmitBtn.setOnClickListener {
+                //get information that user submitted and store it in a report object
+                var reportReason: String? = null
+                if (binding.fragmentReportDialogProfanityRb.isChecked) {
+                    reportReason = binding.fragmentReportDialogProfanityRb.text.toString()
+                } else if (binding.fragmentReportDialogImposterRb.isChecked) {
+                    reportReason = binding.fragmentReportDialogImposterRb.text.toString()
+                } else if (binding.fragmentReportDialogHarassmentRb.isChecked) {
+                    reportReason = binding.fragmentReportDialogHarassmentRb.text.toString()
+                }
+
+                //get other reason that is explained
+                var otherReason: String = ""
+                otherReason = binding.fragmentReportDialogExplanationEt.text.toString()
+                if(binding.fragmentReportDialogRg.checkedRadioButtonId == -1) {
+                    Toast.makeText(context, "Please select a reason for the report", Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    //Will not be implementing report count in the user class, just in the report
+                    var reportCount: Int = 1
+
+                    //build the report object
+                    val reportInfo: ReportInformation = ReportInformation(
+                        reportCount = reportCount,
+                        reportReason = arrayListOf(reportReason!!),
+                        otherReason = arrayListOf(otherReason)
+                    )
+
+                    //get reportObject from database if it exists
+                    val docRef = db.collection("reports").document(entityBeingReported)
+                    lifecycleScope.launch(Dispatchers.IO){
+                        //get access to user report
+                        docRef.get().addOnCompleteListener  { task ->
+                            //if a report already exists
+                            if (task.isSuccessful) {
+                                //specific report
+                                val document = task.result
+                                if(document != null) {
+                                    if (document.exists()) {
+                                        val report = document.toObject(ReportInformation::class.java)
+                                        Log.d("TAG", "Document already exists.")
+                                        val count = report?.reportCount
+                                        if (count != null) {
+                                            reportCount = count.plus(1)
+                                        }
+
+                                            //if it exists update
+                                        docRef.update("reportCount", reportCount)
+                                        docRef.update("reportReason", FieldValue.arrayUnion(reportReason))
+                                        docRef.update("otherReason", FieldValue.arrayUnion(otherReason))
+
+
+                                    } else {
+
+                                        Log.d("TAG", "Document doesn't exist.")
+                                        //we will create the reports collection
+                                        db.collection("reports").document(entityBeingReported)
+                                            .set(reportInfo)
+                                    }
+                                }
+                            } else {
+                                Log.d("TAG", "Error: ", task.exception)
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         return binding.root
