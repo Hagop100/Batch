@@ -25,6 +25,7 @@ import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 
 class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
+                       private var imageMap: HashMap<String, String>,
                        private var mContext: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     //ReceivedMessageHolder is going to be when you receive a message in a group chat
@@ -53,6 +54,12 @@ class GroupChatAdapter(private var mMessageList: ArrayList<Message>,
                 date.text = (message.createdDate?.month?.plus(1)).toString() + "/" + message.createdDate?.date.toString()
             }
 
+            if(imageMap.containsKey(message.username) && !imageMap[message.username].isNullOrEmpty()) {
+                Glide.with(mContext).load(imageMap[message.username]).into(profileImage)
+            }
+            else {
+                Glide.with(mContext).load(R.drawable.placeholder).into(profileImage)
+            }
             /*var user: User? = null
             val db = Firebase.firestore
             db.collection("users")

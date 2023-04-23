@@ -20,6 +20,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -152,17 +154,32 @@ class GroupChatFragment : Fragment() {
                     messagesArrayList.clear()
                     setMyGroupChatTitle(currentGroupName)
 
-                    for (d in doc!!){
+                    for (d in doc!!) {
                         chatId = d.id
                         val chat: Chat = d.toObject<Chat>()
                         if(chat.messages.size > maximumNumberOfMessages) {
                             chat.messages.removeAt(0)
                         }
                         messagesArrayList.addAll(chat.messages)
+                        val imageMap = hashMapOf<String, String>()
                         if(groupChatRV.adapter == null) {
                             Log.i(TAG, "recycler view is null")
+                            runBlocking {
+                                for(m in messagesArrayList) {
+                                    if(!imageMap.containsKey(m.username)) {
+                                        val task = db.collection("users")
+                                            .whereEqualTo("email", m.username)
+                                            .get()
+                                            .await()
+                                        for(d1 in task) {
+                                            val user = d1.toObject<User>()
+                                            imageMap[user.email.toString()] = user.imageUrl.toString()
+                                        }
+                                    }
+                                }
+                            }
                             // attach adapter and send groups
-                            val groupChatAdapter = GroupChatAdapter(messagesArrayList, requireActivity())
+                            val groupChatAdapter = GroupChatAdapter(messagesArrayList, imageMap, requireActivity())
                             groupChatRV.adapter = groupChatAdapter
                             groupChatRV.scrollToPosition(messagesArrayList.size - 1)
                         }
@@ -197,10 +214,25 @@ class GroupChatFragment : Fragment() {
                         chat.messages.removeAt(0)
                     }
                     messagesArrayList.addAll(chat.messages)
+                    val imageMap = hashMapOf<String, String>()
                     Log.i(TAG, messagesArrayList.toString())
                     if(groupChatRV.adapter == null) {
                         // attach adapter and send groups
-                        val groupChatAdapter = GroupChatAdapter(messagesArrayList, requireActivity())
+                        runBlocking {
+                            for(m in messagesArrayList) {
+                                if(!imageMap.containsKey(m.username)) {
+                                    val task = db.collection("users")
+                                        .whereEqualTo("email", m.username)
+                                        .get()
+                                        .await()
+                                    for(d1 in task) {
+                                        val user = d1.toObject<User>()
+                                        imageMap[user.email.toString()] = user.imageUrl.toString()
+                                    }
+                                }
+                            }
+                        }
+                        val groupChatAdapter = GroupChatAdapter(messagesArrayList, imageMap, requireActivity())
                         groupChatRV.adapter = groupChatAdapter
                         groupChatRV.scrollToPosition(messagesArrayList.size - 1)
                     }
