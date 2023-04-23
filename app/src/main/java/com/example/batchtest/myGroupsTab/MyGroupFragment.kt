@@ -24,6 +24,7 @@ import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
 import com.example.batchtest.Group
 import com.example.batchtest.MatchTab.CardStackAdapter
 import com.example.batchtest.MatchTab.MatchTabViewModel
+import com.example.batchtest.PendingGroup
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMyGroupBinding
@@ -287,7 +288,6 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                         FieldValue.arrayRemove(myGroupList[position].name)
                     )
                 Log.d("print", "User Removed from Group")
-
                 //removes the user from the group class of users
                 db.collection("groups")
                     .whereEqualTo("name", myGroupList[position].name)
@@ -306,6 +306,20 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                     }
                     .addOnFailureListener { exception ->
                         Log.d("print", "Error getting documents: ", exception)
+                    }
+                // remove user from the pending groups
+                db.collection("pendingGroups")
+                    .whereEqualTo("users.${currUser.uid}.uid", currUser.uid)
+                    .get()
+                    .addOnSuccessListener {
+                        for (doc in it) {
+                            val pendingGroup = doc.toObject(PendingGroup::class.java)
+                            val users = pendingGroup.users
+                            if (users != null) {
+                                users.remove(currUser.uid)
+                                db.collection("pendingGroups").document(doc.id).update("users", users)
+                            }
+                        }
                     }
                 //manually delete the item from the application
                 //previously we were listening to the database for real-time updates
