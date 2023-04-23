@@ -172,7 +172,7 @@ class LoginFragment : Fragment() {
         The user is signed out upon clicking the sign out button
         If the user is signed in, then it will display that in the logcat(although this should never occurr)
         If the user is logged out, then it will display that in the logcat
-         */
+
         binding.fragmentLoginSignOutBtn.setOnClickListener {
             auth.signOut()
             val user = auth.currentUser
@@ -182,7 +182,7 @@ class LoginFragment : Fragment() {
             } else {
                 Log.i(TAG, "user is signed out")
             }
-        }
+        }*/
 
         return binding.root
     }
