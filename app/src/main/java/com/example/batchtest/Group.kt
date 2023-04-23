@@ -12,13 +12,13 @@ data class Group(
     val users: ArrayList<String>? = null,
     val interestTags: ArrayList<String>? = null,
     val aboutUsDescription: String? = null,
-    val biscuits: Int = 0,
     val image: String? = null,
     val leader: String? = null,
     var reportCount: Int = 0,
     var matchedGroups: ArrayList<String> = ArrayList(),
     var blockedGroups: ArrayList<String> = ArrayList(),
     val preferences: HashMap<String, Any>? = null,
+    val biscuitsArray: ArrayList<String>? = null,
     @ServerTimestamp
     var createdDate: Date? = Date(),
 

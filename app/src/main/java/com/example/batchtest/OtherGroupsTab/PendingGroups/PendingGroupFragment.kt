@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.batchtest.Chat
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.databinding.FragmentPendingGroupBinding
@@ -81,13 +82,13 @@ class PendingGroupFragment : Fragment() {
                 // fetch groups from database using firebase's firestore
                 val pendingGroups = arrayListOf<PendingGroup>()
                 if (result != null) {
+                    Log.v(TAG, "results");
                     var groupsFound = false
                     // iterate thru fetched pending groups
                     for (doc in result) {
-                        groupsFound = true
                         // convert pending group to an object
                         val pendingGroupObj = doc.toObject(PendingGroup::class.java)
-                        voting(db, pendingGroupObj, matchTabViewModel)
+                        if (pendingGroupObj.matched == false) voting(db, pendingGroupObj, matchTabViewModel)
                         // if the pending group has not completed the voting phase, display it in recyclerview
                         if (pendingGroupObj.pending == true) {
                             // create 2 queries for the matching and pending group to send to adapter
@@ -112,32 +113,54 @@ class PendingGroupFragment : Fragment() {
                                         pendingGroupObj.matchingGroupObj = matchingGroupDoc
                                         pendingGroupObj.pendingGroupObj = pendingGroupDoc
                                         pendingGroups.add(pendingGroupObj)
+                                        if (!groupsFound) {
+                                            groupsFound = true
+                                            binding.pendingTabMessage.text = ""
+                                        }
                                     }
-                                    // send pending groups arraylist to adapter to display
-                                    pendingGroupRV.adapter =
-                                        PendingGroupAdapter(context, pendingGroups)
+                                    if (pendingGroups.isEmpty()) {
+                                        binding.pendingTabMessage.text = getString(R.string.no_pending_groups)
+                                    } else {
+                                        // send pending groups arraylist to adapter to display
+                                        setAdapter(pendingGroupRV, pendingGroups)
+                                        //pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
+                                    }
                                 }
                         } else {
                             if (pendingGroups.contains(pendingGroupObj)) {
+                                var position = pendingGroups.indexOf(pendingGroupObj)
                                 // send pending groups arraylist to adapter to display
                                 pendingGroups.remove(pendingGroupObj)
-                                pendingGroupRV.adapter =
-                                    PendingGroupAdapter(context, pendingGroups)
+                                //setAdapter(pendingGroupRV, pendingGroups)
+                                if (pendingGroupRV.adapter == null) {
+                                    pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
+                                } else {
+                                    pendingGroupRV.adapter!!.notifyItemRemoved(position)
+                                }
                             }
                         }
                     }
                     // if there are no pending groups, display message
                     if (!groupsFound) {
+                        Log.v(TAG, pendingGroups.toString())
+                        //pendingGroups.clear()
                         binding.pendingTabMessage.text = getString(R.string.no_pending_groups)
                         pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
-                    } else {
-                        binding.pendingTabMessage.text = ""
+                        //setAdapter(pendingGroupRV, pendingGroups)
+                       // endingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
                     }
                 }
             }
         return binding.root
     }
 
+    private fun setAdapter(pendingGroupRV: RecyclerView, pendingGroups: ArrayList<PendingGroup>) {
+        if (pendingGroupRV.adapter == null) {
+            pendingGroupRV.adapter = PendingGroupAdapter(context, pendingGroups)
+        } else {
+            pendingGroupRV.adapter?.notifyDataSetChanged()
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         listener.remove()

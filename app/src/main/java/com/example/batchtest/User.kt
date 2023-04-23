@@ -25,11 +25,9 @@ data class User(
     val notificationPrefs: HashMap<String, Boolean>? = null,
     val profileComplete: Boolean = false,
     val userToken: String? = null,
-    val undoState: Boolean = false,
     val primaryGroup: String? = null,
     val mutedGroups: ArrayList<String> = ArrayList(),
     val blockedGroups: ArrayList<String> = ArrayList(),
-    var biscuits: HashMap<String, Boolean>? = null
 ) {
 
     // returns full name of user

@@ -29,6 +29,7 @@ import com.google.firebase.storage.StorageReference
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 private const val TAG = "print"
@@ -61,7 +62,7 @@ class GroupCreationFragment : Fragment() {
             users = ArrayList<String>(),
             interestTags = ArrayList(),
             aboutUsDescription = "",
-            biscuits = 0,
+            biscuitsArray = ArrayList(),
             image = "@drawable/placeholder",
             reportCount = 0,
             leader = ""
@@ -106,7 +107,7 @@ class GroupCreationFragment : Fragment() {
             val aboutUs = binding.editGroupAboutUs.text.toString()
             val users = group.users
             val tags = group.interestTags
-            val biscuit = group.biscuits
+            val biscuit = group.biscuitsArray
             val image = imageURL
             val leader = currentUser.toString() //added leader to group
 
@@ -142,7 +143,7 @@ class GroupCreationFragment : Fragment() {
                                     }
                                     // if tag is not empty, create a new group
                                     else{
-                                        val groupInfo = Group(UUID.randomUUID().toString(), groupName, users, tags, aboutUs,biscuit, image, leader)
+                                        val groupInfo = Group(UUID.randomUUID().toString(), groupName, users, tags, aboutUs, biscuitsArray = biscuit, image = image, leader = leader)
 
                                         //initalize A chat object
                                         chat = Chat(0, arrayListOf(), groupName, "", Date())

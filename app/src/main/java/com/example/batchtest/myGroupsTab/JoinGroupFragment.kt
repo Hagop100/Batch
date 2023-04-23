@@ -129,30 +129,42 @@ class JoinGroupFragment : Fragment() {
                 } else if (binding.joinGroupBtn.text == "Join") {
                     // button will be in join state
                     // add user to group members in database
-                    db.collection("groups").document(group?.name.toString())
-                        .update("users", FieldValue.arrayUnion(currentUser!!.uid))
-                    db.collection("users").document(currentUser.uid)
-                        .update("myGroups", FieldValue.arrayUnion(group?.name))
-                    // add user to all pending groups of joined group
-                    db.collection("pendingGroups")
-                        .whereEqualTo("matchingGroup", group?.name.toString())
-                        .get()
-                        .addOnSuccessListener {
-                            for (doc in it) {
-                                val pendingGroup = doc.toObject(PendingGroup::class.java)
-                                val users = pendingGroup.users
-                                if (users != null) {
-                                    users[currentUser.uid] = hashMapOf("acceptor" to "false", "index" to users.size.toString(), "uid" to currentUser.uid, "vote" to "pending")
-                                }
-                                // add current user to pending group with a pending vote
-                                db.collection("pendingGroups")
-                                    .document(doc.getString("pendingGroupId").toString())
-                                    .update("users", users)
-                                // recalculate the vote
-                                // voting(db,pendingGroup)
-                            }
+                    if (group != null) {
+                        db.collection("groups").document(group?.name.toString())
+                            .update("users", FieldValue.arrayUnion(currentUser!!.uid))
+                        // add group to users myGroups
+                        db.collection("users").document(currentUser.uid)
+                            .update("myGroups", FieldValue.arrayUnion(group?.name))
+                        // add all matched groups of group to user's matchedGroups
+                        for (g in group!!.matchedGroups) {
+                            db.collection("users").document(currentUser.uid).update("matchedGroups", FieldValue.arrayUnion(g))
                         }
-                    findNavController().navigate(R.id.action_joinGroupFragment_to_myGroupFragment)
+                        // add user to all pending groups of joined group
+                        db.collection("pendingGroups")
+                            .whereEqualTo("matchingGroup", group?.name.toString())
+                            .get()
+                            .addOnSuccessListener {
+                                for (doc in it) {
+                                    val pendingGroup = doc.toObject(PendingGroup::class.java)
+                                    val users = pendingGroup.users
+                                    if (users != null) {
+                                        users[currentUser.uid] = hashMapOf(
+                                            "acceptor" to "false",
+                                            "index" to users.size.toString(),
+                                            "uid" to currentUser.uid,
+                                            "vote" to "pending"
+                                        )
+                                    }
+                                    // add current user to pending group with a pending vote
+                                    db.collection("pendingGroups")
+                                        .document(doc.getString("pendingGroupId").toString())
+                                        .update("users", users)
+                                    // recalculate the vote
+                                    // voting(db,pendingGroup)
+                                }
+                            }
+                        findNavController().navigate(R.id.action_joinGroupFragment_to_myGroupFragment)
+                    }
                 }
             }
         }
