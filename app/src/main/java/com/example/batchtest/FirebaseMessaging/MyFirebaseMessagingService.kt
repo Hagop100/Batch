@@ -99,7 +99,7 @@ class MyFirebaseMessagingService(): FirebaseMessagingService() {
                        val mutedGroups = user.mutedGroups
                        //sending the notification to the user with the incoming message
                        //if the group is not muted
-                       if (!mutedGroups.contains(groupName) || !blockGroups.contains(groupName)) {
+                       if (!mutedGroups.contains(groupName) && !blockGroups.contains(groupName)) {
                            sendNotification(title, messageReceived)
                        }
                    }
