@@ -24,9 +24,10 @@
                 android:layout_width="247dp"
                 android:layout_height="38dp"
                 android:gravity="center"
-                android:text="Matching"
+                android:text="User Settings"
                 android:textAppearance="?attr/textAppearanceHeadline5"
                 android:theme="@style/page_title"
+                android:textSize="25sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +35,7 @@
                 app:layout_constraintVertical_bias="0.4" />
 
             <Button
-                android:id="@+id/backto_guide_from_batching"
+                android:id="@+id/backto_guide_from_user_setting"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="59dp"
                 android:layout_height="43dp"
@@ -48,6 +49,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
@@ -57,6 +59,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"
             android:background="@color/horizontal_line" />
+
 
         <!--        -->
         <LinearLayout
@@ -75,6 +78,7 @@
                 android:gravity="center"
                 android:theme="@style/page_heading">
             </TextView>
+
         </LinearLayout>
 
         <LinearLayout
@@ -90,7 +94,7 @@
                 android:layout_width="150dp"
                 android:layout_height="300dp"
                 android:contentDescription="placeholder"
-                android:src="@drawable/matches"
+                android:src="@drawable/user_setting_tab"
                 tools:ignore="HardcodedText"
                 android:scaleType="fitXY"/>
 
@@ -99,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:text="Navigate to the Match Tab.\n\nDislike by selecting the X button to skip.\n\nLike by selecting the HEART button to initiate the matching.\n\nNote: Must set a primary group prior to viewing matches."
+                android:text="Navigate to User Profile tab.\n\nClick on Edit Profile to edit user information.\n\nClick on Settings to change notifications."
                 >
             </TextView>
         </LinearLayout>
@@ -137,7 +141,7 @@
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="300dp"
-                android:src="@drawable/vote_matches"
+                android:src="@drawable/edit_user_profile"
                 android:contentDescription="placeholder"
                 tools:ignore="HardcodedText"
                 android:scaleType="fitXY" />
@@ -146,7 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Under the Pending tab, users in the same primary group vote for which group they want to match with.\n\nIf the majority approves, a new group is formed.\n\nUse the button functionality to cast your vote."
+                android:text="Select the birthdate diaglog to adjust the date of birth.\n\nEdit First name, Last Name and Display Name.\n\nSelect the corresponding gender.\n\nAdd a personal bio description about yourself."
                 >
             </TextView>
         </LinearLayout>
@@ -159,8 +163,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-           >
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:layout_width="match_parent"
@@ -170,6 +173,7 @@
                 android:theme="@style/page_heading"
                 android:layout_marginTop="15dp">
             </TextView>
+
         </LinearLayout>
 
         <LinearLayout
@@ -180,14 +184,13 @@
             android:layout_marginEnd="15dp"
             android:orientation="horizontal"
             android:padding="20dp"
-
-            android:background="@drawable/round_corner"
-            android:layout_marginBottom="50dp">
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/round_corner">
 
             <ImageView
                 android:layout_width="150dp"
                 android:layout_height="300dp"
-                android:src="@drawable/matched_groups"
+                android:src="@drawable/account_setting"
                 android:contentDescription="placeholder"
                 tools:ignore="HardcodedText"
                 android:scaleType="fitXY" />
@@ -196,10 +199,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Group that has the majority votes will be added into the Matched Tab forming a new group.\n\nYou will see the name of other group you matched with."
-                >
+                android:text="Use the switches to turn on or off the notifications for:  \n  new matches,\n  new messages,\n  match voting and\n  new group members.\n\nLog out of user account.\n\nDelete current user account.">
             </TextView>
         </LinearLayout>
-        <!--        -->
+
     </LinearLayout>
 </ScrollView>

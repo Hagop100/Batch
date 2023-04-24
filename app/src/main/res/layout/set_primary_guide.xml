@@ -102,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
-                android:text="Swipe right on the selected group.\n\nClick on the STAR button to activate."
+                android:text="Navigate to My Group tab.\n\nSwipe right on the selected group.\n\nClick on the STAR button to activate."
                 >
             </TextView>
         </LinearLayout>
@@ -150,7 +150,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Confirm to set the selected group as Primary Group for matching."
+                android:text="Confirm to set the selected group as Primary Group for matching.\n\nAfter setting a primary group, navigate to Match tab to view recommended matches."
                 >
             </TextView>
         </LinearLayout>

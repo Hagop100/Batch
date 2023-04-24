@@ -98,7 +98,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="Navigate to 'My Groups' Tab."
+            android:text="Navigate to 'My Groups' Tab.\n\nYou'll see a message to join a group if you have not already in a group."
             >
         </TextView>
     </LinearLayout>
@@ -241,7 +241,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enter in the 'group code' and click on 'Search'.\n\nNote: User must received an invite code to join a group."
+                android:text="Enter in the 'group invite code' and click on 'Search'.\n\nNote: User must received an invite code to join a group."
                 android:gravity="center_vertical|start"
                 >
             </TextView>
@@ -292,7 +292,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Once the code is entered, user can select 'Join' to join the group."
+                android:text="Once the code is correctly entered, user can select 'Join' button to join the group that pops up on the screen."
                 android:gravity="center_vertical|start"
                 >
             </TextView>

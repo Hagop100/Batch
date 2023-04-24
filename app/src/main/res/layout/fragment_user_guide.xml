@@ -61,15 +61,14 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Getting Started:"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
-            android:theme="@style/page_heading"
-            />
+            android:text="Getting Started:"
+            android:theme="@style/page_heading" />
 
-<!--        getting started-->
+        <!--        getting started-->
         <LinearLayout
             android:id="@+id/getting_started_layout"
             android:layout_width="match_parent"
@@ -78,39 +77,38 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="15dp"
             android:background="@drawable/round_corner"
-            android:orientation="horizontal"
-            android:padding="20dp"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:orientation="horizontal"
+            android:padding="20dp">
 
             <ImageView
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:src="@drawable/ic_launcher_foreground"
                 android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Getting Started"
-                    android:theme="@style/page_heading"
-                    />
+                    android:theme="@style/page_heading" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
                     android:text="Learn how use Batch as a new user."
+                    android:theme="@style/page_subheading"
 
                     />
 
@@ -118,96 +116,94 @@
         </LinearLayout>
 
 
-<!--        learn more about batch-->
-<!--        <Button-->
-<!--            android:id="@+id/learn_more_batch"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="20dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:layout_marginEnd="20dp"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:backgroundTint="@color/background_text"-->
-<!--            android:drawableEnd="@drawable/next_btn"-->
-<!--            android:fontFamily="@font/karla"-->
-<!--            android:padding="20dp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:text="Learn more about Batch"-->
-<!--            android:textAlignment="viewStart"-->
-<!--            android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:textSize="18sp"-->
-<!--            app:cornerRadius="10dp"-->
-<!--            android:stateListAnimator="@null"-->
-<!--            tools:ignore="HardcodedText" />-->
-<!--        <View-->
-<!--            android:id="@id/horizontal_bar"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="1dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:layout_marginBottom="20dp"-->
-<!--            android:background="@color/horizontal_line" />-->
+        <!--        learn more about batch-->
+        <!--        <Button-->
+        <!--            android:id="@+id/learn_more_batch"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="20dp"-->
+        <!--            android:layout_marginTop="10dp"-->
+        <!--            android:layout_marginEnd="20dp"-->
+        <!--            android:layout_marginBottom="10dp"-->
+        <!--            android:backgroundTint="@color/background_text"-->
+        <!--            android:drawableEnd="@drawable/next_btn"-->
+        <!--            android:fontFamily="@font/karla"-->
+        <!--            android:padding="20dp"-->
+        <!--            android:textStyle="bold"-->
+        <!--            android:text="Learn more about Batch"-->
+        <!--            android:textAlignment="viewStart"-->
+        <!--            android:textAppearance="@style/TextAppearance.AppCompat.Body1"-->
+        <!--            android:textColor="@color/black"-->
+        <!--            android:textSize="18sp"-->
+        <!--            app:cornerRadius="10dp"-->
+        <!--            android:stateListAnimator="@null"-->
+        <!--            tools:ignore="HardcodedText" />-->
+        <!--        <View-->
+        <!--            android:id="@id/horizontal_bar"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="1dp"-->
+        <!--            android:layout_marginTop="10dp"-->
+        <!--            android:layout_marginBottom="20dp"-->
+        <!--            android:background="@color/horizontal_line" />-->
 
-<!--        app functionality-->
+        <!--        app functionality-->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="App Functionality:"
             android:layout_marginStart="20dp"
             android:layout_marginTop="50dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
-            android:theme="@style/page_heading"
-            />
-
-    <LinearLayout
-        android:id="@+id/join_a_group_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="15dp"
-        android:background="@drawable/round_corner"
-        android:orientation="horizontal"
-        android:padding="20dp"
-        android:clickable="true"
-        android:focusable="true">
-
-        <ImageView
-
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:src="@drawable/ic_launcher_foreground"
-            android:contentDescription="placeholder"
-            tools:ignore="HardcodedText" />
+            android:text="App Functionality:"
+            android:theme="@style/page_heading" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/join_a_group_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp">
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/round_corner"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal"
+            android:padding="20dp">
 
-            <TextView
+            <ImageView
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Join A Group"
-                android:theme="@style/page_heading"
-                />
 
-            <TextView
+                android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:theme="@style/page_subheading"
                 android:layout_marginTop="10dp"
-                android:text="Join a group that your friends made."
+                android:orientation="vertical">
 
-                />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Join A Group"
+                    android:theme="@style/page_heading" />
 
-    </LinearLayout>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Join a group that your friends made."
+                    android:theme="@style/page_subheading"
 
-<!--        -->
+                    />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--        -->
         <LinearLayout
             android:id="@+id/create_a_group_layout"
             android:layout_width="match_parent"
@@ -216,25 +212,25 @@
             android:layout_marginTop="20dp"
             android:layout_marginEnd="15dp"
             android:background="@drawable/round_corner"
-            android:orientation="horizontal"
-            android:padding="20dp"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:orientation="horizontal"
+            android:padding="20dp">
 
 
             <ImageView
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"
                 android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -246,15 +242,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
                     android:text="Create a group and start inviting your friends to the group."
+                    android:theme="@style/page_subheading"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
         </LinearLayout>
-<!--        -->
+        <!--        -->
+
         <LinearLayout
             android:id="@+id/set_primary_layout"
             android:layout_width="match_parent"
@@ -272,15 +269,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:src="@drawable/ic_launcher_foreground"
                 android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -292,9 +289,54 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
                     android:text="Set a group as primary group to start matching."
+                    android:theme="@style/page_subheading"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!--        -->
+        <LinearLayout
+            android:id="@+id/set_preferences_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/round_corner"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set Group Preferences"
+                    android:theme="@style/page_heading"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Use preferences setting to filter out matches that you would like to view on the Match board."
+                    android:theme="@style/page_subheading"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
@@ -319,16 +361,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:src="@drawable/ic_launcher_foreground"
                 android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_marginTop="10dp"
-                >
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -340,9 +381,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
                     android:text="Match with other group of the same common interests."
+                    android:theme="@style/page_subheading"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
@@ -351,7 +392,7 @@
 
         <!--        -->
         <LinearLayout
-            android:id="@+id/vote_layout"
+            android:id="@+id/group_chat_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -366,29 +407,29 @@
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"
                 android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Vote on matches"
+                    android:text="Group Chat"
                     android:theme="@style/page_heading"
                     tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
-                    android:text="Individuals of the group votes to determine the outcome of the match."
+                    android:text="Chat with other members of the group."
+                    android:theme="@style/page_subheading"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
@@ -412,15 +453,15 @@
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"
                 android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -432,19 +473,18 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
-                    android:text="Individuals of the group votes to determine the outcome of the match."
+                    android:text="Customize group information including group profile photo, group tags, and group description."
+                    android:theme="@style/page_subheading"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
         </LinearLayout>
-<!--        -->
-
+        <!--        -->
         <!--        -->
         <LinearLayout
-            android:id="@+id/user_setting_layout"
+            android:id="@+id/other_user_profile_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
@@ -454,34 +494,79 @@
             android:orientation="horizontal"
             android:padding="20dp">
 
-
             <ImageView
 
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_foreground"
                 android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="User Setting"
+                    android:text="View Other User Profile"
                     android:theme="@style/page_heading"
                     tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:theme="@style/page_subheading"
                     android:layout_marginTop="10dp"
-                    android:text="Individuals of the group votes to determine the outcome of the match."
+                    android:text="View group member profile and mutual groups that they are in."
+                    android:theme="@style/page_subheading"
+                    tools:ignore="HardcodedText" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <!--        -->
+        <LinearLayout
+            android:id="@+id/user_setting_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="70dp"
+            android:background="@drawable/round_corner"
+            android:orientation="horizontal"
+            android:padding="20dp">
+
+
+            <ImageView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="placeholder"
+                android:src="@drawable/ic_launcher_foreground"
+                tools:ignore="HardcodedText" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Settings"
+                    android:theme="@style/page_heading"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="Set notification for new matches, messages, match voting, and group members."
+                    android:theme="@style/page_subheading"
                     tools:ignore="HardcodedText" />
 
             </LinearLayout>

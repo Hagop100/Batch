@@ -36,11 +36,14 @@ class UserGuideFragment : Fragment() {
         getting started dialog
          */
         binding.gettingStartedLayout.setOnClickListener{
+            //display the layout
             dialog.setContentView(R.layout.getting_started_guide)
+            //set the back button to navigate
             val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_getting_started)
+            //show the dialog when user clicks on the view
             dialog.show()
             backButton.setOnClickListener{
-                dialog.dismiss()
+                dialog.dismiss() //close the dialog when user click on the back button
             }
         }
 
@@ -85,6 +88,17 @@ class UserGuideFragment : Fragment() {
         }
 
         /*
+            dialog for set group preferences
+         */
+        binding.setPreferencesLayout.setOnClickListener{
+            dialog.setContentView(R.layout.set_group_preferences_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_set_preferences)
+            dialog.show()
+            backButton.setOnClickListener{
+                dialog.dismiss()
+            }
+        }
+        /*
          * dialog for 'batching'
          */
         binding.batchingLayout.setOnClickListener{
@@ -97,8 +111,56 @@ class UserGuideFragment : Fragment() {
             }
         }
 
+        /*
+         * dialog for group chat
+         */
+        binding.groupChatLayout.setOnClickListener{
+            dialog.setContentView(R.layout.group_chat_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_group_chat)
+            dialog.show()
+            backButton.setOnClickListener{
+                dialog.dismiss()
+            }
+        }
+
+        /*
+         * dialog for group customization
+         */
+        binding.groupCustomizationLayout.setOnClickListener{
+            dialog.setContentView(R.layout.group_customization_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_group_customization)
+            dialog.show()
+            backButton.setOnClickListener{
+                dialog.dismiss()
+            }
+        }
+
+        /*
+         * dialog for view user profile
+         */
+        binding.otherUserProfileLayout.setOnClickListener{
+            dialog.setContentView(R.layout.user_profile_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_user_profile)
+            dialog.show()
+            backButton.setOnClickListener{
+                dialog.dismiss()
+            }
+        }
+
+        /*
+         * dialog for user setting
+         */
+        binding.userSettingLayout.setOnClickListener{
+            dialog.setContentView(R.layout.user_setting_guide)
+            val backButton = dialog.findViewById<Button>(R.id.backto_guide_from_user_setting)
+            dialog.show()
+            backButton.setOnClickListener{
+                dialog.dismiss()
+            }
+        }
 
 
+        //navigation from user guide back to user profile tab.
         binding.btnToUserProfileTab.setOnClickListener{
             findNavController().navigate(R.id.action_userGuideFragment_to_userProfileTabFragment)
         }
