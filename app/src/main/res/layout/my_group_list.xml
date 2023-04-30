@@ -16,59 +16,61 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="15dp">
+            <ImageView
+                android:id="@+id/primary_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/set_primary_btn"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                app:tint="@color/gray"/>
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/group_profile"
                 android:layout_width="65dp"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="20dp"
                 android:clickable="true"
+                android:focusable="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/one_direction_photo"
-                app:civ_border_color="#FF000000"
-                android:focusable="true"
-                android:layout_marginEnd="10dp"/>
+                app:civ_border_color="#FF000000" />
+
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/group_profile"
-                android:layout_centerVertical="true">
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/group_profile">
+
                 <TextView
                     android:id="@+id/group_list_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Group Name"
                     android:textSize="17sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/group_list_des"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Group Description"
+                    android:layout_below="@id/group_list_name"
                     android:layout_marginTop="5dp"
-                    android:textColor="@color/purple_500"
-                    android:layout_below="@id/group_list_name" />
+                    android:text="Group Description"
+                    android:textColor="@color/purple_500" />
             </RelativeLayout>
 
             <ImageView
                 android:id="@+id/mute_icon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@drawable/notifications_off"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"
-                app:tint="@color/gray"/>
-
-            <ImageView
-                android:id="@+id/primary_icon"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/set_primary_btn"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="50dp"
-                app:tint="@color/gray"/>
+                android:src="@drawable/notifications_off"
+                app:tint="@color/gray" />
 
         </RelativeLayout>
         <View

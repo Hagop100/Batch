@@ -371,6 +371,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                 val user: User = result.toObject(User::class.java)!!
                                 mutedGroupList.clear()
                                 mutedGroupList.addAll(user.mutedGroups)
+                                primaryGroup = user.primaryGroup
+                                Log.v("MyGroupAdapter", "primary: ${user.primaryGroup}")
 
                                 // fetch the group by looping through the group collection
                                 val groupsDocRef = db.collection("groups")
@@ -400,7 +402,6 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                         }
                                         else {
                                             recyclerView.adapter?.notifyDataSetChanged()
-
                                         }
 
 
