@@ -205,11 +205,6 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
         if (!filterGroups.contains(group.name)) {
             filterGroups.add(group.name.toString())
             groups.remove(group)
-//            if (groups.isEmpty()) {
-//                if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
-//            } else {
-//                if (_binding != null) binding.matchTabMessage.text = ""
-//            }
         }
     }
     // fetches groups from firebase
@@ -430,14 +425,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                             if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
                         } else {
                             // attach adapter and send groups and listener
-                            // setAdapter(cardStackView)
-                            //cardStackView.adapter?.notifyDataSetChanged()
-                            if (cardStackView.adapter == null) {
-                                if (context != null) {
-                                    cardStackView.adapter =
-                                        CardStackAdapter(currentUser.uid, requireContext(), groups, this)
-                                }
-                            }
+                             setAdapter(cardStackView)
                         }
                     }
             }
