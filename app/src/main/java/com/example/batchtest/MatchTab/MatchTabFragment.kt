@@ -417,6 +417,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         // add interest groups to groups first to be in the front
                         // then add non interests to after
                         groups.addAll(interestGroups)
+                        // shuffle the non interest groups
+                        noInterestGroups.shuffle()
                         groups.addAll(noInterestGroups)
                         // set progress bar to invisible
                         if (_binding != null) binding.progressBar.isVisible = false
@@ -424,6 +426,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         if (groups.isEmpty()) {
                             if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
                         } else {
+                            // shuffle groups
                             // attach adapter and send groups and listener
                              setAdapter(cardStackView)
                         }
