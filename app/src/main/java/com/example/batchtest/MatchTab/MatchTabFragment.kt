@@ -11,6 +11,7 @@ import android.view.animation.AccelerateInterpolator
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.batchtest.Group
@@ -30,6 +31,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.yuyakaido.android.cardstackview.*
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.tasks.await
 import java.lang.reflect.Field
 import java.time.LocalDate
 import java.time.Period
@@ -211,6 +214,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     }
     // fetches groups from firebase
     private fun fetchGroups(cardStackView: CardStackView) {
+        binding.progressBar.isVisible = true
         // fetch primary group of user
         val query1 = db.collection("groups")
             .whereEqualTo("name", primaryGroup)
@@ -355,47 +359,47 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                                     if (filterGroups.contains(obj.name)) {
                                         return@forEach
                                     }
-                                    // query user
-                                    db.collection("users").document(user)
-                                        .get()
-                                        .addOnSuccessListener { user ->
-                                            // if genderPref is not set, ignore
-                                            if (genderPref != null) {
-                                                if ((genderPref == "male" && user.getString(
-                                                        "gender"
-                                                    ) == "female")
-                                                    ||
-                                                    (genderPref == "female" && user.getString(
-                                                        "gender"
-                                                    ) == "male")
-                                                ) {
-                                                    addFilterGroup(filterGroups, groups, obj)
-                                                }
-                                            }
-
-                                            val birthdate = user.getString("birthdate")
-                                            // if birthdate, minAge, or maxAge is not null
-                                            // check if a user is not within age limits
-                                            //      else filter out group
-                                            if (!birthdate.isNullOrEmpty() && minAge != null && maxAge != null) {
-                                                // get birth date
-                                                val birthdateSplit = birthdate.split("/")
-                                                val month = birthdateSplit[0].toInt()
-                                                val day = birthdateSplit[1].toInt()
-                                                val year = birthdateSplit[2].toInt()
-                                                // get age based on birth date
-                                                val age = getAge(year, month, day)
-                                                // if age is less than the minimum age or
-                                                // greater than the maximum age, filter the group
-                                                if (age < minAge.toInt() || age > maxAge.toInt()) {
-                                                    addFilterGroup(filterGroups, groups, obj)
-                                                }
-                                            } else {
+                                    val userRef = db.collection("users").document(user)
+                                    runBlocking {
+                                        Log.v(TAG, "in run blocking")
+                                        val user = userRef.get().await()
+                                        // if genderPref is not set, ignore
+                                        if (genderPref != null) {
+                                            if ((genderPref == "male" && user.getString(
+                                                    "gender"
+                                                ) == "female")
+                                                ||
+                                                (genderPref == "female" && user.getString(
+                                                    "gender"
+                                                ) == "male")
+                                            ) {
                                                 addFilterGroup(filterGroups, groups, obj)
                                             }
-                                            setAdapter(cardStackView)
                                         }
+
+                                        val birthdate = user.getString("birthdate")
+                                        // if birthdate, minAge, or maxAge is not null
+                                        // check if a user is not within age limits
+                                        //      else filter out group
+                                        if (!birthdate.isNullOrEmpty() && minAge != null && maxAge != null) {
+                                            // get birth date
+                                            val birthdateSplit = birthdate.split("/")
+                                            val month = birthdateSplit[0].toInt()
+                                            val day = birthdateSplit[1].toInt()
+                                            val year = birthdateSplit[2].toInt()
+                                            // get age based on birth date
+                                            val age = getAge(year, month, day)
+                                            // if age is less than the minimum age or
+                                            // greater than the maximum age, filter the group
+                                            if (age < minAge.toInt() || age > maxAge.toInt()) {
+                                                addFilterGroup(filterGroups, groups, obj)
+                                            }
+                                        } else {
+                                            addFilterGroup(filterGroups, groups, obj)
+                                        }
+                                    }
                                 }
+                                Log.v(TAG, "done with run blocking")
                             }
                             // if the group is not filtered out, check if there are matching interests
                             // add the group based on interest or no interests
@@ -418,6 +422,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         // then add non interests to after
                         groups.addAll(interestGroups)
                         groups.addAll(noInterestGroups)
+                        binding.progressBar.isVisible = false
                         // if groups is empty, display that the user needs to join a group
                         if (groups.isEmpty()) {
                             if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)
@@ -582,6 +587,7 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
             .setInterpolator(AccelerateInterpolator())
             .build()
         manager.setSwipeAnimationSetting(setting)
+        // if last group, refetch groups
         if (groups[groups.size - 1] == currGroup) {
             val size = groups.size
             groups.clear()

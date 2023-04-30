@@ -15,7 +15,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/app_background"/>
-    <!--    display message that user needse to join a group-->
+    <!-- progress bar while fetching -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminateTint="@color/purple_500"
+        android:indeterminateTintMode="src_in"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        />
+    <!--    display message that user needs to join a group-->
     <TextView
         android:id="@+id/match_tab_message"
         android:layout_width="220dp"
