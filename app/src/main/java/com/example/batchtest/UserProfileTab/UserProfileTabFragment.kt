@@ -59,7 +59,7 @@ class UserProfileTabFragment : Fragment() {
          */
         Firebase.auth.currentUser?.let { it ->
             db.collection("users").document(it.uid).get().addOnSuccessListener {
-            binding.username.text = it.get("email").toString()
+            if (_binding != null) binding.username.text = it.get("email").toString()
         } }
 
 
@@ -74,12 +74,12 @@ class UserProfileTabFragment : Fragment() {
                 val userImg = document.getString("imageUrl")
                 //if user do not have an image set, set the default user profile as placeholder
                 if (userImg.isNullOrEmpty()){
-                    binding.userImage.setImageResource(R.drawable.placeholder)
+                    if (_binding != null) binding.userImage.setImageResource(R.drawable.placeholder)
                 }
 
                 //if user have set a profile image, set the image to the user profile tab
                 else{
-                    Glide.with(this).load(document.getString("imageUrl").toString()).into(binding.userImage)
+                    if (_binding != null) Glide.with(this).load(document.getString("imageUrl").toString()).into(binding.userImage)
                 }
             }
         }

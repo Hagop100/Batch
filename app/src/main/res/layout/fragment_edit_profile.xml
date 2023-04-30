@@ -6,13 +6,16 @@
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
     android:fillViewport="false"
-    tools:context=".UserProfileTab.EditProfileFragment">
+    tools:context=".UserProfileTab.EditProfileFragment"
+    android:background="@color/app_background"
+    android:paddingHorizontal="10dp"
+    android:scrollbars="none">
 
    <androidx.constraintlayout.widget.ConstraintLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:background="@color/app_background"
        android:layout_gravity="center_horizontal"
+       android:paddingBottom="20dp"
        >
        <TextView
            android:id="@+id/tv_edit_profile"
@@ -21,15 +24,40 @@
            app:layout_constraintTop_toTopOf="parent"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
-           android:textSize="22sp"
-           android:textColor="@color/purple_700"
+           app:layout_constraintBottom_toTopOf="@id/horizontal_bar"
+           android:textAppearance="?attr/textAppearanceHeadline5"
+           android:theme="@style/page_title"
            android:text="Edit Profile"
            />
+       <!-- exit button to return to previous fragment -->
+       <Button
+           android:id="@+id/close_btn"
+           style="@style/Widget.AppCompat.Button.Borderless"
+           android:layout_width="58dp"
+           android:layout_height="wrap_content"
+           app:icon="@drawable/close_icon"
+           app:iconTint="@color/black"
+           app:layout_constraintBottom_toTopOf="@id/horizontal_bar"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toTopOf="parent"
+           android:layout_marginTop="10dp"/>
+
+       <View
+           android:id="@+id/horizontal_bar"
+           android:layout_width="wrap_content"
+           android:layout_height="1dp"
+           android:layout_marginTop="10dp"
+           android:background="@color/horizontal_line"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/close_btn"
+           app:layout_constraintBottom_toTopOf="@id/cl_edit_image"/>
+
        <androidx.constraintlayout.widget.ConstraintLayout
            android:id="@+id/cl_edit_image"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           app:layout_constraintTop_toBottomOf="@id/tv_edit_profile"
+           android:layout_marginVertical="10dp"
+           app:layout_constraintTop_toBottomOf="@id/horizontal_bar"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent">
 
@@ -54,6 +82,7 @@
                android:layout_height="wrap_content"
                android:clickable="true"
                app:backgroundTint="@color/purple_500"
+               app:elevation="0dp"
                app:layout_constraintBottom_toBottomOf="@+id/civ_edit_profile_image"
                app:layout_constraintEnd_toEndOf="@+id/civ_edit_profile_image"
                app:layout_constraintHorizontal_bias="0.905"
@@ -69,7 +98,8 @@
            android:id="@+id/tv_email"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_marginTop="10dp"
+           android:paddingTop="10dp"
+           android:paddingBottom="5dp"
            app:layout_constraintTop_toBottomOf="@id/cl_edit_image"
            app:layout_constraintBottom_toTopOf="@id/et_email"
            app:layout_constraintStart_toStartOf="@id/et_email"
@@ -78,22 +108,20 @@
        <EditText
            android:id="@+id/et_email"
            android:layout_width="match_parent"
-           android:layout_height="25dp"
-           android:layout_marginStart="25dp"
-           android:layout_marginEnd="25dp"
-
-           android:layout_marginBottom="25dp"
+           android:layout_height="match_parent"
+           android:padding="10dp"
            app:layout_constraintTop_toBottomOf="@id/tv_email"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
-           android:textSize="20sp"
+           android:textSize="14sp"
            android:background="@drawable/round_corner"
            tools:text = "Email"/>
        <TextView
            android:id="@+id/tv_birthday"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_marginTop="10dp"
+           android:paddingTop="10dp"
+           android:paddingBottom="5dp"
            app:layout_constraintTop_toBottomOf="@id/et_email"
            app:layout_constraintStart_toStartOf="@id/btn_birthday"
            android:text="Birthday"
@@ -101,22 +129,20 @@
        <Button
            android:id="@+id/btn_birthday"
            android:layout_width="match_parent"
-           android:layout_height="40dp"
-           android:layout_marginStart="25dp"
-           android:layout_marginEnd="25dp"
-           android:layout_marginBottom="25dp"
+           android:layout_height="match_parent"
            android:gravity="center"
            app:layout_constraintTop_toBottomOf="@id/tv_birthday"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
-           android:textSize="20sp"
-           android:background="@drawable/round_corner" />
+           android:textSize="14sp"
+           android:background="@drawable/round_corner"/>
 
        <TextView
            android:id="@+id/tv_firstName"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_marginTop="10dp"
+           android:paddingTop="10dp"
+           android:paddingBottom="5dp"
            app:layout_constraintTop_toBottomOf="@id/btn_birthday"
            app:layout_constraintBottom_toTopOf="@id/et_first_name"
            app:layout_constraintStart_toStartOf="@id/et_first_name"
@@ -125,22 +151,21 @@
        <EditText
            android:id="@+id/et_first_name"
            android:layout_width="match_parent"
-           android:layout_height="25dp"
+           android:layout_height="match_parent"
+           android:padding="10dp"
            app:layout_constraintTop_toBottomOf="@id/tv_firstName"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
-           android:layout_marginStart="25dp"
-           android:layout_marginEnd="25dp"
-           android:layout_marginBottom="25dp"
            android:background="@drawable/round_corner"
-           android:textSize="20sp"
+           android:textSize="14sp"
            tools:text = "First Name"/>
 
        <TextView
            android:id="@+id/tv_lastName"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_marginTop="10dp"
+           android:paddingTop="10dp"
+           android:paddingBottom="5dp"
            app:layout_constraintTop_toBottomOf="@id/et_first_name"
            app:layout_constraintStart_toStartOf="@id/et_first_name"
            app:layout_constraintBottom_toTopOf="@id/et_last_name"
@@ -148,21 +173,20 @@
        <EditText
            android:id="@+id/et_last_name"
            android:layout_width="match_parent"
-           android:layout_height="25dp"
+           android:layout_height="match_parent"
            app:layout_constraintTop_toBottomOf="@id/tv_lastName"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
-           android:layout_marginStart="25dp"
-           android:layout_marginEnd="25dp"
-           android:layout_marginBottom="25dp"
+           android:padding="10dp"
            android:background="@drawable/round_corner"
-           android:textSize="20sp"
+           android:textSize="14sp"
            tools:text = "Last Name"/>
        <TextView
            android:id="@+id/tv_displayName"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           android:layout_marginTop="10dp"
+           android:paddingTop="10dp"
+           android:paddingBottom="5dp"
            android:text="Display Name"
            app:layout_constraintTop_toBottomOf="@id/et_last_name"
            app:layout_constraintBottom_toTopOf="@id/et_display_name"
@@ -171,31 +195,32 @@
        <EditText
            android:id="@+id/et_display_name"
            android:layout_width="match_parent"
-           android:layout_height="25dp"
+           android:layout_height="match_parent"
            app:layout_constraintTop_toBottomOf="@id/tv_displayName"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
-           android:layout_marginStart="25dp"
-           android:layout_marginEnd="25dp"
-           android:layout_marginBottom="25dp"
            android:background="@drawable/round_corner"
-           android:textSize="20sp"
+           android:padding="10dp"
+           android:textSize="14sp"
            tools:text = "display Name"/>
 
        <TextView
            android:id="@+id/tv_gender"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
+           android:paddingTop="10dp"
+           android:paddingBottom="5dp"
            android:text="Gender"
-           android:layout_marginTop="10dp"
            app:layout_constraintTop_toBottomOf="@id/et_display_name"
            app:layout_constraintBottom_toTopOf="@id/rg_gender"
            app:layout_constraintStart_toStartOf="@id/et_display_name"/>
 
        <RadioGroup
            android:id="@+id/rg_gender"
-           android:layout_width="0dp"
+           android:layout_width="match_parent"
            android:layout_height="wrap_content"
+           android:paddingVertical="7dp"
+           android:paddingHorizontal="10dp"
            app:layout_constraintTop_toBottomOf="@+id/tv_gender"
            app:layout_constraintStart_toStartOf="@id/et_display_name"
            app:layout_constraintEnd_toEndOf="@id/et_display_name"
@@ -206,18 +231,18 @@
                android:id="@+id/male_radioButton"
                android:text="Male"
                android:layout_width="wrap_content"
-               android:layout_height="25dp"
+               android:layout_height="40dp"
                />
            <RadioButton
                android:id="@+id/female_radioButton"
                android:text="Female"
                android:layout_width="wrap_content"
-               android:layout_height="25dp"/>
+               android:layout_height="40dp"/>
            <RadioButton
                android:id="@+id/nonBinary_radioButton"
-               android:text="NonBinary"
+               android:text="Non Binary"
                android:layout_width="wrap_content"
-               android:layout_height="25dp"
+               android:layout_height="40dp"
                />
        </RadioGroup>
 
@@ -225,8 +250,9 @@
            android:id="@+id/tv_personalBio"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
+           android:paddingTop="10dp"
+           android:paddingBottom="5dp"
            android:text="Personal Bio"
-           android:layout_marginTop="10dp"
            app:layout_constraintTop_toBottomOf="@id/rg_gender"
            app:layout_constraintStart_toStartOf="@id/et_bio"
            />
@@ -234,15 +260,13 @@
        <EditText
            android:id="@+id/et_bio"
            android:layout_width="match_parent"
-           android:layout_height="150dp"
-           android:layout_marginStart="25dp"
-           android:layout_marginEnd="25dp"
+           android:layout_height="wrap_content"
            android:background="@drawable/round_corner"
            android:gravity="start|top"
            android:inputType="textMultiLine"
-           android:minHeight="48dp"
+           android:minHeight="100dp"
            android:padding="10dp"
-           android:textSize="20sp"
+           android:textSize="14sp"
            app:layout_constraintEnd_toEndOf="parent"
            app:layout_constraintHorizontal_bias="1.0"
            app:layout_constraintStart_toStartOf="parent"
@@ -251,9 +275,12 @@
 
        <Button
            android:id="@+id/btn_update_profile"
-           android:layout_width="wrap_content"
+           android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           android:layout_marginTop="10dp"
+           android:layout_marginVertical="20dp"
+           android:background="@drawable/round_corner"
+           style="?android:attr/borderlessButtonStyle"
+           android:paddingVertical="13dp"
            app:layout_constraintTop_toBottomOf="@+id/et_bio"
            app:layout_constraintStart_toStartOf="parent"
            app:layout_constraintEnd_toEndOf="parent"

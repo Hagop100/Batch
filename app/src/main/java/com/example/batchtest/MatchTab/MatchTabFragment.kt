@@ -214,7 +214,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
     }
     // fetches groups from firebase
     private fun fetchGroups(cardStackView: CardStackView) {
-        binding.progressBar.isVisible = true
+        // set progress bar to visible
+        if (_binding != null) binding.progressBar.isVisible = true
         // fetch primary group of user
         val query1 = db.collection("groups")
             .whereEqualTo("name", primaryGroup)
@@ -422,7 +423,8 @@ class MatchTabFragment : Fragment(), CardStackAdapter.CardStackAdapterListener, 
                         // then add non interests to after
                         groups.addAll(interestGroups)
                         groups.addAll(noInterestGroups)
-                        binding.progressBar.isVisible = false
+                        // set progress bar to invisible
+                        if (_binding != null) binding.progressBar.isVisible = false
                         // if groups is empty, display that the user needs to join a group
                         if (groups.isEmpty()) {
                             if (_binding != null) binding.matchTabMessage.text = getString(R.string.no_group_found)

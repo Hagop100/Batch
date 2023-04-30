@@ -171,6 +171,9 @@ class EditProfileFragment : Fragment() {
                 updateUserProfileDatabase()
             }
         }
+        binding.closeBtn.setOnClickListener {
+            findNavController().navigate(R.id.userProfileTabFragment)
+        }
     }
 
     //Must Unbind the View
@@ -325,11 +328,11 @@ class EditProfileFragment : Fragment() {
         birthday = user.birthdate
         personalBio = user.personalBio
         gender = user.gender
-        imageUri = user.imageUri!!
-        firstName = user.firstName!!
-        lastName = user.lastName!!
-        imageURL = user.imageUrl!!
-        email = user.email!!
+        imageUri = user.imageUri.toString()
+        firstName = user.firstName.toString()
+        lastName = user.lastName.toString()
+        imageURL = user.imageUrl.toString()
+        email = user.email.toString()
     }
 
     /**
