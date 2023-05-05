@@ -5,21 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_background"
+    android:scrollbars="none"
+    android:paddingHorizontal="10dp"
     tools:context=".UserProfileTab.AccountSettingFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:id="@+id/preferences_title"
@@ -56,43 +56,21 @@
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
             android:background="@color/horizontal_line" />
 
         <TextView
             android:id="@+id/general_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="20dp"
             android:text="@string/notification"
             android:textSize="17sp"
             android:textStyle="bold" />
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginStart="15dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:layout_marginEnd="15dp"-->
-<!--            android:background="@drawable/round_corner"-->
-<!--            android:orientation="vertical"-->
-<!--            android:padding="20dp">-->
-
-<!--            <Switch-->
-<!--                android:id="@+id/all_notification"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="All Notifications"-->
-<!--                tools:ignore="UseSwitchCompatOrMaterialXml" />-->
-<!--        </LinearLayout>-->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
             android:background="@drawable/round_corner"
             android:orientation="vertical"
             android:padding="20dp">
@@ -150,22 +128,15 @@
 
         <Button
             android:id="@+id/btn_update_notif"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="50dp"
+            style="@style/button"
+            android:layout_marginTop="20dp"
             android:text="Update Notifications"
-            android:textColor="@color/off_white"
-            android:textStyle="bold"
             />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginTop="25dp"
             android:text="Accessibility"
             android:textSize="17sp"
             android:textStyle="bold" />
@@ -173,9 +144,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
             android:background="@drawable/round_corner"
             android:orientation="vertical"
             android:padding="20dp">
@@ -211,27 +180,15 @@
 
         <Button
             android:id="@+id/log_out_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/purple_500"
+            style="@style/button"
             android:text="Log Out"
-            android:textColor="@color/dark_brown"
             android:textStyle="bold"/>
 
         <Button
             android:id="@+id/delete_account_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginBottom="50dp"
-            android:backgroundTint="@color/dark_brown"
+            style="@style/button"
             android:text="Delete Account"
-            android:textColor="@color/off_white"
+            android:theme="@style/dark_button"
             android:textStyle="bold"/>
     </LinearLayout>
 

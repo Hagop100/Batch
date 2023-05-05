@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="../../.gradle/caches/transforms-3/515f1349567036e127cf285aeaa9a881/transformed/appcompat-1.5.1/res/drawable/abc_btn_default_mtrl_shape.xml" value="0.1" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_forgot_password_dialog.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_group_chat.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Hagop/AndroidStudioProjects/Batch/app/src/main/res/layout/fragment_login.xml" value="0.2712962962962963" />
@@ -53,7 +54,7 @@
         <entry key="app/src/main/res/layout/fragment_account_setting.xml" value="0.17766497461928935" />
         <entry key="app/src/main/res/layout/fragment_edit_profile.xml" value="0.13409961685823754" />
         <entry key="app/src/main/res/layout/fragment_forgot_password_dialog.xml" value="0.12454710144927536" />
-        <entry key="app/src/main/res/layout/fragment_group_creation.xml" value="0.1644021739130435" />
+        <entry key="app/src/main/res/layout/fragment_group_creation.xml" value="0.15486725663716813" />
         <entry key="app/src/main/res/layout/fragment_initial_profile_personalization.xml" value="0.12092391304347826" />
         <entry key="app/src/main/res/layout/fragment_input.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_join_group.xml" value="0.1" />
@@ -64,12 +65,13 @@
         <entry key="app/src/main/res/layout/fragment_my_groups.xml" value="0.1644021739130435" />
         <entry key="app/src/main/res/layout/fragment_other_group_tab.xml" value="0.12092391304347826" />
         <entry key="app/src/main/res/layout/fragment_pending_group.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_preferences.xml" value="0.21579698062112151" />
         <entry key="app/src/main/res/layout/fragment_preview_group_info.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/fragment_registration.xml" value="0.12454710144927536" />
         <entry key="app/src/main/res/layout/fragment_user_list.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_user_list2.xml" value="0.1105072463768116" />
         <entry key="app/src/main/res/layout/fragment_user_profile_tab.xml" value="0.21197916666666666" />
-        <entry key="app/src/main/res/layout/fragment_view_group_info.xml" value="0.1947463768115942" />
+        <entry key="app/src/main/res/layout/fragment_view_group_info.xml" value="0.16666666666666666" />
         <entry key="app/src/main/res/layout/fragment_view_user_info.xml" value="0.16979166666666667" />
         <entry key="app/src/main/res/layout/group_creation.xml" value="0.1" />
         <entry key="app/src/main/res/layout/horizontal_bar.xml" value="0.12092391304347826" />

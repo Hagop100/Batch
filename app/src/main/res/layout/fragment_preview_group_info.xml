@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:paddingVertical="10dp">
         <!-- relative layout holds the group name and biscuits -->
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/group_info_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,26 +19,27 @@
             android:paddingHorizontal="20dp">
             <TextView
                 android:id="@+id/group_name"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:theme="@style/page_title" />
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:theme="@style/page_title"
+                android:paddingEnd="12dp"/>
             <TextView
                 android:id="@+id/biscuit_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
                 android:textColor="@color/black"
-                android:layout_toStartOf="@id/biscuit_icon"
-                android:layout_centerInParent="true"/>
+                android:layout_gravity="start"
+                android:paddingTop="10dp"/>
             <ImageView
                 android:id="@+id/biscuit_icon"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:contentDescription="@string/biscuit_icon"
                 android:src="@drawable/biscuits_icon"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"/>
-        </RelativeLayout>
+                android:layout_marginTop="10dp"/>
+        </LinearLayout>
 
         <!-- group photo -->
         <ImageView

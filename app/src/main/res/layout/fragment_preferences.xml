@@ -12,6 +12,8 @@
     android:orientation="vertical"
     android:background="@color/app_background"
     android:layout_marginBottom="20dp"
+    android:paddingVertical="30dp"
+    android:paddingHorizontal="15dp"
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,21 +22,18 @@
         app:layout_constraintEnd_toStartOf="parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="10dp"
         android:backgroundTint="@color/app_background">
 
         <TextView
             android:id="@+id/tv_preferences_title"
-            android:layout_width="208dp"
-            android:layout_height="35dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/preferences_title"
             android:textAppearance="?attr/textAppearanceHeadline5"
             android:theme="@style/page_title"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.038"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,10 +46,7 @@
             app:iconTint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.99"
-            app:layout_constraintStart_toEndOf="@+id/tv_preferences_title"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -59,16 +55,15 @@
         android:id="@+id/horizontal_bar"
         android:layout_width="wrap_content"
         android:layout_height="1dp"
+        android:layout_marginVertical="10dp"
         android:background="@color/horizontal_line"
         app:layout_constraintTop_toBottomOf="@id/constraintLayout"
-        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         />
 
     <TextView
         android:id="@+id/tv_general_info_title"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/horizontal_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -125,9 +120,7 @@
         app:layout_constraintTop_toBottomOf="@id/cl_age_range"
         app:layout_constraintStart_toStartOf="@id/cl_age_range"
         android:orientation="vertical"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/round_corner"
         android:padding="20dp">
     <TextView
@@ -144,14 +137,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/location" />
-
-
-
     </LinearLayout>
     <Button
         android:id="@+id/btn_current_location"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        style="@style/button"
         app:layout_constraintTop_toBottomOf="@id/ll_location"
         app:layout_constraintStart_toStartOf="@id/ll_location"
         app:layout_constraintEnd_toEndOf="@id/ll_location"
@@ -213,7 +202,7 @@
         app:layout_constraintTop_toBottomOf="@id/cl_distance"
         app:layout_constraintStart_toStartOf="@id/cl_distance"
         app:layout_constraintBottom_toTopOf="@id/ll_gender"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:textStyle="bold"
         android:textSize="17sp"
         android:text="Gender of Groups to Select"/>
@@ -224,9 +213,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/tv_gender_title"
         android:orientation="vertical"
-        android:layout_marginStart="15dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
         android:background="@drawable/round_corner"
         android:padding="20dp">
 
@@ -261,13 +248,12 @@
     </LinearLayout>
     <Button
         android:id="@+id/btn_save_preferences"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        style="@style/button"
         app:layout_constraintTop_toBottomOf="@+id/ll_gender"
         app:layout_constraintStart_toStartOf="@+id/ll_gender"
         app:layout_constraintEnd_toEndOf="@+id/ll_gender"
-        android:text="@string/save_preferences_btn" />
+        android:text="@string/save_preferences_btn"
+        android:layout_marginTop="30dp"/>
 
 
 

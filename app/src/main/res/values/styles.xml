@@ -27,7 +27,17 @@
 
     <style name="pop_up_dialog_corners" parent="Theme.AppCompat.DayNight.Dialog">
         <item name="android:windowBackground">@drawable/dialog_corners</item>
+    </style>
 
+    <style name="button" parent="@style/Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/round_corner</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:paddingTop">13dp</item>
+        <item name="android:paddingBottom">13dp</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
 </resources>

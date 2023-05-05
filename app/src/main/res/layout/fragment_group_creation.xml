@@ -19,9 +19,9 @@
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp">
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_gravity="center_vertical">
 
             <TextView
                 android:id="@+id/group_creation_title"
@@ -31,10 +31,9 @@
                 android:theme="@style/page_title"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/exit_group_creatn"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                android:paddingBottom="5dp"/>
 
             <Button
                 android:id="@+id/exit_group_creatn"
@@ -45,8 +44,8 @@
                 app:iconTint="#312B28"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.996"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/group_creation_title"
+                app:layout_constraintTop_toTopOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
@@ -54,6 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="1dp"
             android:background="@color/horizontal_line"
+            android:layout_marginVertical="10dp"
             />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,7 +65,7 @@
                 android:layout_width="225dp"
                 android:layout_height="199dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginBottom="32dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/placeholder"
@@ -105,11 +105,11 @@
 
 
         <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:theme="@style/page_margin"
-                    >
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:theme="@style/page_margin"
+            >
 
             <TextView
                 android:id="@+id/group_name"
@@ -224,11 +224,9 @@
 
             <Button
                 android:id="@+id/btn_create_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/button"
                 android:text="Create"
-                android:layout_marginTop="30dp"
-                android:layout_marginBottom="30dp"/>
+                android:layout_marginVertical="30dp" />
         </LinearLayout>
 
     </LinearLayout>

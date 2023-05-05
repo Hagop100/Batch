@@ -22,7 +22,7 @@
     <string name="user_registration_phone_number">Phone Number</string>
     <string name="user_registration_enter_phone_number">Enter Phone Number</string>
     <string name="user_registration_MFA_enrollment">Enroll in MFA?</string>
-    <string name="user_registration_Batch2023">Batch 2023</string>
+    <string name="user_registration_Batch2023">\u00A9 Batch 2023</string>
     <string name="user_registration_Register_button">Register</string>
     <string name="user_registration_TOS">By creating an account you agree to the terms of service for this application.</string>
     <string name="user_registration_Register_title">Registration</string>
