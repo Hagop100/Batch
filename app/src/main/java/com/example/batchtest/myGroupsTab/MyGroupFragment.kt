@@ -114,7 +114,9 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                              override fun onItemClick(position: Int) {
                                  Log.d("print", "Primary Button pressed")
                                  buildPrimaryGroupDialog(alertDialogBuilder!!, db, position)
-                                 //Toast.makeText(requireContext(), "testing here", Toast.LENGTH_SHORT).show()
+                                 //notifies the adaptor that the primary group has been changed
+                                 recyclerView.adapter?.notifyDataSetChanged()
+                                 myAdapter.primaryGroupUpdate(myGroupList[position].name)
                              }
 
 
@@ -160,6 +162,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                              override fun onItemClick(position: Int) {
                                  Log.d("print", "Delete button pressed")
                                  buildDeleteAlertDialog(alertDialogBuilder!!, db, position, recyclerView)
+                                 recyclerView.adapter?.notifyDataSetChanged()
+
                              }
 
                              override fun onCardViewClick(position: Int) {
@@ -219,6 +223,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
     Builds the alert dialog required to make a primary group
     Also handles the database read and write to update the primary group of the user
      */
+    @SuppressLint("NotifyDataSetChanged")
     private fun buildPrimaryGroupDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int){
         alertDialogBuilder.setTitle("Confirm Action: Set Primary Group")
             .setMessage("Are you sure you want to make this your primary group?")
@@ -232,44 +237,9 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                 dialogInterface.cancel()
             }
             .show()
+        recyclerView.adapter?.notifyDataSetChanged()
     }
 
-
-
-    /*
-   Builds the alert dialog required to report a group
-   Furthermore, this handles the database read and write necessary to update the reportCount of the group
-   being reported
-    */
-    private fun buildReportAlertDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int) {
-        alertDialogBuilder.setTitle("Confirm Action: Report")
-            .setMessage("Are you sure you want to report this group?")
-            .setCancelable(true)
-            .setPositiveButton("Report") { _, _ ->
-                db.collection("groups")
-                    .whereEqualTo("name", myGroupList[position])
-                    .get()
-                    .addOnSuccessListener { documents ->
-                        for (document in documents) {
-                            Log.d("print", "${document.id} => ${document.data}")
-                            val group: Group = document.toObject<Group>()
-                            group.reportCount += 1
-                            val currGroup = db.collection("groups").document(document.id)
-                            currGroup
-                                .update("reportCount", group.reportCount)
-                                .addOnSuccessListener { Log.d("print", "DocumentSnapshot successfully updated!") }
-                                .addOnFailureListener { e -> Log.w("print", "Error updating document", e) }
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.w("print", "Error getting documents: ", exception)
-                    }
-            }
-            .setNegativeButton("No") { dialogInterface, _ ->
-                dialogInterface.cancel()
-            }
-            .show()
-    }
 
     /*
     Builds the Delete Alert Dialog in order to delete from group list
@@ -325,11 +295,14 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                 //previously we were listening to the database for real-time updates
                 //for some reason this was causing the application to crash
                 deleteItemFromRecyclerView(position, recyclerView)
+
             }
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
             }
             .show()
+        recyclerView.adapter?.notifyDataSetChanged()
+
     }
 
     private fun deleteItemFromRecyclerView(position: Int, recyclerView: RecyclerView) {
