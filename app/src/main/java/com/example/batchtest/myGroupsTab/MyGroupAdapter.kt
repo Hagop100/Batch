@@ -80,6 +80,7 @@ class MyGroupAdapter(
         holder.muteBtn.isVisible = mutedGroupList.contains(info.name)
 
         //make primary icon visible if primary group is set
+        //updates when the page is refreshed
         holder.primaryBtn.isVisible = primaryGroup.equals(info.name)
     }
 
