@@ -82,6 +82,7 @@ class MyGroupAdapter(
         //make primary icon visible if primary group is set
         //updates when the page is refreshed
         holder.primaryBtn.isVisible = primaryGroup.equals(info.name)
+
     }
 
     //It returns the count of items present in the list.
@@ -89,6 +90,11 @@ class MyGroupAdapter(
         return groupNameList.size
     }
 
+    fun primaryGroupUpdate(primaryGroup: String?): String? {
+        notifyDataSetChanged()
+        return primaryGroup;
+
+    }
 
     //set the initial values for the view
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), View.OnClickListener{
