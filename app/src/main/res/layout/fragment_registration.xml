@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/app_background"
     tools:context=".RegistrationFragment"
-    android:paddingHorizontal="15dp"
+    android:paddingHorizontal="10dp"
     android:paddingVertical="25dp">
 
     <EditText
@@ -44,6 +44,7 @@
         android:textAlignment="center"
         android:textColor="@color/purple_700"
         android:textSize="34sp"
+        android:paddingBottom="70dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -54,7 +55,6 @@
         android:layout_height="wrap_content"
         android:text="Email"
         android:textColor="@color/purple_500"
-        android:paddingTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_registration_title"
