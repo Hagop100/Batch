@@ -20,9 +20,14 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.batchtest.UserProfileTab.AccountSettingFragment
+import com.example.batchtest.UserProfileTab.EditProfileFragment
 import com.example.batchtest.databinding.FragmentInitialProfilePersonalizationBinding
+import com.google.android.gms.tasks.OnCompleteListener
 import java.text.SimpleDateFormat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,6 +35,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.util.*
 import kotlin.collections.HashMap
@@ -61,6 +67,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
     private lateinit var imageURL: String
     private lateinit var email: String
     private lateinit var progressDialog: Dialog
+    private lateinit var token: String
 
     //variable used to check whether URI has been set
     private var uriSet = false
@@ -87,6 +94,12 @@ class InitialProfilePersonalizationFragment : Fragment() {
         const val FIRSTNAME: String = "firstName"
         const val LASTNAME: String ="lastName"
         const val PROFILECOMPLETE = "profileComplete"
+        const val NEW_MATCHES= "matches"
+        const val NEW_MESSAGES = "messages"
+        const val VOTING = "voting"
+        const val NEW_GROUP_MEMBERS = "members"
+        const val NOTIFICATION_PREFS = "notificationPrefs"
+        const val TOKEN = "userToken"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,6 +143,22 @@ class InitialProfilePersonalizationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener {
+            if (!it.isSuccessful)
+            {
+                Log.i("EditFragment","Fetching FCM token failed", it.exception)
+
+                return@OnCompleteListener
+            }
+            else
+            {
+                token = it.result
+                Log.i("Token",token)
+                userHasMap[TOKEN] = token
+
+            }
+
+        })
         //Ask for permission for camera and external storage
         //Select picture for userProfile
         binding.btnImageUpdate.setOnClickListener {
@@ -154,9 +183,29 @@ class InitialProfilePersonalizationFragment : Fragment() {
 
         //User profile will skip the intial profile setup and move to group creation fragment.
         binding.btnSkip.setOnClickListener {
-            findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_myGroupFragment)
-        }
+            lifecycleScope.launch {
+
+                /**Initialize the users notification preferences*/
+                val notifPrefs = HashMap<String, Any>()
+                notifPrefs[VOTING] = true
+                notifPrefs[NEW_MATCHES] = true
+                notifPrefs[NEW_MESSAGES] = true
+                notifPrefs[NEW_GROUP_MEMBERS] = true
+
+                userHasMap[NOTIFICATION_PREFS] = notifPrefs
+                FirebaseFirestore.getInstance().collection("users")
+                    .document(getCurrentUserID())
+                    .update(userHasMap).addOnSuccessListener {
+                        //Will navigate to the next fragment, Currently not in use should put
+                        findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_myGroupFragment)
+                    }.addOnFailureListener{
+                        Toast.makeText(context,"Failed to Update Profile", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            }
+
     }
+
 
     /**
      * Gathers the user's input and places it in a hashmap
@@ -166,7 +215,12 @@ class InitialProfilePersonalizationFragment : Fragment() {
     {
 
         //val token = FirebaseAuth.getInstance().currentUser!!.getIdToken(true)
-
+        /**Initialize the users notification preferences*/
+        val notifPrefs = HashMap<String, Any>()
+        notifPrefs[EditProfileFragment.VOTING] = false
+        notifPrefs[EditProfileFragment.NEW_MATCHES] = false
+        notifPrefs[EditProfileFragment.NEW_MESSAGES] = true
+        notifPrefs[EditProfileFragment.NEW_GROUP_MEMBERS] = true
         //Get the values the user has input
         //Save values in a Hashmap that will be used to update the user's information
         //in the firebase database.
@@ -189,6 +243,8 @@ class InitialProfilePersonalizationFragment : Fragment() {
         userHasMap[BIRTHDATE] = birthday
         userHasMap[PERSONALBIO] = personalBio
         userHasMap[PROFILECOMPLETE] = true
+        userHasMap[NOTIFICATION_PREFS] = notifPrefs
+        userHasMap[TOKEN] = token
         //userHasMap["userToken"]= token
         if(uriSet)
         {
@@ -196,17 +252,20 @@ class InitialProfilePersonalizationFragment : Fragment() {
             userHasMap[IMAGEURL] = imageURL
         }
 
+        lifecycleScope.launch {
+            //Get a instance of the Firebase Firestore database and update the user's information
+            FirebaseFirestore.getInstance().collection("users")
+                .document(getCurrentUserID())
+                .update(userHasMap).addOnSuccessListener {
 
-        //Get a instance of the Firebase Firestore database and update the user's information
-        FirebaseFirestore.getInstance().collection("users")
-            .document(getCurrentUserID())
-            .update(userHasMap).addOnSuccessListener {
-                Toast.makeText(context,"Successfully Updated Profile", Toast.LENGTH_SHORT).show()
-                //Will navigate to the next fragment, Currently not in use should put
-                findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_myGroupFragment)
-            }.addOnFailureListener{
-                Toast.makeText(context,"Failed to Update Profile", Toast.LENGTH_SHORT).show()
-            }
+                    //Will navigate to the next fragment, Currently not in use should put
+                    findNavController().navigate(R.id.action_initialProfilePersonalizationFragment_to_myGroupFragment)
+                }.addOnFailureListener{
+                    Toast.makeText(context,"Failed to Update Profile", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+
     }
 
     //Must unbind the view
@@ -270,8 +329,10 @@ class InitialProfilePersonalizationFragment : Fragment() {
                     //Progress Dialog giving time to get the storage locations URL
                     //This might not be the best location, however, it is the
                     //only location that it works since uploadUserImage is an asynchronous listener.
-                    showProgressDialog()
-                    uploadUserImageToCloud(activity,imageUri)
+
+                    lifecycleScope.launch {
+                        uploadUserImageToCloud(activity,imageUri)
+                    }
 
                 }catch (e: IOException){
                     e.printStackTrace()
@@ -305,7 +366,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
      * The SuccessListener returns the URL of the image.
      * imageURL is updated with the returned URl
      * */
-    private fun uploadUserImageToCloud(activity: Activity?, imageUri: Uri?)
+    private suspend fun uploadUserImageToCloud(activity: Activity?, imageUri: Uri?)
     {
         val storageReference: StorageReference = getStorageReference()
 
@@ -316,7 +377,7 @@ class InitialProfilePersonalizationFragment : Fragment() {
                 // Getting the TaskSnapshot takes a bit of time,
                 taskSnapshot.metadata!!.reference!!.downloadUrl.addOnSuccessListener { uri ->
                     imageURL = uri.toString()
-                    dismissProgressDialog()
+
                 }
 
             }.addOnFailureListener {

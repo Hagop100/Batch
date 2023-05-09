@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.batchtest.FirebaseMessaging.MyFirebaseMessagingService
@@ -35,6 +36,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.launch
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -61,7 +63,7 @@ class EditProfileFragment : Fragment() {
     private lateinit var user: User
     private lateinit var progressDialog: Dialog
     private lateinit var firebaseUser: FirebaseUser
-    private lateinit var token: String
+    //private lateinit var token: String
     private var isToken: Boolean = false
     private val userHashMap = HashMap<String, Any>()
     //variable used to check whether URI has been set
@@ -135,22 +137,22 @@ class EditProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener {
-            if (!it.isSuccessful)
-            {
-                Log.i("EditFragment","Fetching FCM token failed", it.exception)
-
-                return@OnCompleteListener
-            }
-            else
-            {
-                token = it.result
-                Log.i("Token",token)
-
-            }
-
-        })
+//
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener {
+//            if (!it.isSuccessful)
+//            {
+//                Log.i("EditFragment","Fetching FCM token failed", it.exception)
+//
+//                return@OnCompleteListener
+//            }
+//            else
+//            {
+//                token = it.result
+//                Log.i("Token",token)
+//
+//            }
+//
+//        })
 
         //Update the screen with the basic configuration
         updateEmptyProfilePage()
@@ -264,13 +266,13 @@ class EditProfileFragment : Fragment() {
      * */
     private fun updateUserProfileDatabase()
     {
-        /**For Testing*/
-        val notifPrefs = HashMap<String, Any>()
-        notifPrefs[VOTING] = false
-        notifPrefs[NEW_MATCHES] = false
-        notifPrefs[NEW_MESSAGES] = true
-        notifPrefs[NEW_GROUP_MEMBERS] = true
-        /**  **********          *************/
+//        /**For Testing*/
+//        val notifPrefs = HashMap<String, Any>()
+//        notifPrefs[VOTING] = false
+//        notifPrefs[NEW_MATCHES] = false
+//        notifPrefs[NEW_MESSAGES] = true
+//        notifPrefs[NEW_GROUP_MEMBERS] = true
+//        /**  **********          *************/
         //Get the values the user has input
         //Save values in a Hashmap that will be used to update the user's information
         //in the firebase database.
@@ -295,8 +297,8 @@ class EditProfileFragment : Fragment() {
         userHashMap[PROFILECOMPLETE] = true
 
         /**Temp Values that should be set in initialprofileInitialization or login*/
-        userHashMap[TOKEN] = token
-        userHashMap[NOTIFICATION_PREFS] = notifPrefs //
+        //userHashMap[TOKEN] = token
+        //userHashMap[NOTIFICATION_PREFS] = notifPrefs //
 
 
         if (uriSet)
@@ -435,8 +437,11 @@ class EditProfileFragment : Fragment() {
                     //Progress Dialog giving time to get the storage locations URL
                     //This might not be the best location, however, it is the
                     //only location that it works since uploadUserImage is an asynchronous listener.
-                    showProgressDialog()
-                    uploadUserImageToCloud(activity,tempUri)
+
+                    lifecycleScope.launch {
+                        uploadUserImageToCloud(activity,tempUri)
+                    }
+
                 }catch (e: IOException){
                     e.printStackTrace()
                     Toast.makeText(context, "Image Selection Failed", Toast.LENGTH_LONG).show()
@@ -472,7 +477,7 @@ class EditProfileFragment : Fragment() {
                 }
 
             }.addOnFailureListener {
-                dismissProgressDialog()
+
                 Toast.makeText(context,"Failed to upload image", Toast.LENGTH_SHORT).show()
             }
     }
