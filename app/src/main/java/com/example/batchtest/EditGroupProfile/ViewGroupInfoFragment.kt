@@ -468,7 +468,7 @@ class ViewGroupInfoFragment : Fragment(), UserInfoAdapter.UserInfoListener {
                 {
                     //iterate through all members of the group and remove group from matched
                     //and add them to blocked
-                    blockGroupUserUpdate(user, groupName)
+                    blockGroupUserUpdate(user, primaryGroup)
                 }
             }
             //update group's matched and blocked groups
