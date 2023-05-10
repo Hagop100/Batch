@@ -1,29 +1,19 @@
 package com.example.batchtest.myGroupsTab
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.batchtest.Group
 import com.example.batchtest.R
 import de.hdodenhof.circleimageview.CircleImageView
-import org.w3c.dom.Text
 
 /**
  * bridge the communication between MyGroupFragment and GroupCreationFragment.
@@ -34,7 +24,7 @@ class MyGroupAdapter(
     private val listener: GroupProfileViewEvent,
     private val groupNameList: ArrayList<Group>,
     private val mutedGroupList: ArrayList<String>,
-    private val primaryGroup: String?)
+    private var primaryGroup: String)
     : RecyclerView.Adapter<MyGroupAdapter.MyViewHolder>() {
 
     //inflate the content of the card view
@@ -90,9 +80,11 @@ class MyGroupAdapter(
         return groupNameList.size
     }
 
-    fun primaryGroupUpdate(primaryGroup: String?): String? {
-        notifyDataSetChanged()
-        return primaryGroup;
+    //update the primary group icon
+    fun primaryGroupUpdate(newItem: String){
+        primaryGroup = newItem
+        notifyItemChanged(0)
+
 
     }
 

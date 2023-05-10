@@ -8,36 +8,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AlertDialog.Builder
-import androidx.constraintlayout.widget.StateSet.TAG
 import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
-import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
 import com.example.batchtest.Group
-import com.example.batchtest.MatchTab.CardStackAdapter
-import com.example.batchtest.MatchTab.MatchTabViewModel
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMyGroupBinding
 import com.example.batchtest.myGroupsTab.Swipe.MyGroupSwipeHelper
 import com.example.batchtest.myGroupsTab.Swipe.SwipeButtons
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import org.w3c.dom.Text
 
 import java.util.*
 import kotlin.collections.ArrayList
@@ -58,7 +47,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
     private lateinit var recyclerView: RecyclerView
     private lateinit var myGroupList: ArrayList<Group>
     private lateinit var mutedGroupList: ArrayList<String>
-    private var primaryGroup: String? = ""
+    private lateinit var primaryGroup: String
     private lateinit var myAdapter: MyGroupAdapter
     private lateinit var db: FirebaseFirestore
     private val currentUser = Firebase.auth.currentUser
@@ -115,8 +104,9 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                  Log.d("print", "Primary Button pressed")
                                  buildPrimaryGroupDialog(alertDialogBuilder!!, db, position)
                                  //notifies the adaptor that the primary group has been changed
-                                 recyclerView.adapter?.notifyDataSetChanged()
-                                 myAdapter.primaryGroupUpdate(myGroupList[position].name)
+                                // recyclerView.adapter?.notifyDataSetChanged()
+
+
                              }
 
 
@@ -162,7 +152,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                              override fun onItemClick(position: Int) {
                                  Log.d("print", "Delete button pressed")
                                  buildDeleteAlertDialog(alertDialogBuilder!!, db, position, recyclerView)
-                                 recyclerView.adapter?.notifyDataSetChanged()
+                                // recyclerView.adapter?.notifyDataSetChanged()
 
                              }
 
@@ -232,6 +222,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                 db.collection("users")
                     .document(currUser.uid)
                     .update( "primaryGroup", myGroupList[position].name)
+                myAdapter.primaryGroupUpdate(myGroupList[position].name!!)
             }
             .setNegativeButton("No") { dialogInterface, _ ->
                 dialogInterface.cancel()
@@ -344,7 +335,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                 val user: User = result.toObject(User::class.java)!!
                                 mutedGroupList.clear()
                                 mutedGroupList.addAll(user.mutedGroups)
-                                primaryGroup = user.primaryGroup
+                                primaryGroup = user.primaryGroup.toString()
+
                                 Log.v("MyGroupAdapter", "primary: ${user.primaryGroup}")
 
                                 // fetch the group by looping through the group collection
