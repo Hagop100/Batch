@@ -104,8 +104,10 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                  Log.d("print", "Primary Button pressed")
                                  buildPrimaryGroupDialog(alertDialogBuilder!!, db, position)
                                  //notifies the adaptor that the primary group has been changed
-                                 recyclerView.adapter?.notifyDataSetChanged()
-                                 myAdapter.primaryGroupUpdate(myGroupList[position].name)
+
+                                 recyclerView.adapter?.notifyItemChanged(position)
+
+
                              }
 
 
@@ -152,6 +154,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                                  Log.d("print", "Delete button pressed")
                                  buildDeleteAlertDialog(alertDialogBuilder!!, db, position, recyclerView)
                                  recyclerView.adapter?.notifyDataSetChanged()
+
 
                              }
 
@@ -215,7 +218,8 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
     @SuppressLint("NotifyDataSetChanged")
     private fun buildPrimaryGroupDialog(alertDialogBuilder: AlertDialog.Builder, db: FirebaseFirestore, position: Int){
         alertDialogBuilder.setTitle("Confirm Action: Set Primary Group")
-            .setMessage("Are you sure you want to make this your primary group?")
+            .setMessage("Are you sure you want to make this your primary group?" +
+                    "\n *Refresh the page to see changes*")
             .setCancelable(true)
             .setPositiveButton("Primary") { _, _ ->
                 db.collection("users")
@@ -226,7 +230,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                 dialogInterface.cancel()
             }
             .show()
-        recyclerView.adapter?.notifyDataSetChanged()
+        recyclerView.adapter?.notifyItemChanged(position)
     }
 
 
