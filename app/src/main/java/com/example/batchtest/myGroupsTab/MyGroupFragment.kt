@@ -222,6 +222,7 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                 db.collection("users")
                     .document(currUser.uid)
                     .update( "primaryGroup", myGroupList[position].name)
+                //update the primary group icon here
                 myAdapter.primaryGroupUpdate(myGroupList[position].name!!)
             }
             .setNegativeButton("No") { dialogInterface, _ ->
