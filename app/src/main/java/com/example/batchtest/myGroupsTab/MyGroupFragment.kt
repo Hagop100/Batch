@@ -8,36 +8,25 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AlertDialog.Builder
-import androidx.constraintlayout.widget.StateSet.TAG
 import androidx.fragment.app.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.batchtest.EditGroupProfile.GroupInfoViewModel
-import com.example.batchtest.EditGroupProfile.ViewGroupInfoFragment
 import com.example.batchtest.Group
-import com.example.batchtest.MatchTab.CardStackAdapter
-import com.example.batchtest.MatchTab.MatchTabViewModel
 import com.example.batchtest.PendingGroup
 import com.example.batchtest.R
 import com.example.batchtest.User
 import com.example.batchtest.databinding.FragmentMyGroupBinding
 import com.example.batchtest.myGroupsTab.Swipe.MyGroupSwipeHelper
 import com.example.batchtest.myGroupsTab.Swipe.SwipeButtons
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import org.w3c.dom.Text
 
 import java.util.*
 import kotlin.collections.ArrayList
@@ -267,16 +256,48 @@ class MyGroupFragment : Fragment(), MyGroupAdapter.GroupProfileViewEvent {
                             Log.d("print", "${document.id} => ${document.data}")
                             val group: Group = document.toObject<Group>()
                             val currGroup = db.collection("groups").document(document.id)
+                            val groupid = currGroup.id
                             currGroup
                                 .update("users",
                                 FieldValue.arrayRemove(currUser.uid))
                                 .addOnSuccessListener { Log.d("print", "DocumentSnapshot successfully updated!") }
                                 .addOnFailureListener { e -> Log.w("print", "Error updating document", e) }
+
+                            // W.I.P. Delete Group if user array is empty
+//                            val groupRef = db.collection("groups")
+//                            groupRef.whereEqualTo("users", "[]")
+//                                .get()
+//                                .addOnSuccessListener {
+//                                    val groupRefID = groupRef.id
+//                                    db.collection("groups").document(groupRefID)
+//                                        .delete()
+//                                }
+
+                            // This will delete the entire group document from the groups collection
+//                            db.collection("groups").document(groupid)
+//                                .delete()
                         }
                     }
                     .addOnFailureListener { exception ->
                         Log.d("print", "Error getting documents: ", exception)
                     }
+
+//                db.collection("groups").whereEqualTo("users", "[]")
+//                    .get()
+//                    .addOnSuccessListener { documents ->
+//                        for (document in documents) {
+//                            Log.d("print", "${document.id} => ${document.data}")
+//                            val currGroup = db.collection("groups").document(document.id)
+//                            val groupid = currGroup.id
+//                            db.collection("groups").document(groupid)
+//                                .delete()
+//                        }
+//                    }
+//                    .addOnFailureListener { exception ->
+//                        Log.d("print", "Error getting documents: ", exception)
+//                    }
+
+
                 // remove user from the pending groups
                 db.collection("pendingGroups")
                     .whereEqualTo("users.${currUser.uid}.uid", currUser.uid)
