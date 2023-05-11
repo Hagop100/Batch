@@ -163,7 +163,7 @@ class AccountSettingFragment : Fragment() {
 
                         val users: User? = result.toObject(User::class.java)
 
-                        Toast.makeText(this.context, "${users?.myGroups }", Toast.LENGTH_SHORT).show()
+//                        Toast.makeText(this.context, "${users?.myGroups }", Toast.LENGTH_SHORT).show()
 
                         if (users?.myGroups!!.isNotEmpty()) {
                             //retrieve all groups name that include this user. this case ALSO handles the user with 0 group.
@@ -210,31 +210,28 @@ class AccountSettingFragment : Fragment() {
 
                 }
                 //delete the user after deleting the group
-                if (user != null){
-                    user.delete().addOnCompleteListener { task ->
-                        if (task.isSuccessful){
-                            if (userId != null) {
-                                //delete the user with the equivalent userID from User collection and authentication
-                                db.collection("users").document(userId).delete()
-                                    .addOnSuccessListener {
+                user.delete().addOnCompleteListener { task ->
+                    if (task.isSuccessful){
+                        if (userId != null) {
+                            //delete the user with the equivalent userID from User collection and authentication
+                            db.collection("users").document(userId).delete()
+                                .addOnSuccessListener {
 
-                                        Log.i(TAG, "$userId successfully deleted!")
-                                        //sign out
-                                        auth.signOut()
+                                    Log.i(TAG, "$userId successfully deleted!")
+                                    //sign out
+                                    auth.signOut()
 
-                                        //navigate user back to login screen
-                                        findNavController().navigate(R.id.loginFragment)
+                                    //navigate user back to login screen
+                                    findNavController().navigate(R.id.loginFragment)
 
-                                    }
-                                    .addOnFailureListener {
-                                            e -> Log.i(TAG, "Error deleting document", e)
-                                    }
+                                }
+                                .addOnFailureListener {
+                                        e -> Log.i(TAG, "Error deleting document", e)
+                                }
 
-                                Log.i(TAG, "user with account of ${user.email} is deleted")
-                            }
-
-
+                            Log.i(TAG, "user with account of ${user.email} is deleted")
                         }
+
 
                     }
 
